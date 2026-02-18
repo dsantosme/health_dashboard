@@ -120,7 +120,7 @@ export default function Home() {
         )}
 
         {/* Main Navigation */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Exames Detalhados */}
           <Card 
             className="p-8 bg-white border-slate-200 hover:shadow-lg transition cursor-pointer group"
@@ -138,6 +138,26 @@ export default function Home() {
             </p>
             <Button className="w-full" variant="outline">
               Explorar Exames
+            </Button>
+          </Card>
+
+          {/* Histórico Completo */}
+          <Card 
+            className="p-8 bg-white border-slate-200 hover:shadow-lg transition cursor-pointer group"
+            onClick={() => navigate('/history')}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition">
+                <TrendingUp className="w-6 h-6 text-indigo-600" />
+              </div>
+              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-indigo-600 transition" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Histórico Completo</h3>
+            <p className="text-sm text-slate-600 mb-4">
+              Todos os períodos (2022-2026) com análise de tendências e evolução temporal
+            </p>
+            <Button className="w-full" variant="outline">
+              Ver Histórico
             </Button>
           </Card>
 

@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import ExamsDetail from "./pages/ExamsDetail";
 import MedicalInsights from "./pages/MedicalInsights";
 import SportsInsights from "./pages/SportsInsights";
+import CompleteHistory from "./pages/CompleteHistory";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/laboratory" component={Laboratory} />
       <Route path="/trends" component={Trends} />
+      <Route path="/history" component={CompleteHistory} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
