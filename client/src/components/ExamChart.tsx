@@ -61,17 +61,8 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
     return [minDomain, max + padding];
   }, [chartData]);
 
-  // Cor da linha baseada na tendência
-  const lineColor = useMemo(() => {
-    if (chartData.length < 2) return '#3b82f6'; // azul padrão
-    
-    const firstValue = chartData[0].value;
-    const lastValue = chartData[chartData.length - 1].value;
-    
-    if (lastValue > firstValue) return '#ef4444'; // vermelho (aumentando)
-    if (lastValue < firstValue) return '#10b981'; // verde (diminuindo)
-    return '#3b82f6'; // azul (estável)
-  }, [chartData]);
+  // Cor da linha de evolução (sempre verde para indicar continuidade)
+  const lineColor = '#10b981'; // verde
 
   // Função para determinar cor da barra de valor
   const getValueBarColor = (status: string) => {
@@ -142,14 +133,20 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
             iconType="circle"
           />
           
-          {/* Barra de faixa de referência (fundo) */}
+          {/* Barra de faixa de referência (fundo) - mostra a faixa min-max */}
+          <Bar 
+            dataKey="referenceBase" 
+            fill="transparent" 
+            stackId="stack"
+          />
           <Bar 
             dataKey="referenceRange" 
-            fill="#e0e7ff" 
-            opacity={0.6}
+            fill="#c7d2fe" 
+            opacity={0.7}
             name="Faixa de Referência"
-            stackId="reference"
-            radius={[4, 4, 4, 4]}
+            stackId="stack"
+            radius={[4, 4, 0, 0]}
+            barSize={60}
           />
           
           {/* Barra de valor do paciente (sobreposta) */}

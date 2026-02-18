@@ -66,3 +66,12 @@
 - [x] Glicose de 2026 já existe no banco - não precisa adicionar
 - [x] Corrigir escala mínima do gráfico (agora só inclui 0 se valores forem < 10% do range)
 - [x] Ajustar cálculo de domínio do eixo Y com padding inteligente
+
+## Revisão de Gráficos e Dados Inconsistentes
+- [x] Corrigir valores absurdos de Hemoglobina (2000→20.00, 1300→13.00, 5.20→15.20)
+- [x] Faixa de referência de Hemoglobina já está correta (13-17 g/dL)
+- [x] Investigar e corrigir valores de Plaquetas (15.10→151000, 14.40→144000, 308→308000)
+- [x] Melhorar visualização das barras de referência (faixa azul de fundo com stackId)
+- [x] Garantir que barras de referência apareçam em todos os gráficos
+- [x] Corrigir cor da linha de evolução (sempre verde para continuidade)
+- [ ] Adicionar mais dados históricos para Colesterol HDL se disponíveis
