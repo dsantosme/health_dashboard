@@ -1,4 +1,3 @@
-// Auto-generated file from database normalization
 // DO NOT EDIT MANUALLY - regenerate using normalize_database.py
 
 export interface ExamData {
@@ -76,7 +75,7 @@ export const allExamsData: ExamData[] = [
     unit: "mg/dL",
     category: "Lipídios",
     date: "2023-01-06",
-    reference_min: null,
+    reference_min: None,
     reference_max: 200,
     status: "normal",
     source_file: "COLESTEROLTOTALEFRACOES(1).pdf",
@@ -112,7 +111,7 @@ export const allExamsData: ExamData[] = [
     unit: "U/L",
     category: "Função Hepática",
     date: "2023-01-06",
-    reference_min: null,
+    reference_min: None,
     reference_max: 65,
     status: "normal",
     source_file: "GAMAGT-GAMAGLUTAMILTRANSFERASE(1).pdf",
@@ -172,7 +171,7 @@ export const allExamsData: ExamData[] = [
     unit: "U/L",
     category: "Função Hepática",
     date: "2023-01-06",
-    reference_min: null,
+    reference_min: None,
     reference_max: 58,
     status: "normal",
     source_file: "TGO-AST-ASPARTATOAMINOTRANSFERASE(1).pdf",
@@ -184,7 +183,7 @@ export const allExamsData: ExamData[] = [
     unit: "U/L",
     category: "Função Hepática",
     date: "2023-01-06",
-    reference_min: null,
+    reference_min: None,
     reference_max: 40,
     status: "normal",
     source_file: "TGP-ALT-ALANINAAMINOTRANSFERASE(1).pdf",
@@ -208,8 +207,8 @@ export const allExamsData: ExamData[] = [
     unit: "",
     category: "Outros",
     date: "2023-01-06",
-    reference_min: null,
-    reference_max: null,
+    reference_min: None,
+    reference_max: None,
     status: "unknown",
     source_file: "TesteErgometrico(1).pdf",
   },
@@ -220,7 +219,7 @@ export const allExamsData: ExamData[] = [
     unit: "mg/dL",
     category: "Função Renal",
     date: "2023-01-06",
-    reference_min: null,
+    reference_min: None,
     reference_max: 45,
     status: "normal",
     source_file: "UREIA(1).pdf",
@@ -268,7 +267,7 @@ export const allExamsData: ExamData[] = [
     unit: "mg/dL",
     category: "Lipídios",
     date: "2024-01-16",
-    reference_min: null,
+    reference_min: None,
     reference_max: 200,
     status: "normal",
     source_file: "COLESTEROLTOTALEFRACOES.pdf",
@@ -292,7 +291,7 @@ export const allExamsData: ExamData[] = [
     unit: "%",
     category: "Metabolismo de Glicose",
     date: "2024-01-16",
-    reference_min: null,
+    reference_min: None,
     reference_max: 5.7,
     status: "normal",
     source_file: "ConsultaClinica.pdf",
@@ -316,7 +315,7 @@ export const allExamsData: ExamData[] = [
     unit: "U/L",
     category: "Função Hepática",
     date: "2024-01-16",
-    reference_min: null,
+    reference_min: None,
     reference_max: 65,
     status: "normal",
     source_file: "GAMAGT-GAMAGLUTAMILTRANSFERASE.pdf",
@@ -376,7 +375,7 @@ export const allExamsData: ExamData[] = [
     unit: "U/L",
     category: "Função Hepática",
     date: "2024-01-16",
-    reference_min: null,
+    reference_min: None,
     reference_max: 58,
     status: "normal",
     source_file: "TGO-AST-ASPARTATOAMINOTRANSFERASE.pdf",
@@ -388,7 +387,7 @@ export const allExamsData: ExamData[] = [
     unit: "U/L",
     category: "Função Hepática",
     date: "2024-01-16",
-    reference_min: null,
+    reference_min: None,
     reference_max: 40,
     status: "normal",
     source_file: "TGP-ALT-ALANINAAMINOTRANSFERASE.pdf",
@@ -412,7 +411,7 @@ export const allExamsData: ExamData[] = [
     unit: "mg/dL",
     category: "Função Renal",
     date: "2024-01-16",
-    reference_min: null,
+    reference_min: None,
     reference_max: 45,
     status: "normal",
     source_file: "UREIA.pdf",
@@ -430,358 +429,67 @@ export const allExamsData: ExamData[] = [
     source_file: "UrinaTipoI.pdf",
   },
   {
-    id: "glicose-2026-02-14",
-    name: "GLICOSE",
+    id: "vitamina_b12-2026-02-14",
+    name: "VITAMINA B12",
     value: 331.0,
     unit: "pg/mL",
-    category: "Metabolismo de Glicose",
+    category: "Hematologia",
     date: "2026-02-14",
-    reference_min: 172.0,
-    reference_max: 890.0,
+    reference_min: 172,
+    reference_max: 890,
+    status: "normal",
+    source_file: "resultados.pdf",
+  },
+  {
+    id: "ferro_serico-2026-02-14",
+    name: "FERRO SÉRICO",
+    value: 59.0,
+    unit: "mcg/dL",
+    category: "Hematologia",
+    date: "2026-02-14",
+    reference_min: 65,
+    reference_max: 175,
+    status: "low",
+    source_file: "resultados.pdf",
+  },
+  {
+    id: "ferritina_serica-2026-02-14",
+    name: "FERRITINA SÉRICA",
+    value: 174.4,
+    unit: "ng/mL",
+    category: "Hematologia",
+    date: "2026-02-14",
+    reference_min: 30,
+    reference_max: 400,
     status: "normal",
     source_file: "resultados.pdf",
   },
 ];
 
-export const examTrendsData: Record<string, ExamTrend[]> = {
-  "CHECKUP ANTERIOR - QUADRO COMPARATIVO": [
-    {
-      date: "2024-01-16",
-      value: 101.6,
-      unit: "",
-      reference_min: 19.0,
-      reference_max: 59.0,
-      status: "high",
-    },
-  ],
-  "COLESTEROL TOTAL": [
-    {
-      date: "2023-01-06",
-      value: 174.0,
-      unit: "mg/dL",
-      reference_min: null,
-      reference_max: 200,
-      status: "normal",
-    },
-    {
-      date: "2024-01-16",
-      value: 171.0,
-      unit: "mg/dL",
-      reference_min: null,
-      reference_max: 200,
-      status: "normal",
-    },
-  ],
-  "CREATININA": [
-    {
-      date: "2023-01-06",
-      value: 31.6,
-      unit: "mg/dL",
-      reference_min: 0.7,
-      reference_max: 1.3,
-      status: "high",
-    },
-    {
-      date: "2023-01-06",
-      value: 1.16,
-      unit: "mg/dL",
-      reference_min: 0.7,
-      reference_max: 1.3,
-      status: "normal",
-    },
-    {
-      date: "2024-01-16",
-      value: 24.7,
-      unit: "mg/dL",
-      reference_min: 0.7,
-      reference_max: 1.3,
-      status: "high",
-    },
-    {
-      date: "2024-01-16",
-      value: 1.06,
-      unit: "mg/dL",
-      reference_min: 0.7,
-      reference_max: 1.3,
-      status: "normal",
-    },
-  ],
-  "FERRITINA": [
-    {
-      date: "2023-01-06",
-      value: 299.0,
-      unit: "ng/mL",
-      reference_min: 30,
-      reference_max: 400,
-      status: "normal",
-    },
-    {
-      date: "2024-01-16",
-      value: 301.0,
-      unit: "ng/mL",
-      reference_min: 30,
-      reference_max: 400,
-      status: "normal",
-    },
-  ],
-  "FERRO": [
-    {
-      date: "2023-01-06",
-      value: 19.0,
-      unit: "mcg/dL",
-      reference_min: 65,
-      reference_max: 175,
-      status: "low",
-    },
-    {
-      date: "2024-01-16",
-      value: 40.0,
-      unit: "mcg/dL",
-      reference_min: 65,
-      reference_max: 175,
-      status: "low",
-    },
-  ],
-  "GAMA GT": [
-    {
-      date: "2023-01-06",
-      value: 13.0,
-      unit: "U/L",
-      reference_min: null,
-      reference_max: 65,
-      status: "normal",
-    },
-    {
-      date: "2024-01-16",
-      value: 15.0,
-      unit: "U/L",
-      reference_min: null,
-      reference_max: 65,
-      status: "normal",
-    },
-  ],
-  "GLICOSE": [
-    {
-      date: "2022-03-20",
-      value: 5.3,
-      unit: "mg/dL",
-      reference_min: 70,
-      reference_max: 100,
-      status: "low",
-    },
-    {
-      date: "2022-03-20",
-      value: 5.3,
-      unit: "mg/dL",
-      reference_min: 70,
-      reference_max: 100,
-      status: "low",
-    },
-    {
-      date: "2023-01-06",
-      value: 91.0,
-      unit: "mg/dL",
-      reference_min: 70,
-      reference_max: 100,
-      status: "normal",
-    },
-    {
-      date: "2024-01-16",
-      value: 91.0,
-      unit: "mg/dL",
-      reference_min: 70,
-      reference_max: 100,
-      status: "normal",
-    },
-    {
-      date: "2026-02-14",
-      value: 331.0,
-      unit: "pg/mL",
-      reference_min: 172.0,
-      reference_max: 890.0,
-      status: "normal",
-    },
-  ],
-  "HEMOGLOBINA": [
-    {
-      date: "2023-01-06",
-      value: 2000.0,
-      unit: "g/dL",
-      reference_min: 13.5,
-      reference_max: 17.5,
-      status: "high",
-    },
-    {
-      date: "2024-01-16",
-      value: 5.2,
-      unit: "g/dL",
-      reference_min: 13.5,
-      reference_max: 17.5,
-      status: "low",
-    },
-    {
-      date: "2024-01-16",
-      value: 1300.0,
-      unit: "g/dL",
-      reference_min: 13.5,
-      reference_max: 17.5,
-      status: "high",
-    },
-  ],
-  "HEMOGLOBINA GLICADA": [
-    {
-      date: "2024-01-16",
-      value: 5.0,
-      unit: "%",
-      reference_min: null,
-      reference_max: 5.7,
-      status: "normal",
-    },
-  ],
-  "PAS": [
-    {
-      date: "2023-01-06",
-      value: 80.0,
-      unit: "",
-      reference_min: null,
-      reference_max: null,
-      status: "unknown",
-    },
-  ],
-  "PLAQUETAS": [
-    {
-      date: "2023-01-06",
-      value: 15.1,
-      unit: "1000/mm³",
-      reference_min: 150,
-      reference_max: 450,
-      status: "low",
-    },
-    {
-      date: "2023-01-06",
-      value: 15.1,
-      unit: "1000/mm³",
-      reference_min: 150,
-      reference_max: 450,
-      status: "low",
-    },
-    {
-      date: "2024-01-16",
-      value: 14.4,
-      unit: "1000/mm³",
-      reference_min: 150,
-      reference_max: 450,
-      status: "low",
-    },
-  ],
-  "TGO": [
-    {
-      date: "2023-01-06",
-      value: 22.0,
-      unit: "U/L",
-      reference_min: null,
-      reference_max: 58,
-      status: "normal",
-    },
-    {
-      date: "2024-01-16",
-      value: 24.0,
-      unit: "U/L",
-      reference_min: null,
-      reference_max: 58,
-      status: "normal",
-    },
-  ],
-  "TGP": [
-    {
-      date: "2023-01-06",
-      value: 27.0,
-      unit: "U/L",
-      reference_min: null,
-      reference_max: 40,
-      status: "normal",
-    },
-    {
-      date: "2024-01-16",
-      value: 26.0,
-      unit: "U/L",
-      reference_min: null,
-      reference_max: 40,
-      status: "normal",
-    },
-  ],
-  "TSH": [
-    {
-      date: "2023-01-06",
-      value: 1.72,
-      unit: "µUI/mL",
-      reference_min: 0.4,
-      reference_max: 4.0,
-      status: "normal",
-    },
-    {
-      date: "2024-01-16",
-      value: 1.63,
-      unit: "µUI/mL",
-      reference_min: 0.4,
-      reference_max: 4.0,
-      status: "normal",
-    },
-  ],
-  "UREIA": [
-    {
-      date: "2023-01-06",
-      value: 34.0,
-      unit: "mg/dL",
-      reference_min: null,
-      reference_max: 45,
-      status: "normal",
-    },
-    {
-      date: "2024-01-16",
-      value: 37.0,
-      unit: "mg/dL",
-      reference_min: null,
-      reference_max: 45,
-      status: "normal",
-    },
-  ],
-};
-
 export const databaseStatistics = {
-  total_periods: 4,
-  total_exams: 34,
-  unique_exams: 15,
-  date_range: {
-    start: "2022-03-20",
-    end: "2026-02-14",
-  },
+  totalExams: 36,
+  periods: 4,
+  normalExams: 21,
+  abnormalExams: 14,
+  criticalExams: 5,
 };
 
-export function getExamsByPeriod(date: string): ExamData[] {
-  return allExamsData.filter(exam => exam.date === date);
+export function getExamsByPeriod(period: string): ExamData[] {
+  return allExamsData.filter(exam => exam.date === period);
 }
 
-export function getExamTrend(examName: string): ExamTrend[] {
-  return examTrendsData[examName] || [];
+export function getExamsByName(name: string): ExamData[] {
+  return allExamsData.filter(exam => exam.name === name);
 }
 
-export function getAllPeriods(): string[] {
-  return Array.from(allExamPeriods);
-}
-
-export function getExamsByCategory(category: string): ExamData[] {
-  return allExamsData.filter(exam => exam.category === category);
-}
-
-export function getUniquePeriods(): string[] {
-  return Array.from(new Set(allExamsData.map(e => e.date))).sort();
-}
-
-export function getUniqueExamNames(): string[] {
-  return Array.from(new Set(allExamsData.map(e => e.name))).sort();
-}
-
-export function getUniqueCategories(): string[] {
-  return Array.from(new Set(allExamsData.map(e => e.category))).sort();
+export function getExamTrends(name: string): ExamTrend[] {
+  const exams = getExamsByName(name);
+  return exams.map(exam => ({
+    date: exam.date,
+    value: exam.value,
+    unit: exam.unit,
+    reference_min: exam.reference_min,
+    reference_max: exam.reference_max,
+    status: exam.status,
+  }));
 }
