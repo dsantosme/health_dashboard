@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
-import { Activity, Microscope, TrendingUp, Heart } from "lucide-react";
+import { Activity, Microscope, TrendingUp, Heart, Beaker } from "lucide-react";
 
 /**
  * Home page - Introduction and navigation to health dashboard
@@ -62,12 +62,20 @@ export default function Home() {
               </div>
             </div>
 
-            <Link href="/dashboard">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white gap-2">
-                <Activity className="w-5 h-5" />
-                Acessar Dashboard
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link href="/laboratory">
+                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white gap-2 w-full">
+                  <Microscope className="w-5 h-5" />
+                  Lab Dashboard
+                </Button>
+              </Link>
+              <Link href="/dashboard">
+                <Button size="lg" variant="outline" className="gap-2 w-full">
+                  <Activity className="w-5 h-5" />
+                  Health Dashboard
+                </Button>
+              </Link>
+            </div>
           </div>
 
           <div className="hidden md:grid grid-cols-2 gap-4">
