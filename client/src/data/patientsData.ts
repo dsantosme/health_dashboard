@@ -1,4 +1,4 @@
-// Sistema de múltiplos pacientes
+// Dados de pacientes com histórico completo de exames
 // Cada paciente tem seus próprios dados de exames, histórico e análises
 
 export interface Patient {
@@ -49,9 +49,22 @@ export interface PatientTrend {
   }>;
 }
 
-// Dados do paciente Denis Santos
+// Dados do paciente Denis Santos - HISTÓRICO COMPLETO 2022-2026
 export const denisExams: PatientExam[] = [
-  // GLICOSE - ESTÁVEL
+  // GLICOSE - 2022
+  {
+    id: 'glucose-2022',
+    patientId: 'denis-santos',
+    name: 'Glicose em Jejum',
+    category: 'Metabolismo de Glicose',
+    unit: 'mg/dL',
+    value: 5.3,
+    status: 'low',
+    date: '2022-03-20',
+    referenceMin: 70,
+    referenceMax: 100
+  },
+  // GLICOSE - 2023
   {
     id: 'glucose-2023',
     patientId: 'denis-santos',
@@ -61,9 +74,10 @@ export const denisExams: PatientExam[] = [
     value: 91,
     status: 'normal',
     date: '2023-01-06',
-    referenceMin: 60,
-    referenceMax: 99
+    referenceMin: 70,
+    referenceMax: 100
   },
+  // GLICOSE - 2024
   {
     id: 'glucose-2024',
     patientId: 'denis-santos',
@@ -73,11 +87,11 @@ export const denisExams: PatientExam[] = [
     value: 91,
     status: 'normal',
     date: '2024-01-16',
-    referenceMin: 60,
-    referenceMax: 99
+    referenceMin: 70,
+    referenceMax: 100
   },
 
-  // CREATININA - DESCENDO
+  // CREATININA - 2023
   {
     id: 'creatinine-2023',
     patientId: 'denis-santos',
@@ -90,6 +104,7 @@ export const denisExams: PatientExam[] = [
     referenceMin: 0.76,
     referenceMax: 1.24
   },
+  // CREATININA - 2024
   {
     id: 'creatinine-2024',
     patientId: 'denis-santos',
@@ -103,7 +118,7 @@ export const denisExams: PatientExam[] = [
     referenceMax: 1.24
   },
 
-  // FERRITINA - SUBINDO LEVEMENTE
+  // FERRITINA - 2023
   {
     id: 'ferritin-2023',
     patientId: 'denis-santos',
@@ -116,6 +131,7 @@ export const denisExams: PatientExam[] = [
     referenceMin: 22,
     referenceMax: 491
   },
+  // FERRITINA - 2024
   {
     id: 'ferritin-2024',
     patientId: 'denis-santos',
@@ -128,8 +144,21 @@ export const denisExams: PatientExam[] = [
     referenceMin: 22,
     referenceMax: 491
   },
+  // FERRITINA - 2026
+  {
+    id: 'ferritin-2026',
+    patientId: 'denis-santos',
+    name: 'Ferritina Sérica',
+    category: 'Hematologia',
+    unit: 'ng/mL',
+    value: 174.4,
+    status: 'normal',
+    date: '2026-02-14',
+    referenceMin: 30,
+    referenceMax: 400
+  },
 
-  // FOSFATASE ALCALINA - DESCENDO
+  // FOSFATASE ALCALINA - 2023
   {
     id: 'alk-phos-2023',
     patientId: 'denis-santos',
@@ -141,6 +170,7 @@ export const denisExams: PatientExam[] = [
     date: '2023-01-06',
     referenceMax: 104
   },
+  // FOSFATASE ALCALINA - 2024
   {
     id: 'alk-phos-2024',
     patientId: 'denis-santos',
@@ -153,7 +183,86 @@ export const denisExams: PatientExam[] = [
     referenceMax: 104
   },
 
-  // GAMA GT - SUBINDO
+  // HEMOGLOBINA - 2023
+  {
+    id: 'hemoglobin-2023',
+    patientId: 'denis-santos',
+    name: 'Hemoglobina',
+    category: 'Hematologia',
+    unit: 'g/dL',
+    value: 15.0,
+    status: 'normal',
+    date: '2023-01-06',
+    referenceMin: 13.5,
+    referenceMax: 17.5
+  },
+  // HEMOGLOBINA - 2024
+  {
+    id: 'hemoglobin-2024',
+    patientId: 'denis-santos',
+    name: 'Hemoglobina',
+    category: 'Hematologia',
+    unit: 'g/dL',
+    value: 13.0,
+    status: 'normal',
+    date: '2024-01-16',
+    referenceMin: 13.5,
+    referenceMax: 17.5
+  },
+
+  // PLAQUETAS - 2023
+  {
+    id: 'platelets-2023',
+    patientId: 'denis-santos',
+    name: 'Plaquetas',
+    category: 'Hematologia',
+    unit: '10³/µL',
+    value: 250,
+    status: 'normal',
+    date: '2023-01-06',
+    referenceMin: 150,
+    referenceMax: 400
+  },
+  // PLAQUETAS - 2024
+  {
+    id: 'platelets-2024',
+    patientId: 'denis-santos',
+    name: 'Plaquetas',
+    category: 'Hematologia',
+    unit: '10³/µL',
+    value: 245,
+    status: 'normal',
+    date: '2024-01-16',
+    referenceMin: 150,
+    referenceMax: 400
+  },
+
+  // COLESTEROL TOTAL - 2023
+  {
+    id: 'cholesterol-2023',
+    patientId: 'denis-santos',
+    name: 'Colesterol Total',
+    category: 'Lipídios',
+    unit: 'mg/dL',
+    value: 174,
+    status: 'normal',
+    date: '2023-01-06',
+    referenceMax: 200
+  },
+  // COLESTEROL TOTAL - 2024
+  {
+    id: 'cholesterol-2024',
+    patientId: 'denis-santos',
+    name: 'Colesterol Total',
+    category: 'Lipídios',
+    unit: 'mg/dL',
+    value: 171,
+    status: 'normal',
+    date: '2024-01-16',
+    referenceMax: 200
+  },
+
+  // GAMA GT - 2023
   {
     id: 'gamma-gt-2023',
     patientId: 'denis-santos',
@@ -163,8 +272,9 @@ export const denisExams: PatientExam[] = [
     value: 13,
     status: 'normal',
     date: '2023-01-06',
-    referenceMax: 73
+    referenceMax: 65
   },
+  // GAMA GT - 2024
   {
     id: 'gamma-gt-2024',
     patientId: 'denis-santos',
@@ -174,207 +284,116 @@ export const denisExams: PatientExam[] = [
     value: 15,
     status: 'normal',
     date: '2024-01-16',
-    referenceMax: 73
+    referenceMax: 65
   },
 
-  // POTÁSSIO - DESCENDO
+  // FERRO SÉRICO - 2026
   {
-    id: 'potassium-2023',
+    id: 'iron-2026',
     patientId: 'denis-santos',
-    name: 'Potássio',
-    category: 'Minerais e Eletrólitos',
-    unit: 'mEq/L',
-    value: 4.5,
-    status: 'normal',
-    date: '2023-01-06',
-    referenceMin: 3.5,
-    referenceMax: 5.1
-  },
-  {
-    id: 'potassium-2024',
-    patientId: 'denis-santos',
-    name: 'Potássio',
-    category: 'Minerais e Eletrólitos',
-    unit: 'mEq/L',
-    value: 4.3,
-    status: 'normal',
-    date: '2024-01-16',
-    referenceMin: 3.5,
-    referenceMax: 5.1
+    name: 'Ferro Sérico',
+    category: 'Hematologia',
+    unit: 'mcg/dL',
+    value: 59.0,
+    status: 'low',
+    date: '2026-02-14',
+    referenceMin: 65,
+    referenceMax: 175
   },
 
-  // SÓDIO - SUBINDO LEVEMENTE
+  // VITAMINA B12 - 2026
   {
-    id: 'sodium-2023',
+    id: 'b12-2026',
     patientId: 'denis-santos',
-    name: 'Sódio',
-    category: 'Minerais e Eletrólitos',
-    unit: 'mEq/L',
-    value: 140,
+    name: 'Vitamina B12',
+    category: 'Hematologia',
+    unit: 'pg/mL',
+    value: 331.0,
     status: 'normal',
-    date: '2023-01-06',
-    referenceMin: 136,
-    referenceMax: 145
-  },
-  {
-    id: 'sodium-2024',
-    patientId: 'denis-santos',
-    name: 'Sódio',
-    category: 'Minerais e Eletrólitos',
-    unit: 'mEq/L',
-    value: 142,
-    status: 'normal',
-    date: '2024-01-16',
-    referenceMin: 136,
-    referenceMax: 145
-  },
-
-  // TGO (AST) - SUBINDO
-  {
-    id: 'ast-2023',
-    patientId: 'denis-santos',
-    name: 'TGO (AST)',
-    category: 'Função Hepática',
-    unit: 'U/L',
-    value: 22,
-    status: 'normal',
-    date: '2023-01-06',
-    referenceMax: 40
-  },
-  {
-    id: 'ast-2024',
-    patientId: 'denis-santos',
-    name: 'TGO (AST)',
-    category: 'Função Hepática',
-    unit: 'U/L',
-    value: 24,
-    status: 'normal',
-    date: '2024-01-16',
-    referenceMax: 40
-  },
-
-  // TGP (ALT) - DESCENDO
-  {
-    id: 'alt-2023',
-    patientId: 'denis-santos',
-    name: 'TGP (ALT)',
-    category: 'Função Hepática',
-    unit: 'U/L',
-    value: 27,
-    status: 'normal',
-    date: '2023-01-06',
-    referenceMax: 58
-  },
-  {
-    id: 'alt-2024',
-    patientId: 'denis-santos',
-    name: 'TGP (ALT)',
-    category: 'Função Hepática',
-    unit: 'U/L',
-    value: 26,
-    status: 'normal',
-    date: '2024-01-16',
-    referenceMax: 58
-  },
-
-  // TSH - DESCENDO
-  {
-    id: 'tsh-2023',
-    patientId: 'denis-santos',
-    name: 'TSH',
-    category: 'Tireoide',
-    unit: 'µUI/mL',
-    value: 1.72,
-    status: 'normal',
-    date: '2023-01-06',
-    referenceMin: 0.4,
-    referenceMax: 4.0
-  },
-  {
-    id: 'tsh-2024',
-    patientId: 'denis-santos',
-    name: 'TSH',
-    category: 'Tireoide',
-    unit: 'µUI/mL',
-    value: 1.63,
-    status: 'normal',
-    date: '2024-01-16',
-    referenceMin: 0.4,
-    referenceMax: 4.0
-  },
-
-  // UREIA - SUBINDO
-  {
-    id: 'urea-2023',
-    patientId: 'denis-santos',
-    name: 'Ureia',
-    category: 'Função Renal',
-    unit: 'mg/dL',
-    value: 34,
-    status: 'normal',
-    date: '2023-01-06',
-    referenceMin: 7,
-    referenceMax: 20
-  },
-  {
-    id: 'urea-2024',
-    patientId: 'denis-santos',
-    name: 'Ureia',
-    category: 'Função Renal',
-    unit: 'mg/dL',
-    value: 37,
-    status: 'normal',
-    date: '2024-01-16',
-    referenceMin: 7,
-    referenceMax: 20
+    date: '2026-02-14',
+    referenceMin: 172,
+    referenceMax: 890
   }
 ];
 
-// Dados do paciente Denis Santos - Tendências
+// Tendências do paciente Denis Santos
 export const denisTrends: PatientTrend[] = [
   {
-    id: 'glucose-trend',
+    id: 'trend-glucose',
     patientId: 'denis-santos',
     examName: 'Glicose em Jejum',
     category: 'Metabolismo de Glicose',
     unit: 'mg/dL',
     trend: 'stable',
-    trendValue: 0,
-    interpretation: 'Glicose em jejum mantém-se estável e normal.',
+    interpretation: 'Glicose estável ao longo do período, mantendo níveis normais',
     history: [
+      { date: '2022-03-20', value: 5.3 },
       { date: '2023-01-06', value: 91 },
       { date: '2024-01-16', value: 91 }
     ]
   },
   {
-    id: 'creatinine-trend',
+    id: 'trend-creatinine',
     patientId: 'denis-santos',
-    examName: 'Creatinina',
+    examName: 'Creatinina (Função Renal)',
     category: 'Função Renal',
     unit: 'mg/dL',
     trend: 'down',
     trendValue: -8.6,
-    interpretation: 'Função renal melhorando gradualmente.',
+    interpretation: 'Creatinina em queda, indicando melhora na função renal',
     history: [
       { date: '2023-01-06', value: 1.16 },
       { date: '2024-01-16', value: 1.06 }
     ]
+  },
+  {
+    id: 'trend-ferritin',
+    patientId: 'denis-santos',
+    examName: 'Ferritina Sérica',
+    category: 'Hematologia',
+    unit: 'ng/mL',
+    trend: 'stable',
+    interpretation: 'Ferritina estável em níveis normais',
+    history: [
+      { date: '2023-01-06', value: 299 },
+      { date: '2024-01-16', value: 301 },
+      { date: '2026-02-14', value: 174.4 }
+    ]
+  },
+  {
+    id: 'trend-hemoglobin',
+    patientId: 'denis-santos',
+    examName: 'Hemoglobina',
+    category: 'Hematologia',
+    unit: 'g/dL',
+    trend: 'down',
+    trendValue: -13.3,
+    interpretation: 'Hemoglobina em queda, requer acompanhamento',
+    history: [
+      { date: '2023-01-06', value: 15.0 },
+      { date: '2024-01-16', value: 13.0 }
+    ]
   }
 ];
 
-// Perfil do paciente Denis Santos
+// Paciente Denis Santos
 export const denisSantos: Patient = {
   id: 'denis-santos',
   name: 'Denis Santos',
-  age: 42,
+  birthDate: '1984-02-17',
+  age: 41,
   gender: 'Masculino',
-  email: 'denis@example.com',
-  createdAt: '2023-01-06',
-  lastUpdated: '2024-01-16'
+  createdAt: '2022-03-20',
+  lastUpdated: '2026-02-14'
 };
 
 // Lista de pacientes
 export const patients: Patient[] = [denisSantos];
+
+// Função para obter paciente
+export function getPatient(patientId: string): Patient | undefined {
+  return patients.find(p => p.id === patientId);
+}
 
 // Função para obter exames de um paciente
 export function getPatientExams(patientId: string): PatientExam[] {
@@ -392,7 +411,16 @@ export function getPatientTrends(patientId: string): PatientTrend[] {
   return [];
 }
 
-// Função para obter paciente
-export function getPatient(patientId: string): Patient | undefined {
-  return patients.find(p => p.id === patientId);
+// Função para obter exames de um período específico
+export function getExamsByPeriod(patientId: string, period: string): PatientExam[] {
+  const exams = getPatientExams(patientId);
+  return exams.filter(exam => exam.date.startsWith(period.substring(0, 4)));
+}
+
+// Função para obter histórico de um exame específico
+export function getExamHistory(patientId: string, examName: string): PatientExam[] {
+  const exams = getPatientExams(patientId);
+  return exams
+    .filter(exam => exam.name === examName)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
