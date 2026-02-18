@@ -13,8 +13,8 @@ import ExamsDetail from "./pages/ExamsDetail";
 import MedicalInsights from "./pages/MedicalInsights";
 import SportsInsights from "./pages/SportsInsights";
 import CompleteHistory from "./pages/CompleteHistory";
-
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path="/" component={Home} />

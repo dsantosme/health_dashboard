@@ -1,3 +1,4 @@
+import { useAuth } from '@/_core/hooks/useAuth';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -7,6 +8,10 @@ import { allExamsData, databaseStatistics } from '@/data/completeDatabase';
 import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight } from 'lucide-react';
 
 export default function Home() {
+  // The userAuth hooks provides authentication state
+  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
+  let { user, loading, error, isAuthenticated, logout } = useAuth();
+
   const [, navigate] = useLocation();
   const { selectedPatientId } = usePatient();
   const patient = getPatient(selectedPatientId);

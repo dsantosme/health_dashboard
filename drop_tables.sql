@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS exam_history;
+DROP TABLE IF EXISTS exams;
+DROP TABLE IF EXISTS patients;
