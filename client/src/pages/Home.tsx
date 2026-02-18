@@ -3,20 +3,21 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { usePatient } from '@/contexts/PatientContext';
 import { getPatient, getPatientExams } from '@/data/patientsData';
+import { allExamsData, databaseStatistics } from '@/data/completeDatabase';
 import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight } from 'lucide-react';
 
 export default function Home() {
   const [, navigate] = useLocation();
   const { selectedPatientId } = usePatient();
   const patient = getPatient(selectedPatientId);
-  const exams = getPatientExams(selectedPatientId);
+  const exams = selectedPatientId === 'denis-santos' ? allExamsData : getPatientExams(selectedPatientId);
 
   // Agrupar exames por status
   const normalExams = exams.filter(e => e.status === 'normal').length;
-  const abnormalExams = exams.filter(e => ['low', 'high', 'critical'].includes(e.status)).length;
+  const abnormalExams = exams.filter(e => ['low', 'high'].includes(e.status)).length;
   
   // Encontrar exames críticos
-  const criticalExams = exams.filter(e => e.status === 'critical');
+  const criticalExams = exams.filter(e => e.status === 'high');
   
   // Últimos exames (mais recentes)
   const latestExams = exams
@@ -109,11 +110,11 @@ export default function Home() {
                 <div className="space-y-2">
                   {criticalExams.map(exam => (
                     <p key={exam.id} className="text-sm text-red-800">
-                      <strong>{exam.name}</strong>: {exam.value} {exam.unit} (Crítico)
+                      <strong>{exam.name}</strong>: {exam.value} {exam.unit} (Alto)
                     </p>
                   ))}
                 </div>
-                <p className="text-xs text-red-700 mt-3">⚠️ Consulte um médico urgentemente</p>
+                <p className="text-xs text-red-700 mt-3">⚠️ Acompanhamento recomendado</p>
               </div>
             </div>
           </Card>
