@@ -9,11 +9,17 @@ import Home from "./pages/Home";
 import Laboratory from "./pages/Laboratory";
 import Trends from "./pages/Trends";
 import Dashboard from "./pages/Dashboard";
+import ExamsDetail from "./pages/ExamsDetail";
+import MedicalInsights from "./pages/MedicalInsights";
+import SportsInsights from "./pages/SportsInsights";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/exams" component={ExamsDetail} />
+      <Route path="/medical-insights" component={MedicalInsights} />
+      <Route path="/sports-insights" component={SportsInsights} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/laboratory" component={Laboratory} />
       <Route path="/trends" component={Trends} />

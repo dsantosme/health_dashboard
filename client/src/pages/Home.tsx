@@ -1,258 +1,218 @@
-import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
-import { Card } from "@/components/ui/card";
-import { Activity, Microscope, TrendingUp, Heart, Beaker } from "lucide-react";
+import { useLocation } from 'wouter';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { usePatient } from '@/contexts/PatientContext';
+import { getPatient, getPatientExams } from '@/data/patientsData';
+import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight } from 'lucide-react';
 
-/**
- * Home page - Introduction and navigation to health dashboard
- * Design: Professional medical dashboard with emphasis on health monitoring
- */
 export default function Home() {
+  const [, navigate] = useLocation();
+  const { selectedPatientId } = usePatient();
+  const patient = getPatient(selectedPatientId);
+  const exams = getPatientExams(selectedPatientId);
+
+  // Agrupar exames por status
+  const normalExams = exams.filter(e => e.status === 'normal').length;
+  const abnormalExams = exams.filter(e => ['low', 'high', 'critical'].includes(e.status)).length;
+  
+  // Encontrar exames críticos
+  const criticalExams = exams.filter(e => e.status === 'critical');
+  
+  // Últimos exames (mais recentes)
+  const latestExams = exams
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5);
+
+  if (!patient) {
+    return <div className="p-8">Carregando...</div>;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       {/* Header */}
-      <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container max-w-6xl mx-auto px-4 py-6">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Heart className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <Microscope className="w-7 h-7 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">Health Dashboard</h1>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900">Health Monitor</h1>
+                <p className="text-sm text-slate-600">Análise de Saúde Personalizada</p>
+              </div>
             </div>
-            <nav className="hidden md:flex items-center gap-6">
-              <a href="#features" className="text-gray-600 hover:text-gray-900 font-medium">
-                Recursos
-              </a>
-              <a href="#exams" className="text-gray-600 hover:text-gray-900 font-medium">
-                Exames
-              </a>
-            </nav>
+            <div className="text-right">
+              <p className="text-sm text-slate-600">Paciente</p>
+              <p className="text-lg font-semibold text-slate-900">{patient.name}</p>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="container max-w-6xl mx-auto px-4 py-16 md:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <div className="space-y-3">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                Monitore Sua Saúde com Precisão
-              </h2>
-              <p className="text-xl text-gray-600">
-                Análise completa de exames médicos com explicações detalhadas, descobertas, correlações
-                e recomendações personalizadas para seu bem-estar.
-              </p>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Status Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          {/* Total Exames */}
+          <Card className="p-6 bg-white border-slate-200 hover:shadow-lg transition">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-slate-600 mb-1">Total de Exames</p>
+                <p className="text-3xl font-bold text-slate-900">{exams.length}</p>
+              </div>
+              <Microscope className="w-10 h-10 text-blue-600 opacity-20" />
             </div>
+          </Card>
 
-            <div className="space-y-3 pt-4">
-              <p className="text-gray-700">
-                <strong>Dados Atuais:</strong>
-              </p>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-gray-600">Peso</p>
-                  <p className="text-2xl font-bold text-blue-600">107 kg</p>
+          {/* Normais */}
+          <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-green-700 mb-1">Normais</p>
+                <p className="text-3xl font-bold text-green-900">{normalExams}</p>
+              </div>
+              <div className="text-3xl">✅</div>
+            </div>
+          </Card>
+
+          {/* Anormais */}
+          <Card className="p-6 bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-yellow-700 mb-1">Anormais</p>
+                <p className="text-3xl font-bold text-yellow-900">{abnormalExams}</p>
+              </div>
+              <div className="text-3xl">⚠️</div>
+            </div>
+          </Card>
+
+          {/* Críticos */}
+          <Card className="p-6 bg-gradient-to-br from-red-50 to-rose-50 border-red-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-red-700 mb-1">Críticos</p>
+                <p className="text-3xl font-bold text-red-900">{criticalExams.length}</p>
+              </div>
+              <div className="text-3xl">🔴</div>
+            </div>
+          </Card>
+        </div>
+
+        {/* Critical Alerts */}
+        {criticalExams.length > 0 && (
+          <Card className="p-6 mb-8 bg-gradient-to-r from-red-50 to-rose-50 border-red-200">
+            <div className="flex items-start gap-4">
+              <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
+              <div className="flex-1">
+                <h3 className="font-bold text-red-900 mb-2">⚠️ Alertas Críticos</h3>
+                <div className="space-y-2">
+                  {criticalExams.map(exam => (
+                    <p key={exam.id} className="text-sm text-red-800">
+                      <strong>{exam.name}</strong>: {exam.value} {exam.unit} (Crítico)
+                    </p>
+                  ))}
                 </div>
-                <div className="p-3 bg-red-50 rounded-lg">
-                  <p className="text-sm text-gray-600">Ferro Sérico</p>
-                  <p className="text-2xl font-bold text-red-600">1.0 mcg/dL</p>
-                </div>
+                <p className="text-xs text-red-700 mt-3">⚠️ Consulte um médico urgentemente</p>
               </div>
             </div>
+          </Card>
+        )}
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link href="/laboratory">
-                <Button size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white gap-2 w-full">
-                  <Microscope className="w-5 h-5" />
-                  Lab Dashboard
-                </Button>
-              </Link>
-              <Link href="/dashboard">
-                <Button size="lg" variant="outline" className="gap-2 w-full">
-                  <Activity className="w-5 h-5" />
-                  Health Dashboard
-                </Button>
-              </Link>
-            </div>
-          </div>
-
-          <div className="hidden md:grid grid-cols-2 gap-4">
-            <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-              <Microscope className="w-8 h-8 text-green-600 mb-3" />
-              <h3 className="font-bold text-green-900 mb-2">20 Exames</h3>
-              <p className="text-sm text-green-700">Análise completa com dados históricos</p>
-            </Card>
-
-            <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
-              <TrendingUp className="w-8 h-8 text-blue-600 mb-3" />
-              <h3 className="font-bold text-blue-900 mb-2">Tendências</h3>
-              <p className="text-sm text-blue-700">Acompanhe evolução ao longo do tempo</p>
-            </Card>
-
-            <Card className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
-              <Activity className="w-8 h-8 text-purple-600 mb-3" />
-              <h3 className="font-bold text-purple-900 mb-2">Exercícios</h3>
-              <p className="text-sm text-purple-700">Programa personalizado com progressão</p>
-            </Card>
-
-            <Card className="p-6 bg-gradient-to-br from-orange-50 to-red-50 border-orange-200">
-              <Heart className="w-8 h-8 text-orange-600 mb-3" />
-              <h3 className="font-bold text-orange-900 mb-2">Recomendações</h3>
-              <p className="text-sm text-orange-700">Especialistas e exames sugeridos</p>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="py-16 bg-white border-y border-gray-200">
-        <div className="container max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Recursos Principais</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+        {/* Main Navigation */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* Exames Detalhados */}
+          <Card 
+            className="p-8 bg-white border-slate-200 hover:shadow-lg transition cursor-pointer group"
+            onClick={() => navigate('/exams')}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition">
                 <Microscope className="w-6 h-6 text-blue-600" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Navegação de Exames</h3>
-              <p className="text-gray-600">
-                Explore todos os 20 exames realizados com explicações detalhadas, faixas de referência
-                e histórico de coletas.
-              </p>
-            </Card>
-
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <TrendingUp className="w-6 h-6 text-green-600" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Descobertas & Correlações</h3>
-              <p className="text-gray-600">
-                Entenda as descobertas de cada exame e como eles se correlacionam entre si para uma
-                visão holística da sua saúde.
-              </p>
-            </Card>
-
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                <Activity className="w-6 h-6 text-purple-600" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Programa de Exercícios</h3>
-              <p className="text-gray-600">
-                Programa personalizado com ciclismo, MTB, corrida, pilates e natação, adaptado ao seu
-                nível e objetivos.
-              </p>
-            </Card>
-
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-                <Heart className="w-6 h-6 text-red-600" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Alertas Temporais</h3>
-              <p className="text-gray-600">
-                Receba alertas com urgência apropriada sobre indicadores críticos e ações imediatas
-                necessárias.
-              </p>
-            </Card>
-
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-                <Microscope className="w-6 h-6 text-orange-600" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Recomendações Médicas</h3>
-              <p className="text-gray-600">
-                Lista de especialistas recomendados, exames de recorrência e frequência de
-                acompanhamento.
-              </p>
-            </Card>
-
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-                <TrendingUp className="w-6 h-6 text-indigo-600" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Histórico & Tendências</h3>
-              <p className="text-gray-600">
-                Acompanhe a evolução dos seus exames ao longo do tempo com gráficos e análises de
-                tendências.
-              </p>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Exams Summary */}
-      <section id="exams" className="py-16">
-        <div className="container max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8">Exames Realizados</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <Card className="p-4 bg-gradient-to-br from-green-50 to-emerald-50">
-              <p className="text-sm text-gray-600">Exames Normais</p>
-              <p className="text-3xl font-bold text-green-600">14</p>
-            </Card>
-            <Card className="p-4 bg-gradient-to-br from-orange-50 to-yellow-50">
-              <p className="text-sm text-gray-600">Acima do Normal</p>
-              <p className="text-3xl font-bold text-orange-600">0</p>
-            </Card>
-            <Card className="p-4 bg-gradient-to-br from-red-50 to-pink-50">
-              <p className="text-sm text-gray-600">Críticos</p>
-              <p className="text-3xl font-bold text-red-600">1</p>
-            </Card>
-            <Card className="p-4 bg-gradient-to-br from-gray-50 to-slate-50">
-              <p className="text-sm text-gray-600">Sem Referência</p>
-              <p className="text-3xl font-bold text-gray-600">5</p>
-            </Card>
-          </div>
-
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
-            <h3 className="font-bold text-red-900 mb-3">🚨 Alerta Crítico</h3>
-            <p className="text-red-800 mb-3">
-              <strong>Ferro Sérico: 1.0 mcg/dL</strong> - Anemia severa detectada. Requer investigação
-              urgente e intervenção médica imediata.
+              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Exames Detalhados</h3>
+            <p className="text-sm text-slate-600 mb-4">
+              Histórico completo com faixas de referência, gráficos temporais e análise de tendências
             </p>
-            <p className="text-sm text-red-700">
-              ⏰ Próximas ações: Consultar Hematologista nos próximos 2-3 dias
-            </p>
-          </div>
-
-          <Link href="/dashboard">
-            <Button size="lg" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600">
-              Explorar Todos os Exames
+            <Button className="w-full" variant="outline">
+              Explorar Exames
             </Button>
-          </Link>
-        </div>
-      </section>
+          </Card>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-8 border-t border-gray-800">
-        <div className="container max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <h3 className="text-white font-bold mb-3">Health Dashboard</h3>
-              <p className="text-sm">Análise completa de exames médicos com recomendações personalizadas.</p>
+          {/* Insights Médicos */}
+          <Card 
+            className="p-8 bg-white border-slate-200 hover:shadow-lg transition cursor-pointer group"
+            onClick={() => navigate('/medical-insights')}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition">
+                <AlertCircle className="w-6 h-6 text-purple-600" />
+              </div>
+              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-purple-600 transition" />
             </div>
-            <div>
-              <h3 className="text-white font-bold mb-3">Próximas Coletas</h3>
-              <ul className="text-sm space-y-1">
-                <li>• Coleta 2: 14 de Maio, 2026</li>
-                <li>• Coleta 3: 14 de Agosto, 2026</li>
-                <li>• Coleta 4: 14 de Novembro, 2026</li>
-              </ul>
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Insights Médicos</h3>
+            <p className="text-sm text-slate-600 mb-4">
+              Análise de correlações, riscos de saúde e recomendações médicas personalizadas
+            </p>
+            <Button className="w-full" variant="outline">
+              Ver Insights
+            </Button>
+          </Card>
+
+          {/* Insights de Esportes */}
+          <Card 
+            className="p-8 bg-white border-slate-200 hover:shadow-lg transition cursor-pointer group"
+            onClick={() => navigate('/sports-insights')}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition">
+                <Activity className="w-6 h-6 text-green-600" />
+              </div>
+              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-green-600 transition" />
             </div>
-            <div>
-              <h3 className="text-white font-bold mb-3">Informações</h3>
-              <p className="text-sm">
-                Este dashboard é uma ferramenta de acompanhamento de saúde. Sempre consulte um médico
-                para diagnóstico e tratamento.
-              </p>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-8 text-center text-sm">
-            <p>© 2026 Health Dashboard. Todos os direitos reservados.</p>
-          </div>
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Insights de Esportes</h3>
+            <p className="text-sm text-slate-600 mb-4">
+              Recomendações de exercícios, intensidade e recuperação baseadas em indicadores
+            </p>
+            <Button className="w-full" variant="outline">
+              Ver Recomendações
+            </Button>
+          </Card>
         </div>
-      </footer>
+
+        {/* Últimos Exames */}
+        <Card className="p-6 bg-white border-slate-200">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-slate-900">Últimos Exames</h2>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/exams')}>
+              Ver Todos →
+            </Button>
+          </div>
+          
+          <div className="space-y-3">
+            {latestExams.map(exam => (
+              <div key={exam.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition">
+                <div className="flex-1">
+                  <p className="font-medium text-slate-900">{exam.name}</p>
+                  <p className="text-sm text-slate-600">{exam.date}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-slate-900">{exam.value} {exam.unit}</p>
+                  <p className="text-xs text-slate-600">{exam.category}</p>
+                </div>
+                <div className="ml-4">
+                  {exam.status === 'normal' && <span className="text-lg">✅</span>}
+                  {exam.status === 'low' && <span className="text-lg">⬇️</span>}
+                  {exam.status === 'high' && <span className="text-lg">⬆️</span>}
+                  {exam.status === 'critical' && <span className="text-lg">🔴</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </main>
     </div>
   );
 }
