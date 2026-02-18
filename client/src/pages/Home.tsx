@@ -2,35 +2,61 @@ import { useAuth } from '@/_core/hooks/useAuth';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { usePatient } from '@/contexts/PatientContext';
-import { getPatient, getPatientExams } from '@/data/patientsData';
-import { allExamsData, databaseStatistics } from '@/data/completeDatabase';
-import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight } from 'lucide-react';
+import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight, Loader2 } from 'lucide-react';
+import { trpc } from '@/lib/trpc';
 
 export default function Home() {
-  // The userAuth hooks provides authentication state
-  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
-
+  const { user, loading: authLoading, error, isAuthenticated, logout } = useAuth();
   const [, navigate] = useLocation();
-  const { selectedPatientId } = usePatient();
-  const patient = getPatient(selectedPatientId);
-  const exams = selectedPatientId === 'denis-santos' ? allExamsData : getPatientExams(selectedPatientId);
+  
+  // Carregar paciente do banco
+  const { data: patient, isLoading: patientLoading } = trpc.patients.getById.useQuery({
+    patientId: 'denis-santos'
+  });
+
+  // Carregar todos os exames do paciente do banco
+  const { data: exams = [], isLoading: examsLoading } = trpc.exams.listByPatient.useQuery({
+    patientId: 'denis-santos'
+  });
+
+  const isLoading = patientLoading || examsLoading;
 
   // Agrupar exames por status
   const normalExams = exams.filter(e => e.status === 'normal').length;
   const abnormalExams = exams.filter(e => ['low', 'high'].includes(e.status)).length;
   
-  // Encontrar exames críticos
+  // Encontrar exames críticos (status = 'high')
   const criticalExams = exams.filter(e => e.status === 'high');
   
-  // Últimos exames (mais recentes)
+  // Últimos exames (mais recentes) - priorizar 2026
   const latestExams = exams
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return dateB - dateA; // Mais recente primeiro
+    })
     .slice(0, 5);
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+          <p className="text-slate-600">Carregando dados do paciente...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!patient) {
-    return <div className="p-8">Carregando...</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <p className="text-slate-900 font-semibold">Paciente não encontrado</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -115,7 +141,7 @@ export default function Home() {
                 <div className="space-y-2">
                   {criticalExams.map(exam => (
                     <p key={exam.id} className="text-sm text-red-800">
-                      <strong>{exam.name}</strong>: {exam.value} {exam.unit} (Alto)
+                      <strong>{exam.examName}</strong>: {exam.value} {exam.unit} (Alto)
                     </p>
                   ))}
                 </div>
@@ -217,26 +243,31 @@ export default function Home() {
             </Button>
           </div>
           
-          <div className="space-y-3">
-            {latestExams.map(exam => (
-              <div key={exam.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition">
-                <div className="flex-1">
-                  <p className="font-medium text-slate-900">{exam.name}</p>
-                  <p className="text-sm text-slate-600">{exam.date}</p>
+          {latestExams.length === 0 ? (
+            <p className="text-center text-slate-500 py-8">Nenhum exame encontrado</p>
+          ) : (
+            <div className="space-y-3">
+              {latestExams.map(exam => (
+                <div key={exam.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition">
+                  <div className="flex-1">
+                    <p className="font-medium text-slate-900">{exam.examName}</p>
+                    <p className="text-sm text-slate-600">
+                      {new Date(exam.date).toLocaleDateString('pt-BR')}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-slate-900">{exam.value} {exam.unit}</p>
+                    <p className="text-xs text-slate-600">{exam.category}</p>
+                  </div>
+                  <div className="ml-4">
+                    {exam.status === 'normal' && <span className="text-lg">✅</span>}
+                    {exam.status === 'low' && <span className="text-lg">⬇️</span>}
+                    {exam.status === 'high' && <span className="text-lg">⬆️</span>}
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold text-slate-900">{exam.value} {exam.unit}</p>
-                  <p className="text-xs text-slate-600">{exam.category}</p>
-                </div>
-                <div className="ml-4">
-                  {exam.status === 'normal' && <span className="text-lg">✅</span>}
-                  {exam.status === 'low' && <span className="text-lg">⬇️</span>}
-                  {exam.status === 'high' && <span className="text-lg">⬆️</span>}
-                  {exam.status === 'critical' && <span className="text-lg">🔴</span>}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </Card>
       </main>
     </div>

@@ -1,80 +1,159 @@
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { usePatient } from '@/contexts/PatientContext';
-import { getPatientExams } from '@/data/patientsData';
-import { ArrowLeft, Activity, Zap, Heart, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Activity, Zap, Heart, AlertCircle, Loader2 } from 'lucide-react';
+import { trpc } from '@/lib/trpc';
+import { useMemo } from 'react';
 
 export default function SportsInsights() {
   const [, navigate] = useLocation();
-  const { selectedPatientId } = usePatient();
-  const exams = getPatientExams(selectedPatientId);
+  
+  // Buscar exames mais recentes (2025-2026)
+  const { data: allExams = [], isLoading } = trpc.exams.listByPatient.useQuery({
+    patientId: 'denis-santos'
+  });
+
+  // Filtrar exames mais recentes (últimos 2 anos)
+  const recentExams = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    return allExams.filter(exam => {
+      const examYear = new Date(exam.date).getFullYear();
+      return examYear >= currentYear - 1; // 2025 e 2026
+    });
+  }, [allExams]);
+
+  // Função auxiliar para encontrar exame mais recente
+  const findLatestExam = (searchTerm: string) => {
+    const matches = recentExams
+      .filter(e => e.examName.toLowerCase().includes(searchTerm.toLowerCase()))
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    
+    if (matches.length === 0) return null;
+    
+    const value = parseFloat(String(matches[0].value));
+    return isNaN(value) ? null : value;
+  };
 
   // Análise de capacidade aeróbica
-  const aerobicCapacity = () => {
-    const glicose = exams.find(e => e.name.includes('Glicose'))?.value as number;
-    const hemoglobina = exams.find(e => e.name.includes('Hemoglobina'))?.value as number;
+  const aerobicCapacity = useMemo(() => {
+    const glicose = findLatestExam('glicose');
+    const hemoglobina = findLatestExam('hemoglobina');
+    const hematocrito = findLatestExam('hematócrito');
     
     let capacity = 'Moderada';
-    let recommendations = [];
+    const recommendations = [];
     
-    if (glicose && glicose > 125) {
-      capacity = 'Reduzida';
-      recommendations.push('Iniciar com atividades de baixa intensidade');
-    } else if (glicose && glicose < 100) {
-      capacity = 'Boa';
-      recommendations.push('Pode realizar exercícios de intensidade moderada a alta');
+    if (glicose) {
+      if (glicose > 125) {
+        capacity = 'Reduzida';
+        recommendations.push('Iniciar com atividades de baixa intensidade (caminhada, ciclismo leve)');
+        recommendations.push('Monitorar glicemia antes e após exercícios');
+      } else if (glicose < 100) {
+        capacity = 'Boa';
+        recommendations.push('Pode realizar exercícios de intensidade moderada a alta');
+        recommendations.push('Ideal para ciclismo MTB, corrida de rua e natação');
+      }
     }
     
-    if (!hemoglobina || hemoglobina < 12) {
-      recommendations.push('Aumentar ingestão de ferro antes de exercícios intensos');
+    if (hemoglobina) {
+      if (hemoglobina < 12) {
+        recommendations.push('Aumentar ingestão de ferro antes de exercícios intensos');
+        recommendations.push('Considerar suplementação de ferro sob orientação médica');
+      } else if (hemoglobina >= 14) {
+        recommendations.push('Ótima capacidade de transporte de oxigênio');
+        recommendations.push('Excelente para treinos de alta intensidade');
+      }
     }
     
-    return { capacity, recommendations };
-  };
+    if (recommendations.length === 0) {
+      recommendations.push('Capacidade aeróbica adequada para exercícios regulares');
+      recommendations.push('Manter rotina de ciclismo, corrida, pilates e natação');
+    }
+    
+    return { capacity, recommendations, glicose, hemoglobina };
+  }, [recentExams]);
 
   // Análise de recuperação
-  const recoveryAnalysis = () => {
-    const creatinina = exams.find(e => e.name.includes('Creatinina'))?.value as number;
-    const ureia = exams.find(e => e.name.includes('Ureia'))?.value as number;
+  const recoveryAnalysis = useMemo(() => {
+    const creatinina = findLatestExam('creatinina');
+    const ureia = findLatestExam('ureia') || findLatestExam('uréia');
+    const tgo = findLatestExam('tgo') || findLatestExam('ast');
+    const tgp = findLatestExam('tgp') || findLatestExam('alt');
     
     let recovery = 'Boa';
-    let recommendations = [];
+    const recommendations = [];
     
-    if ((creatinina && creatinina > 1.2) || (ureia && ureia > 40)) {
+    if (creatinina && creatinina > 1.2) {
       recovery = 'Comprometida';
-      recommendations.push('Aumentar tempo de recuperação entre treinos');
-      recommendations.push('Aumentar ingestão de água e eletrólitos');
-    } else {
-      recommendations.push('Recuperação adequada com 24-48h entre treinos intensos');
+      recommendations.push('Aumentar tempo de recuperação entre treinos (48-72h)');
+      recommendations.push('Aumentar ingestão de água (3-4L/dia)');
     }
     
-    return { recovery, recommendations };
-  };
+    if (ureia && ureia > 40) {
+      recovery = 'Comprometida';
+      recommendations.push('Reduzir intensidade dos treinos temporariamente');
+      recommendations.push('Aumentar ingestão de eletrólitos');
+    }
+    
+    if ((tgo && tgo > 40) || (tgp && tgp > 45)) {
+      recommendations.push('Evitar overtraining - respeitar dias de descanso');
+      recommendations.push('Considerar redução de volume de treino');
+    }
+    
+    if (recommendations.length === 0) {
+      recommendations.push('Recuperação adequada com 24-48h entre treinos intensos');
+      recommendations.push('Pode manter frequência de 4-6 treinos por semana');
+    }
+    
+    return { recovery, recommendations, creatinina, ureia };
+  }, [recentExams]);
 
   // Análise de risco de lesão
-  const injuryRisk = () => {
-    const potassio = exams.find(e => e.name.includes('Potássio'))?.value as number;
-    const magnesio = exams.find(e => e.name.includes('Magnésio'))?.value as number;
+  const injuryRisk = useMemo(() => {
+    const potassio = findLatestExam('potássio');
+    const sodio = findLatestExam('sódio');
+    const calcio = findLatestExam('cálcio');
+    const vitaminaD = findLatestExam('vitamina d');
     
     let risk = 'Baixo';
-    let recommendations = [];
+    const recommendations = [];
     
-    if ((potassio && potassio < 3.5) || (magnesio && magnesio < 1.7)) {
+    if (potassio && potassio < 3.5) {
       risk = 'Alto';
-      recommendations.push('Aumentar ingestão de eletrólitos');
-      recommendations.push('Fazer aquecimento prolongado antes de exercícios');
-    } else {
-      recommendations.push('Eletrólitos em níveis adequados');
-      recommendations.push('Manter rotina de alongamento');
+      recommendations.push('Aumentar ingestão de potássio (banana, água de coco)');
+      recommendations.push('Risco de cãibras - fazer aquecimento prolongado');
     }
     
-    return { risk, recommendations };
-  };
+    if (calcio && calcio < 8.5) {
+      risk = 'Alto';
+      recommendations.push('Aumentar ingestão de cálcio');
+      recommendations.push('Risco de lesões ósseas - evitar impactos excessivos');
+    }
+    
+    if (vitaminaD && vitaminaD < 30) {
+      recommendations.push('Suplementar vitamina D para saúde óssea');
+      recommendations.push('Exposição solar 15-20min/dia');
+    }
+    
+    if (recommendations.length === 0) {
+      recommendations.push('Eletrólitos em níveis adequados');
+      recommendations.push('Manter rotina de alongamento e fortalecimento');
+      recommendations.push('Baixo risco de lesões - pode intensificar treinos');
+    }
+    
+    return { risk, recommendations, potassio, calcio };
+  }, [recentExams]);
 
-  const aerobic = aerobicCapacity();
-  const recovery = recoveryAnalysis();
-  const injury = injuryRisk();
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-green-50 to-slate-100 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-green-600 animate-spin" />
+          <p className="text-slate-600">Analisando dados esportivos...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-green-50 to-slate-100">
@@ -96,205 +175,155 @@ export default function SportsInsights() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Capacidade Aeróbica */}
-          <Card className={`p-6 border-2 ${
-            aerobic.capacity === 'Boa' ? 'bg-green-50 border-green-200' :
-            aerobic.capacity === 'Moderada' ? 'bg-yellow-50 border-yellow-200' :
-            'bg-red-50 border-red-200'
-          }`}>
-            <div className="flex items-start gap-4">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                aerobic.capacity === 'Boa' ? 'bg-green-100' :
-                aerobic.capacity === 'Moderada' ? 'bg-yellow-100' :
-                'bg-red-100'
-              }`}>
-                <Activity className={`w-6 h-6 ${
-                  aerobic.capacity === 'Boa' ? 'text-green-600' :
-                  aerobic.capacity === 'Moderada' ? 'text-yellow-600' :
-                  'text-red-600'
-                }`} />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-slate-900 mb-2">Capacidade Aeróbica</h3>
-                <p className={`text-sm font-semibold mb-3 ${
-                  aerobic.capacity === 'Boa' ? 'text-green-700' :
-                  aerobic.capacity === 'Moderada' ? 'text-yellow-700' :
-                  'text-red-700'
+        {recentExams.length === 0 ? (
+          <Card className="p-12 bg-white border-slate-200 text-center">
+            <AlertCircle className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+            <p className="text-slate-600">Nenhum exame recente encontrado para análise.</p>
+            <p className="text-sm text-slate-500 mt-2">Exames dos últimos 2 anos são considerados para insights esportivos.</p>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Capacidade Aeróbica */}
+            <Card className={`p-6 border-2 ${
+              aerobicCapacity.capacity === 'Boa' ? 'bg-green-50 border-green-200' :
+              aerobicCapacity.capacity === 'Reduzida' ? 'bg-red-50 border-red-200' :
+              'bg-yellow-50 border-yellow-200'
+            }`}>
+              <div className="flex items-start gap-4">
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                  aerobicCapacity.capacity === 'Boa' ? 'bg-green-100' :
+                  aerobicCapacity.capacity === 'Reduzida' ? 'bg-red-100' :
+                  'bg-yellow-100'
                 }`}>
-                  {aerobic.capacity}
-                </p>
+                  <Heart className={`w-6 h-6 ${
+                    aerobicCapacity.capacity === 'Boa' ? 'text-green-600' :
+                    aerobicCapacity.capacity === 'Reduzida' ? 'text-red-600' :
+                    'text-yellow-600'
+                  }`} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-900 mb-2">Capacidade Aeróbica</h3>
+                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-3 ${
+                    aerobicCapacity.capacity === 'Boa' ? 'bg-green-200 text-green-900' :
+                    aerobicCapacity.capacity === 'Reduzida' ? 'bg-red-200 text-red-900' :
+                    'bg-yellow-200 text-yellow-900'
+                  }`}>
+                    {aerobicCapacity.capacity}
+                  </div>
+                  {aerobicCapacity.glicose && (
+                    <p className="text-xs text-slate-600 mb-2">Glicose: {aerobicCapacity.glicose} mg/dL</p>
+                  )}
+                  {aerobicCapacity.hemoglobina && (
+                    <p className="text-xs text-slate-600 mb-2">Hemoglobina: {aerobicCapacity.hemoglobina} g/dL</p>
+                  )}
+                  <ul className="text-sm text-slate-700 space-y-1 mt-2">
+                    {aerobicCapacity.recommendations.map((rec, idx) => (
+                      <li key={idx}>• {rec}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            </div>
-          </Card>
-
-          {/* Recuperação */}
-          <Card className={`p-6 border-2 ${
-            recovery.recovery === 'Boa' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
-          }`}>
-            <div className="flex items-start gap-4">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                recovery.recovery === 'Boa' ? 'bg-green-100' : 'bg-red-100'
-              }`}>
-                <Zap className={`w-6 h-6 ${
-                  recovery.recovery === 'Boa' ? 'text-green-600' : 'text-red-600'
-                }`} />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-slate-900 mb-2">Recuperação</h3>
-                <p className={`text-sm font-semibold mb-3 ${
-                  recovery.recovery === 'Boa' ? 'text-green-700' : 'text-red-700'
-                }`}>
-                  {recovery.recovery}
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          {/* Risco de Lesão */}
-          <Card className={`p-6 border-2 ${
-            injury.risk === 'Baixo' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
-          }`}>
-            <div className="flex items-start gap-4">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                injury.risk === 'Baixo' ? 'bg-green-100' : 'bg-red-100'
-              }`}>
-                <Heart className={`w-6 h-6 ${
-                  injury.risk === 'Baixo' ? 'text-green-600' : 'text-red-600'
-                }`} />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-slate-900 mb-2">Risco de Lesão</h3>
-                <p className={`text-sm font-semibold mb-3 ${
-                  injury.risk === 'Baixo' ? 'text-green-700' : 'text-red-700'
-                }`}>
-                  {injury.risk}
-                </p>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* Recomendações Detalhadas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Capacidade Aeróbica */}
-          <Card className="p-6 bg-white border-slate-200">
-            <h3 className="font-bold text-slate-900 mb-4">💨 Recomendações Aeróbicas</h3>
-            <ul className="space-y-2 text-sm text-slate-700">
-              {aerobic.recommendations.map((rec, idx) => (
-                <li key={idx} className="flex gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>{rec}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
-
-          {/* Recuperação */}
-          <Card className="p-6 bg-white border-slate-200">
-            <h3 className="font-bold text-slate-900 mb-4">🔄 Recomendações de Recuperação</h3>
-            <ul className="space-y-2 text-sm text-slate-700">
-              {recovery.recommendations.map((rec, idx) => (
-                <li key={idx} className="flex gap-2">
-                  <span className="text-blue-600">✓</span>
-                  <span>{rec}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
-
-          {/* Prevenção de Lesões */}
-          <Card className="p-6 bg-white border-slate-200">
-            <h3 className="font-bold text-slate-900 mb-4">🛡️ Prevenção de Lesões</h3>
-            <ul className="space-y-2 text-sm text-slate-700">
-              {injury.recommendations.map((rec, idx) => (
-                <li key={idx} className="flex gap-2">
-                  <span className="text-orange-600">✓</span>
-                  <span>{rec}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
-        </div>
-
-        {/* Programa de Exercícios Personalizado */}
-        <Card className="p-6 bg-white border-slate-200">
-          <h3 className="text-lg font-bold text-slate-900 mb-6">🏋️ Programa Personalizado</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Ciclismo */}
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h4 className="font-bold text-blue-900 mb-3">🚴 Ciclismo de Estrada</h4>
-              <div className="space-y-2 text-sm text-blue-800">
-                <p><strong>Frequência:</strong> 3-4x por semana</p>
-                <p><strong>Duração:</strong> 45-90 minutos</p>
-                <p><strong>Intensidade:</strong> Moderada a Alta (70-85% FC máx)</p>
-                <p><strong>Benefícios:</strong> Melhora cardiovascular, queima de calorias</p>
-                <p><strong>Precauções:</strong> Aquecimento de 10 min, alongamento pós-treino</p>
-              </div>
-            </div>
-
-            {/* MTB */}
-            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-              <h4 className="font-bold text-green-900 mb-3">🚵 Mountain Bike</h4>
-              <div className="space-y-2 text-sm text-green-800">
-                <p><strong>Frequência:</strong> 2-3x por semana</p>
-                <p><strong>Duração:</strong> 60-120 minutos</p>
-                <p><strong>Intensidade:</strong> Variável (intervalos)</p>
-                <p><strong>Benefícios:</strong> Força, resistência, coordenação</p>
-                <p><strong>Precauções:</strong> Proteção adequada, terreno apropriado</p>
-              </div>
-            </div>
-
-            {/* Corrida */}
-            <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-              <h4 className="font-bold text-orange-900 mb-3">🏃 Corrida de Rua</h4>
-              <div className="space-y-2 text-sm text-orange-800">
-                <p><strong>Frequência:</strong> 2-3x por semana</p>
-                <p><strong>Duração:</strong> 30-60 minutos</p>
-                <p><strong>Intensidade:</strong> Moderada (60-75% FC máx)</p>
-                <p><strong>Benefícios:</strong> Resistência cardiovascular, queima de gordura</p>
-                <p><strong>Precauções:</strong> Sapatos adequados, superfícies macias</p>
-              </div>
-            </div>
-
-            {/* Pilates */}
-            <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-              <h4 className="font-bold text-purple-900 mb-3">🧘 Pilates</h4>
-              <div className="space-y-2 text-sm text-purple-800">
-                <p><strong>Frequência:</strong> 2-3x por semana</p>
-                <p><strong>Duração:</strong> 45-60 minutos</p>
-                <p><strong>Intensidade:</strong> Moderada (controle e precisão)</p>
-                <p><strong>Benefícios:</strong> Força, flexibilidade, postura</p>
-                <p><strong>Precauções:</strong> Técnica correta, instrutor qualificado</p>
-              </div>
-            </div>
-
-            {/* Natação */}
-            <div className="p-4 bg-cyan-50 rounded-lg border border-cyan-200">
-              <h4 className="font-bold text-cyan-900 mb-3">🏊 Natação</h4>
-              <div className="space-y-2 text-sm text-cyan-800">
-                <p><strong>Frequência:</strong> 2-3x por semana</p>
-                <p><strong>Duração:</strong> 30-45 minutos</p>
-                <p><strong>Intensidade:</strong> Moderada a Alta</p>
-                <p><strong>Benefícios:</strong> Aeróbico, baixo impacto, força</p>
-                <p><strong>Precauções:</strong> Aulas com instrutor, progressão gradual</p>
-              </div>
-            </div>
+            </Card>
 
             {/* Recuperação */}
-            <div className="p-4 bg-red-50 rounded-lg border border-red-200">
-              <h4 className="font-bold text-red-900 mb-3">🌴 Recuperação Ativa</h4>
-              <div className="space-y-2 text-sm text-red-800">
-                <p><strong>Frequência:</strong> 1-2x por semana</p>
-                <p><strong>Duração:</strong> 20-30 minutos</p>
-                <p><strong>Intensidade:</strong> Baixa (caminhada, yoga)</p>
-                <p><strong>Benefícios:</strong> Reduz fadiga, melhora flexibilidade</p>
-                <p><strong>Precauções:</strong> Não substituir treino principal</p>
+            <Card className={`p-6 border-2 ${
+              recoveryAnalysis.recovery === 'Boa' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+            }`}>
+              <div className="flex items-start gap-4">
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                  recoveryAnalysis.recovery === 'Boa' ? 'bg-green-100' : 'bg-red-100'
+                }`}>
+                  <Zap className={`w-6 h-6 ${
+                    recoveryAnalysis.recovery === 'Boa' ? 'text-green-600' : 'text-red-600'
+                  }`} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-900 mb-2">Recuperação</h3>
+                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-3 ${
+                    recoveryAnalysis.recovery === 'Boa' ? 'bg-green-200 text-green-900' : 'bg-red-200 text-red-900'
+                  }`}>
+                    {recoveryAnalysis.recovery}
+                  </div>
+                  {recoveryAnalysis.creatinina && (
+                    <p className="text-xs text-slate-600 mb-2">Creatinina: {recoveryAnalysis.creatinina} mg/dL</p>
+                  )}
+                  {recoveryAnalysis.ureia && (
+                    <p className="text-xs text-slate-600 mb-2">Ureia: {recoveryAnalysis.ureia} mg/dL</p>
+                  )}
+                  <ul className="text-sm text-slate-700 space-y-1 mt-2">
+                    {recoveryAnalysis.recommendations.map((rec, idx) => (
+                      <li key={idx}>• {rec}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </Card>
+
+            {/* Risco de Lesão */}
+            <Card className={`p-6 border-2 ${
+              injuryRisk.risk === 'Baixo' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+            }`}>
+              <div className="flex items-start gap-4">
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                  injuryRisk.risk === 'Baixo' ? 'bg-green-100' : 'bg-red-100'
+                }`}>
+                  <Activity className={`w-6 h-6 ${
+                    injuryRisk.risk === 'Baixo' ? 'text-green-600' : 'text-red-600'
+                  }`} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-900 mb-2">Risco de Lesão</h3>
+                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-3 ${
+                    injuryRisk.risk === 'Baixo' ? 'bg-green-200 text-green-900' : 'bg-red-200 text-red-900'
+                  }`}>
+                    {injuryRisk.risk}
+                  </div>
+                  {injuryRisk.potassio && (
+                    <p className="text-xs text-slate-600 mb-2">Potássio: {injuryRisk.potassio} mEq/L</p>
+                  )}
+                  {injuryRisk.calcio && (
+                    <p className="text-xs text-slate-600 mb-2">Cálcio: {injuryRisk.calcio} mg/dL</p>
+                  )}
+                  <ul className="text-sm text-slate-700 space-y-1 mt-2">
+                    {injuryRisk.recommendations.map((rec, idx) => (
+                      <li key={idx}>• {rec}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* Recomendações de Exercícios */}
+        {recentExams.length > 0 && (
+          <Card className="mt-6 p-6 bg-white border-slate-200">
+            <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <Activity className="w-6 h-6 text-green-600" />
+              Recomendações de Exercícios
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <h3 className="font-semibold text-slate-900 mb-2">✅ Recomendados</h3>
+                <ul className="text-sm text-slate-700 space-y-1">
+                  <li>• <strong>Ciclismo de Estrada:</strong> Excelente para capacidade aeróbica</li>
+                  <li>• <strong>MTB (Mountain Bike):</strong> Alta intensidade com baixo impacto</li>
+                  <li>• <strong>Corrida de Rua:</strong> Melhora resistência cardiovascular</li>
+                  <li>• <strong>Pilates:</strong> Fortalecimento do core e flexibilidade</li>
+                  <li>• <strong>Natação:</strong> Exercício completo de baixo impacto</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold text-slate-900 mb-2">⚠️ Evitar</h3>
+                <ul className="text-sm text-slate-700 space-y-1">
+                  <li>• <strong>Musculação pesada:</strong> Não recomendado conforme perfil</li>
+                  <li>• <strong>Exercícios de alto impacto:</strong> Se houver deficiência de cálcio</li>
+                  <li>• <strong>Treinos muito longos:</strong> Se recuperação estiver comprometida</li>
+                </ul>
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        )}
       </main>
     </div>
   );

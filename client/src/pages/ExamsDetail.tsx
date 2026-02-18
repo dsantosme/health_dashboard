@@ -2,25 +2,39 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { usePatient } from '@/contexts/PatientContext';
-import { getPatientExams } from '@/data/patientsData';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, ReferenceLine } from 'recharts';
-import { ArrowLeft, Search } from 'lucide-react';
+import { ExamChart } from '@/components/ExamChart';
+import { ArrowLeft, Search, Loader2 } from 'lucide-react';
 import { DownloadExams } from '@/components/DownloadExams';
+import { trpc } from '@/lib/trpc';
 
 export default function ExamsDetail() {
   const [, navigate] = useLocation();
-  const { selectedPatientId } = usePatient();
-  const exams = getPatientExams(selectedPatientId);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedExamName, setSelectedExamName] = useState<string | null>(null);
 
+  // Carregar todos os exames do paciente
+  const { data: exams = [], isLoading } = trpc.exams.listByPatient.useQuery({
+    patientId: 'denis-santos'
+  });
+
+  // Carregar histórico do exame selecionado
+  const { data: examHistory = [] } = trpc.exams.getHistory.useQuery(
+    {
+      patientId: 'denis-santos',
+      examName: selectedExamName || ''
+    },
+    {
+      enabled: !!selectedExamName
+    }
+  );
+
   // Agrupar por nome de exame
   const examsByName = exams.reduce((acc, exam) => {
-    if (!acc[exam.name]) {
-      acc[exam.name] = [];
+    const name = exam.examName;
+    if (!acc[name]) {
+      acc[name] = [];
     }
-    acc[exam.name].push(exam);
+    acc[name].push(exam);
     return acc;
   }, {} as Record<string, typeof exams>);
 
@@ -32,17 +46,18 @@ export default function ExamsDetail() {
   const selectedExam = selectedExamName ? examsByName[selectedExamName] : null;
   const selectedExamData = selectedExam ? selectedExam[0] : null;
 
-  // Preparar dados para gráfico
-  const chartData = selectedExam
-    ? selectedExam
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-        .map(e => ({
-          date: e.date,
-          value: typeof e.value === 'number' ? e.value : 0,
-          referenceMin: e.referenceMin,
-          referenceMax: e.referenceMax
-        }))
-    : [];
+  // O ExamChart agora lida com a preparação dos dados internamente
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+          <p className="text-slate-600">Carregando exames...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
@@ -112,7 +127,7 @@ export default function ExamsDetail() {
                 <Card className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-2xl font-bold text-slate-900">{selectedExamData.name}</h3>
+                      <h3 className="text-2xl font-bold text-slate-900">{selectedExamData.examName}</h3>
                       <p className="text-sm text-slate-600 mt-1">{selectedExamData.category}</p>
                     </div>
                     <div className="text-right">
@@ -151,85 +166,70 @@ export default function ExamsDetail() {
 
                 {/* Gráfico Temporal */}
                 <Card className="p-6 bg-white border-slate-200">
-                  <h4 className="font-bold text-slate-900 mb-4">Evolução Temporal</h4>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                      <XAxis dataKey="date" stroke="#64748b" />
-                      <YAxis stroke="#64748b" />
-                      <Tooltip 
-                        contentStyle={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0' }}
-                        formatter={(value) => [`${value} ${selectedExamData.unit}`, 'Valor']}
-                      />
-                      {selectedExamData.referenceMin && (
-                        <ReferenceLine
-                          y={selectedExamData.referenceMin}
-                          stroke="#10b981"
-                          strokeDasharray="5 5"
-                          label={{ value: 'Mín', position: 'right', fill: '#10b981' }}
-                        />
-                      )}
-                      {selectedExamData.referenceMax && (
-                        <ReferenceLine
-                          y={selectedExamData.referenceMax}
-                          stroke="#10b981"
-                          strokeDasharray="5 5"
-                          label={{ value: 'Máx', position: 'right', fill: '#10b981' }}
-                        />
-                      )}
-                      <Line
-                        type="monotone"
-                        dataKey="value"
-                        stroke="#3b82f6"
-                        strokeWidth={3}
-                        dot={{ fill: '#3b82f6', r: 5 }}
-                        activeDot={{ r: 7 }}
-                        name="Valor"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <h4 className="font-bold text-slate-900 mb-4">Evolução Temporal (2022-2026)</h4>
+                  {examHistory.length > 0 ? (
+                    <ExamChart 
+                      data={examHistory}
+                      examName={selectedExamName || ''}
+                      unit={selectedExamData?.unit || ''}
+                    />
+                  ) : (
+                    <p className="text-center text-slate-500 py-8">Sem dados históricos disponíveis</p>
+                  )}
                 </Card>
 
                 {/* Histórico Detalhado */}
                 <Card className="p-6 bg-white border-slate-200">
                   <h4 className="font-bold text-slate-900 mb-4">Histórico Completo</h4>
                   <div className="space-y-3">
-                    {selectedExam
-                      ?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                      .map((exam, idx) => (
-                        <div key={exam.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                          <div className="flex-1">
-                            <p className="font-medium text-slate-900">{exam.date}</p>
-                            <p className="text-sm text-slate-600 mt-1">
-                              {exam.value} {exam.unit}
-                              {exam.referenceMin && exam.referenceMax && (
-                                <span className="ml-2 text-xs text-slate-500">
-                                  (Ref: {exam.referenceMin}-{exam.referenceMax})
-                                </span>
-                              )}
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            {idx < selectedExam.length - 1 && (
-                              <div className="text-xs text-slate-600">
-                                {typeof exam.value === 'number' && typeof selectedExam[idx + 1]?.value === 'number' ? (
-                                  (exam.value as number) > (selectedExam[idx + 1].value as number) ? (
-                                    <span className="text-red-600">↑ +{((exam.value as number) - (selectedExam[idx + 1].value as number)).toFixed(2)}</span>
-                                  ) : (exam.value as number) < (selectedExam[idx + 1].value as number) ? (
-                                    <span className="text-green-600">↓ -{((selectedExam[idx + 1].value as number) - (exam.value as number)).toFixed(2)}</span>
-                                  ) : (
-                                    <span className="text-gray-600">→ Estável</span>
-                                  )
-                                ) : null}
+                    {examHistory.length > 0 ? (
+                      examHistory
+                        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                        .map((exam, idx) => {
+                          const value = typeof exam.value === 'number' ? exam.value : parseFloat(String(exam.value));
+                          const prevValue = idx < examHistory.length - 1 
+                            ? (typeof examHistory[idx + 1].value === 'number' 
+                                ? examHistory[idx + 1].value 
+                                : parseFloat(String(examHistory[idx + 1].value)))
+                            : null;
+                          
+                          return (
+                            <div key={exam.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                              <div className="flex-1">
+                                <p className="font-medium text-slate-900">
+                                  {new Date(exam.date).toLocaleDateString('pt-BR')}
+                                </p>
+                                <p className="text-sm text-slate-600 mt-1">
+                                  {exam.value} {exam.unit}
+                                  {exam.referenceMin && exam.referenceMax && (
+                                    <span className="ml-2 text-xs text-slate-500">
+                                      (Ref: {exam.referenceMin}-{exam.referenceMax})
+                                    </span>
+                                  )}
+                                </p>
                               </div>
-                            )}
-                            {exam.status === 'normal' && <span className="text-lg">✅</span>}
-                            {exam.status === 'low' && <span className="text-lg">⬇️</span>}
-                            {exam.status === 'high' && <span className="text-lg">⬆️</span>}
-                            {exam.status === 'critical' && <span className="text-lg">🔴</span>}
-                          </div>
-                        </div>
-                      ))}
+                              <div className="flex items-center gap-3">
+                                {prevValue !== null && typeof prevValue === 'number' && (
+                                  <div className="text-xs text-slate-600">
+                                    {value > prevValue ? (
+                                      <span className="text-red-600">↑ +{(value - prevValue).toFixed(2)}</span>
+                                    ) : value < prevValue ? (
+                                      <span className="text-green-600">↓ -{(prevValue - value).toFixed(2)}</span>
+                                    ) : (
+                                      <span className="text-gray-600">→ Estável</span>
+                                    )}
+                                  </div>
+                                )}
+                                {exam.status === 'normal' && <span className="text-lg">✅</span>}
+                                {exam.status === 'low' && <span className="text-lg">⬇️</span>}
+                                {exam.status === 'high' && <span className="text-lg">⬆️</span>}
+                              </div>
+                            </div>
+                          );
+                        })
+                    ) : (
+                      <p className="text-center text-slate-500 py-8">Nenhum histórico disponível</p>
+                    )}
                   </div>
                 </Card>
               </>

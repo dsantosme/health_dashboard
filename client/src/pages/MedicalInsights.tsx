@@ -1,70 +1,162 @@
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { usePatient } from '@/contexts/PatientContext';
-import { getPatientExams, getPatient } from '@/data/patientsData';
-import { ArrowLeft, AlertCircle, TrendingDown, TrendingUp, Heart, Zap } from 'lucide-react';
+import { ArrowLeft, AlertCircle, TrendingDown, TrendingUp, Heart, Zap, Loader2 } from 'lucide-react';
+import { trpc } from '@/lib/trpc';
+import { useMemo } from 'react';
 
 export default function MedicalInsights() {
   const [, navigate] = useLocation();
-  const { selectedPatientId } = usePatient();
-  const patient = getPatient(selectedPatientId);
-  const exams = getPatientExams(selectedPatientId);
+  
+  // Buscar exames mais recentes (2025-2026)
+  const { data: allExams = [], isLoading } = trpc.exams.listByPatient.useQuery({
+    patientId: 'denis-santos'
+  });
+
+  // Filtrar exames mais recentes (últimos 2 anos)
+  const recentExams = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    return allExams.filter(exam => {
+      const examYear = new Date(exam.date).getFullYear();
+      return examYear >= currentYear - 1; // 2025 e 2026
+    });
+  }, [allExams]);
+
+  // Função auxiliar para encontrar exame mais recente
+  const findLatestExam = (searchTerm: string) => {
+    const matches = recentExams
+      .filter(e => e.examName.toLowerCase().includes(searchTerm.toLowerCase()))
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    
+    if (matches.length === 0) return null;
+    
+    const value = parseFloat(String(matches[0].value));
+    return isNaN(value) ? null : value;
+  };
 
   // Análise de risco cardiovascular
-  const cardiovascularRisk = () => {
-    const hdl = exams.find(e => e.name.includes('HDL'))?.value as number;
-    const ldl = exams.find(e => e.name.includes('LDL'))?.value as number;
-    const glicose = exams.find(e => e.name.includes('Glicose'))?.value as number;
+  const cardiovascularRisk = useMemo(() => {
+    const hdl = findLatestExam('hdl');
+    const ldl = findLatestExam('ldl');
+    const glicose = findLatestExam('glicose');
+    const colesterolTotal = findLatestExam('colesterol total');
     
     let risk = 0;
-    if (ldl && ldl > 130) risk += 2;
-    if (hdl && hdl < 40) risk += 2;
-    if (glicose && glicose > 125) risk += 1;
+    const factors = [];
     
-    return { risk, level: risk >= 4 ? 'Alto' : risk >= 2 ? 'Moderado' : 'Baixo' };
-  };
+    if (ldl && ldl > 130) {
+      risk += 2;
+      factors.push(`LDL elevado (${ldl} mg/dL)`);
+    }
+    if (hdl && hdl < 40) {
+      risk += 2;
+      factors.push(`HDL baixo (${hdl} mg/dL)`);
+    }
+    if (glicose && glicose > 125) {
+      risk += 1;
+      factors.push(`Glicose elevada (${glicose} mg/dL)`);
+    }
+    if (colesterolTotal && colesterolTotal > 240) {
+      risk += 1;
+      factors.push(`Colesterol total elevado (${colesterolTotal} mg/dL)`);
+    }
+    
+    return { 
+      risk, 
+      level: risk >= 4 ? 'Alto' : risk >= 2 ? 'Moderado' : 'Baixo',
+      factors
+    };
+  }, [recentExams]);
 
   // Análise de risco metabólico
-  const metabolicRisk = () => {
-    const glicose = exams.find(e => e.name.includes('Glicose'))?.value as number;
-    const peso = exams.find(e => e.name === 'Peso')?.value as number;
-    const circunferencia = exams.find(e => e.name === 'Circunferência Abdominal')?.value as number;
+  const metabolicRisk = useMemo(() => {
+    const glicose = findLatestExam('glicose');
+    const triglicerideos = findLatestExam('triglicerídeos');
+    const imc = findLatestExam('índice de massa corporal');
     
     let risk = 0;
-    if (glicose && glicose > 100) risk += 2;
-    if (circunferencia && circunferencia > 102) risk += 2;
+    const factors = [];
     
-    return { risk, level: risk >= 3 ? 'Alto' : risk >= 1 ? 'Moderado' : 'Baixo' };
-  };
+    if (glicose && glicose > 100) {
+      risk += 2;
+      factors.push(`Glicose elevada (${glicose} mg/dL)`);
+    }
+    if (triglicerideos && triglicerideos > 150) {
+      risk += 2;
+      factors.push(`Triglicerídeos elevados (${triglicerideos} mg/dL)`);
+    }
+    if (imc && imc > 30) {
+      risk += 1;
+      factors.push(`IMC elevado (${imc})`);
+    }
+    
+    return { 
+      risk, 
+      level: risk >= 3 ? 'Alto' : risk >= 1 ? 'Moderado' : 'Baixo',
+      factors
+    };
+  }, [recentExams]);
 
   // Análise de função renal
-  const renalFunction = () => {
-    const creatinina = exams.find(e => e.name.includes('Creatinina'))?.value as number;
-    const ureia = exams.find(e => e.name.includes('Ureia'))?.value as number;
+  const renalFunction = useMemo(() => {
+    const creatinina = findLatestExam('creatinina');
+    const ureia = findLatestExam('ureia') || findLatestExam('uréia');
+    const tgf = findLatestExam('filtração glomerular');
     
     let status = 'Normal';
-    if (creatinina && creatinina > 1.2) status = 'Comprometida';
-    if (ureia && ureia > 40) status = 'Comprometida';
+    const indicators = [];
     
-    return { status };
-  };
+    if (creatinina) {
+      indicators.push(`Creatinina: ${creatinina} mg/dL`);
+      if (creatinina > 1.2) status = 'Comprometida';
+    }
+    if (ureia) {
+      indicators.push(`Ureia: ${ureia} mg/dL`);
+      if (ureia > 40) status = 'Comprometida';
+    }
+    if (tgf) {
+      indicators.push(`TFG: ${tgf} mL/min/1.73m²`);
+      if (tgf < 60) status = 'Comprometida';
+    }
+    
+    return { status, indicators };
+  }, [recentExams]);
 
   // Análise de função hepática
-  const hepaticFunction = () => {
-    const tgo = exams.find(e => e.name.includes('TGO'))?.value as number;
-    const tgp = exams.find(e => e.name.includes('TGP'))?.value as number;
+  const hepaticFunction = useMemo(() => {
+    const tgo = findLatestExam('tgo') || findLatestExam('ast');
+    const tgp = findLatestExam('tgp') || findLatestExam('alt');
+    const gamaGT = findLatestExam('gama gt');
     
     let status = 'Normal';
-    if ((tgo && tgo > 40) || (tgp && tgp > 58)) status = 'Alterada';
+    const indicators = [];
     
-    return { status };
-  };
+    if (tgo) {
+      indicators.push(`TGO/AST: ${tgo} U/L`);
+      if (tgo > 40) status = 'Alterada';
+    }
+    if (tgp) {
+      indicators.push(`TGP/ALT: ${tgp} U/L`);
+      if (tgp > 58) status = 'Alterada';
+    }
+    if (gamaGT) {
+      indicators.push(`Gama GT: ${gamaGT} U/L`);
+      if (gamaGT > 55) status = 'Alterada';
+    }
+    
+    return { status, indicators };
+  }, [recentExams]);
 
-  const cardioRisk = cardiovascularRisk();
-  const metabRisk = metabolicRisk();
-  const renalFunc = renalFunction();
-  const hepaticFunc = hepaticFunction();
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-slate-100 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-purple-600 animate-spin" />
+          <p className="text-slate-600">Analisando dados médicos...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-slate-100">
@@ -86,166 +178,183 @@ export default function MedicalInsights() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Risco Cardiovascular */}
-          <Card className={`p-6 border-2 ${
-            cardioRisk.level === 'Alto' ? 'bg-red-50 border-red-200' :
-            cardioRisk.level === 'Moderado' ? 'bg-yellow-50 border-yellow-200' :
-            'bg-green-50 border-green-200'
-          }`}>
-            <div className="flex items-start gap-4">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                cardioRisk.level === 'Alto' ? 'bg-red-100' :
-                cardioRisk.level === 'Moderado' ? 'bg-yellow-100' :
-                'bg-green-100'
-              }`}>
-                <Heart className={`w-6 h-6 ${
-                  cardioRisk.level === 'Alto' ? 'text-red-600' :
-                  cardioRisk.level === 'Moderado' ? 'text-yellow-600' :
-                  'text-green-600'
-                }`} />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-slate-900 mb-2">Risco Cardiovascular</h3>
-                <p className={`text-sm font-semibold mb-3 ${
-                  cardioRisk.level === 'Alto' ? 'text-red-700' :
-                  cardioRisk.level === 'Moderado' ? 'text-yellow-700' :
-                  'text-green-700'
+        {recentExams.length === 0 ? (
+          <Card className="p-12 bg-white border-slate-200 text-center">
+            <AlertCircle className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+            <p className="text-slate-600">Nenhum exame recente encontrado para análise.</p>
+            <p className="text-sm text-slate-500 mt-2">Exames dos últimos 2 anos são considerados para insights médicos.</p>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Risco Cardiovascular */}
+            <Card className={`p-6 border-2 ${
+              cardiovascularRisk.level === 'Alto' ? 'bg-red-50 border-red-200' :
+              cardiovascularRisk.level === 'Moderado' ? 'bg-yellow-50 border-yellow-200' :
+              'bg-green-50 border-green-200'
+            }`}>
+              <div className="flex items-start gap-4">
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                  cardiovascularRisk.level === 'Alto' ? 'bg-red-100' :
+                  cardiovascularRisk.level === 'Moderado' ? 'bg-yellow-100' :
+                  'bg-green-100'
                 }`}>
-                  Nível: {cardioRisk.level}
-                </p>
-                <div className="space-y-2 text-sm text-slate-700">
-                  <p>• Monitorar colesterol LDL e HDL regularmente</p>
-                  <p>• Manter glicose em jejum abaixo de 100 mg/dL</p>
-                  <p>• Realizar exercício aeróbico 150 min/semana</p>
+                  <Heart className={`w-6 h-6 ${
+                    cardiovascularRisk.level === 'Alto' ? 'text-red-600' :
+                    cardiovascularRisk.level === 'Moderado' ? 'text-yellow-600' :
+                    'text-green-600'
+                  }`} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-900 mb-2">Risco Cardiovascular</h3>
+                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-3 ${
+                    cardiovascularRisk.level === 'Alto' ? 'bg-red-200 text-red-900' :
+                    cardiovascularRisk.level === 'Moderado' ? 'bg-yellow-200 text-yellow-900' :
+                    'bg-green-200 text-green-900'
+                  }`}>
+                    {cardiovascularRisk.level}
+                  </div>
+                  {cardiovascularRisk.factors.length > 0 ? (
+                    <ul className="text-sm text-slate-700 space-y-1">
+                      {cardiovascularRisk.factors.map((factor, idx) => (
+                        <li key={idx}>• {factor}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-slate-700">Todos os indicadores dentro da faixa normal.</p>
+                  )}
                 </div>
               </div>
-            </div>
-          </Card>
+            </Card>
 
-          {/* Risco Metabólico */}
-          <Card className={`p-6 border-2 ${
-            metabRisk.level === 'Alto' ? 'bg-red-50 border-red-200' :
-            metabRisk.level === 'Moderado' ? 'bg-yellow-50 border-yellow-200' :
-            'bg-green-50 border-green-200'
-          }`}>
-            <div className="flex items-start gap-4">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                metabRisk.level === 'Alto' ? 'bg-red-100' :
-                metabRisk.level === 'Moderado' ? 'bg-yellow-100' :
-                'bg-green-100'
-              }`}>
-                <Zap className={`w-6 h-6 ${
-                  metabRisk.level === 'Alto' ? 'text-red-600' :
-                  metabRisk.level === 'Moderado' ? 'text-yellow-600' :
-                  'text-green-600'
-                }`} />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-slate-900 mb-2">Risco Metabólico</h3>
-                <p className={`text-sm font-semibold mb-3 ${
-                  metabRisk.level === 'Alto' ? 'text-red-700' :
-                  metabRisk.level === 'Moderado' ? 'text-yellow-700' :
-                  'text-green-700'
+            {/* Risco Metabólico */}
+            <Card className={`p-6 border-2 ${
+              metabolicRisk.level === 'Alto' ? 'bg-red-50 border-red-200' :
+              metabolicRisk.level === 'Moderado' ? 'bg-yellow-50 border-yellow-200' :
+              'bg-green-50 border-green-200'
+            }`}>
+              <div className="flex items-start gap-4">
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                  metabolicRisk.level === 'Alto' ? 'bg-red-100' :
+                  metabolicRisk.level === 'Moderado' ? 'bg-yellow-100' :
+                  'bg-green-100'
                 }`}>
-                  Nível: {metabRisk.level}
-                </p>
-                <div className="space-y-2 text-sm text-slate-700">
-                  <p>• Reduzir circunferência abdominal para menos de 102 cm</p>
-                  <p>• Controlar ingestão de carboidratos refinados</p>
-                  <p>• Aumentar atividade física diária</p>
+                  <Zap className={`w-6 h-6 ${
+                    metabolicRisk.level === 'Alto' ? 'text-red-600' :
+                    metabolicRisk.level === 'Moderado' ? 'text-yellow-600' :
+                    'text-green-600'
+                  }`} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-900 mb-2">Risco Metabólico</h3>
+                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-3 ${
+                    metabolicRisk.level === 'Alto' ? 'bg-red-200 text-red-900' :
+                    metabolicRisk.level === 'Moderado' ? 'bg-yellow-200 text-yellow-900' :
+                    'bg-green-200 text-green-900'
+                  }`}>
+                    {metabolicRisk.level}
+                  </div>
+                  {metabolicRisk.factors.length > 0 ? (
+                    <ul className="text-sm text-slate-700 space-y-1">
+                      {metabolicRisk.factors.map((factor, idx) => (
+                        <li key={idx}>• {factor}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-slate-700">Todos os indicadores dentro da faixa normal.</p>
+                  )}
                 </div>
               </div>
-            </div>
-          </Card>
+            </Card>
 
-          {/* Função Renal */}
-          <Card className={`p-6 border-2 ${
-            renalFunc.status === 'Comprometida' ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'
-          }`}>
-            <div className="flex items-start gap-4">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                renalFunc.status === 'Comprometida' ? 'bg-red-100' : 'bg-green-100'
-              }`}>
-                <AlertCircle className={`w-6 h-6 ${
-                  renalFunc.status === 'Comprometida' ? 'text-red-600' : 'text-green-600'
-                }`} />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-slate-900 mb-2">Função Renal</h3>
-                <p className={`text-sm font-semibold mb-3 ${
-                  renalFunc.status === 'Comprometida' ? 'text-red-700' : 'text-green-700'
+            {/* Função Renal */}
+            <Card className={`p-6 border-2 ${
+              renalFunction.status === 'Comprometida' ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'
+            }`}>
+              <div className="flex items-start gap-4">
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                  renalFunction.status === 'Comprometida' ? 'bg-red-100' : 'bg-green-100'
                 }`}>
-                  Status: {renalFunc.status}
-                </p>
-                <div className="space-y-2 text-sm text-slate-700">
-                  <p>• Manter hidratação adequada (2-3 litros/dia)</p>
-                  <p>• Limitar sódio na alimentação</p>
-                  <p>• Monitorar creatinina e ureia regularmente</p>
+                  <AlertCircle className={`w-6 h-6 ${
+                    renalFunction.status === 'Comprometida' ? 'text-red-600' : 'text-green-600'
+                  }`} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-900 mb-2">Função Renal</h3>
+                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-3 ${
+                    renalFunction.status === 'Comprometida' ? 'bg-red-200 text-red-900' : 'bg-green-200 text-green-900'
+                  }`}>
+                    {renalFunction.status}
+                  </div>
+                  {renalFunction.indicators.length > 0 ? (
+                    <ul className="text-sm text-slate-700 space-y-1">
+                      {renalFunction.indicators.map((indicator, idx) => (
+                        <li key={idx}>• {indicator}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-slate-700">Nenhum indicador renal disponível.</p>
+                  )}
                 </div>
               </div>
-            </div>
-          </Card>
+            </Card>
 
-          {/* Função Hepática */}
-          <Card className={`p-6 border-2 ${
-            hepaticFunc.status === 'Alterada' ? 'bg-yellow-50 border-yellow-200' : 'bg-green-50 border-green-200'
-          }`}>
-            <div className="flex items-start gap-4">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                hepaticFunc.status === 'Alterada' ? 'bg-yellow-100' : 'bg-green-100'
-              }`}>
-                <AlertCircle className={`w-6 h-6 ${
-                  hepaticFunc.status === 'Alterada' ? 'text-yellow-600' : 'text-green-600'
-                }`} />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-slate-900 mb-2">Função Hepática</h3>
-                <p className={`text-sm font-semibold mb-3 ${
-                  hepaticFunc.status === 'Alterada' ? 'text-yellow-700' : 'text-green-700'
+            {/* Função Hepática */}
+            <Card className={`p-6 border-2 ${
+              hepaticFunction.status === 'Alterada' ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'
+            }`}>
+              <div className="flex items-start gap-4">
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                  hepaticFunction.status === 'Alterada' ? 'bg-red-100' : 'bg-green-100'
                 }`}>
-                  Status: {hepaticFunc.status}
-                </p>
-                <div className="space-y-2 text-sm text-slate-700">
-                  <p>• Evitar álcool e alimentos gordurosos</p>
-                  <p>• Aumentar consumo de frutas e vegetais</p>
-                  <p>• Realizar exames de função hepática a cada 6 meses</p>
+                  <TrendingUp className={`w-6 h-6 ${
+                    hepaticFunction.status === 'Alterada' ? 'text-red-600' : 'text-green-600'
+                  }`} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-slate-900 mb-2">Função Hepática</h3>
+                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mb-3 ${
+                    hepaticFunction.status === 'Alterada' ? 'bg-red-200 text-red-900' : 'bg-green-200 text-green-900'
+                  }`}>
+                    {hepaticFunction.status}
+                  </div>
+                  {hepaticFunction.indicators.length > 0 ? (
+                    <ul className="text-sm text-slate-700 space-y-1">
+                      {hepaticFunction.indicators.map((indicator, idx) => (
+                        <li key={idx}>• {indicator}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-slate-700">Nenhum indicador hepático disponível.</p>
+                  )}
                 </div>
               </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* Recomendações Gerais */}
-        <Card className="mt-8 p-6 bg-white border-slate-200">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">📋 Recomendações Gerais</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <p className="font-semibold text-blue-900 mb-2">Consultas Médicas</p>
-              <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Clínico geral: a cada 6 meses</li>
-                <li>• Cardiologista: anualmente</li>
-                <li>• Endocrinologista: se necessário</li>
-              </ul>
-            </div>
-            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-              <p className="font-semibold text-green-900 mb-2">Exames Periódicos</p>
-              <ul className="text-sm text-green-800 space-y-1">
-                <li>• Hemograma: anualmente</li>
-                <li>• Perfil lipídico: anualmente</li>
-                <li>• Glicose: a cada 3 meses</li>
-              </ul>
-            </div>
-            <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-              <p className="font-semibold text-purple-900 mb-2">Estilo de Vida</p>
-              <ul className="text-sm text-purple-800 space-y-1">
-                <li>• Exercício: 150 min/semana</li>
-                <li>• Sono: 7-8 horas/noite</li>
-                <li>• Estresse: técnicas de relaxamento</li>
-              </ul>
-            </div>
+            </Card>
           </div>
-        </Card>
+        )}
+
+        {/* Recomendações */}
+        {recentExams.length > 0 && (
+          <Card className="mt-6 p-6 bg-white border-slate-200">
+            <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <AlertCircle className="w-6 h-6 text-blue-600" />
+              Recomendações
+            </h2>
+            <div className="space-y-3 text-slate-700">
+              {(cardiovascularRisk.level === 'Alto' || metabolicRisk.level === 'Alto') && (
+                <p>• Consultar cardiologista para avaliação detalhada do risco cardiovascular e metabólico.</p>
+              )}
+              {renalFunction.status === 'Comprometida' && (
+                <p>• Agendar consulta com nefrologista para avaliação da função renal.</p>
+              )}
+              {hepaticFunction.status === 'Alterada' && (
+                <p>• Consultar hepatologista ou gastroenterologista para investigação da função hepática.</p>
+              )}
+              <p>• Manter acompanhamento médico regular com exames a cada 3-6 meses.</p>
+              <p>• Praticar exercícios regularmente (ciclismo, corrida, pilates, natação).</p>
+              <p>• Manter alimentação balanceada e hidratação adequada.</p>
+            </div>
+          </Card>
+        )}
       </main>
     </div>
   );
