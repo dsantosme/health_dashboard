@@ -16,3 +16,9 @@
 - [ ] Implementar gráficos de barra comparativos (referência vs resultado)
 - [ ] Usar cores para indicar status (verde=normal, amarelo=anormal, vermelho=crítico)
 - [ ] Mostrar faixa de referência (mínimo e máximo) como barra de fundo
+
+## Dados Faltantes de 2026
+- [x] Adicionar 31 exames de 2026 ao banco de dados (COMPLETO)
+  - [x] Todos os 31 exames do PDF resultados.pdf foram inseridos
+  - [x] 3 exames com status "baixo": Ferro Sérico, Cálcio, Colesterol HDL
+  - [x] 28 exames com status "normal"
