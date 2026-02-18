@@ -1,5 +1,6 @@
 // Dataset completo de laboratório com todos os exames
-// Estrutura para análise inteligente e correlações
+// IMPORTANTE: Correlações APENAS do mesmo período (14/02/2026)
+// Sem dados históricos que possam gerar análises erradas
 
 export interface LabExam {
   id: string;
@@ -23,15 +24,15 @@ export interface LabExam {
   collectionDate: string;
   collectionTime: string;
   
-  // Histórico
+  // Histórico (vazio até próximas coletas)
   history: Array<{
     date: string;
     value: number | string | null;
     status: 'normal' | 'low' | 'high' | 'critical' | 'unknown';
   }>;
   
-  // Correlações
-  correlatedExams: string[]; // IDs dos exames correlacionados
+  // Correlações - APENAS do mesmo período
+  correlatedExams: string[]; // IDs dos exames correlacionados do mesmo período
   
   // Interpretação clínica
   clinicalSignificance: string;
@@ -58,7 +59,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 94, status: 'normal' }
     ],
-    correlatedExams: ['a1c', 'insulin', 'triglycerides'],
+    correlatedExams: ['a1c'], // Correlação válida: ambos normais no mesmo período
     clinicalSignificance: 'Glicose normal em jejum indica metabolismo glicêmico adequado e ausência de diabetes.',
     possibleCauses: [],
     recommendations: ['Manter dieta com baixo índice glicêmico', 'Exercício regular']
@@ -81,7 +82,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: '<5.7', status: 'normal' }
     ],
-    correlatedExams: ['glucose', 'insulin'],
+    correlatedExams: ['glucose'], // Correlação válida: ambos normais no mesmo período
     clinicalSignificance: 'A1C < 5.7% indica excelente controle glicêmico nos últimos 3 meses.',
     recommendations: ['Manter rotina atual', 'Repetir anualmente']
   },
@@ -103,7 +104,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: null, status: 'unknown' }
     ],
-    correlatedExams: ['hdl', 'ldl', 'triglycerides'],
+    correlatedExams: [], // Sem correlações - valor não capturado
     clinicalSignificance: 'Colesterol total não foi capturado no resultado. Necessário repetir análise.',
     recommendations: ['Repetir exame', 'Solicitar frações de colesterol']
   },
@@ -124,7 +125,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: null, status: 'unknown' }
     ],
-    correlatedExams: ['ldl', 'triglycerides', 'cholesterol-total'],
+    correlatedExams: [], // Sem correlações - valor não capturado
     clinicalSignificance: 'HDL não foi capturado. HDL elevado é protetor cardiovascular.',
     recommendations: ['Repetir exame', 'Aumentar exercício aeróbico']
   },
@@ -145,7 +146,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: null, status: 'unknown' }
     ],
-    correlatedExams: ['hdl', 'triglycerides', 'cholesterol-total'],
+    correlatedExams: [], // Sem correlações - valor não capturado
     clinicalSignificance: 'LDL não foi capturado. LDL elevado aumenta risco cardiovascular.',
     recommendations: ['Repetir exame', 'Reduzir gordura saturada na dieta']
   },
@@ -166,7 +167,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: null, status: 'unknown' }
     ],
-    correlatedExams: ['glucose', 'weight', 'hdl'],
+    correlatedExams: [], // Sem correlações - valor não capturado
     clinicalSignificance: 'Triglicerídeos não foram capturados. Elevados aumentam risco cardiovascular.',
     recommendations: ['Repetir exame', 'Reduzir carboidratos simples']
   },
@@ -189,7 +190,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 1.0, status: 'critical' }
     ],
-    correlatedExams: ['ferritin', 'hemoglobin', 'hematocrit', 'b12'],
+    correlatedExams: ['b12'], // Correlação válida: ambos relacionados a anemia
     clinicalSignificance: 'Ferro sérico CRITICAMENTE BAIXO (1.0 mcg/dL). Indica anemia severa.',
     possibleCauses: [
       'Deficiência de ferro',
@@ -221,7 +222,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: null, status: 'unknown' }
     ],
-    correlatedExams: ['iron-serum', 'hemoglobin', 'b12'],
+    correlatedExams: [], // Sem correlações - valor não capturado
     clinicalSignificance: 'Ferritina não foi capturada. Essencial para avaliar estoques de ferro.',
     recommendations: ['Repetir exame', 'Avaliar com Hematologista']
   },
@@ -243,7 +244,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 331, status: 'normal' }
     ],
-    correlatedExams: ['iron-serum', 'hemoglobin', 'folate'],
+    correlatedExams: ['iron-serum'], // Correlação válida: ambos relacionados a anemia
     clinicalSignificance: 'B12 normal. Essencial para formação de hemácias e função neurológica.',
     recommendations: ['Manter ingestão adequada', 'Repetir anualmente']
   },
@@ -265,7 +266,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 6, status: 'normal' }
     ],
-    correlatedExams: ['testosterone', 'fsh'],
+    correlatedExams: [], // Sem correlações significativas com outros exames deste período
     clinicalSignificance: 'Prolactina normal. Indica função hipofisária adequada.',
     recommendations: ['Manter monitoramento anual']
   },
@@ -278,7 +279,7 @@ export const labExamsData: LabExam[] = [
     value: 317,
     unit: 'ng/dL',
     referenceText: 'HOMEM 21-49 ANOS: DE 14,6 A 94,6 nmol/L',
-    status: 'unknown',
+    status: 'unknown', // Unidade diferente - não pode ser validada
     method: 'Quimioluminescência',
     material: 'Sangue',
     collectionDate: '2026-02-14',
@@ -286,7 +287,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 317, status: 'unknown' }
     ],
-    correlatedExams: ['shbg', 'prolactin', 'fsh'],
+    correlatedExams: [], // Sem correlações - unidade não padronizada
     clinicalSignificance: 'Testosterona em unidade diferente. Necessário converter para nmol/L para comparação.',
     recommendations: ['Repetir exame com unidade padrão']
   },
@@ -307,7 +308,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 25.0, status: 'normal' }
     ],
-    correlatedExams: ['testosterone', 'estradiol'],
+    correlatedExams: [], // Sem correlações significativas neste período
     clinicalSignificance: 'SHBG normal. Proteína que transporta hormônios sexuais.',
     recommendations: ['Manter monitoramento']
   },
@@ -328,7 +329,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 35.3, status: 'normal' }
     ],
-    correlatedExams: ['testosterone', 'shbg'],
+    correlatedExams: [], // Sem correlações significativas neste período
     clinicalSignificance: 'Estradiol normal. Balanço hormonal adequado.',
     recommendations: ['Manter monitoramento']
   },
@@ -349,7 +350,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 2, status: 'normal' }
     ],
-    correlatedExams: ['prolactin', 'testosterone'],
+    correlatedExams: [], // Sem correlações significativas neste período
     clinicalSignificance: 'FSH normal. Indica função gonadal adequada.',
     recommendations: ['Manter monitoramento anual']
   },
@@ -371,7 +372,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 1, status: 'normal' }
     ],
-    correlatedExams: ['t4-free', 'tsh'],
+    correlatedExams: ['t4-free'], // Correlação válida: ambos normais neste período
     clinicalSignificance: 'Anticorpos anti-TPO negativos. Sem evidência de doença autoimune tireoidiana.',
     recommendations: ['Manter monitoramento']
   },
@@ -393,7 +394,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 1.05, status: 'normal' }
     ],
-    correlatedExams: ['tpo-antibodies', 'tsh'],
+    correlatedExams: ['tpo-antibodies'], // Correlação válida: ambos normais neste período
     clinicalSignificance: 'T4 livre normal. Função tireoidiana adequada.',
     recommendations: ['Manter monitoramento anual']
   },
@@ -416,7 +417,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 1.9, status: 'normal' }
     ],
-    correlatedExams: ['potassium', 'calcium'],
+    correlatedExams: ['potassium'], // Correlação válida: ambos eletrólitos normais
     clinicalSignificance: 'Magnésio normal. Essencial para função muscular e nervosa.',
     recommendations: ['Manter ingestão adequada']
   },
@@ -438,7 +439,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 4.3, status: 'normal' }
     ],
-    correlatedExams: ['magnesium', 'sodium'],
+    correlatedExams: ['magnesium'], // Correlação válida: ambos eletrólitos normais
     clinicalSignificance: 'Potássio normal. Essencial para função cardíaca e muscular.',
     recommendations: ['Manter ingestão adequada']
   },
@@ -460,7 +461,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 4.2, status: 'normal' }
     ],
-    correlatedExams: ['pth', 'calcium'],
+    correlatedExams: ['pth'], // Correlação válida: ambos normais neste período
     clinicalSignificance: 'Fósforo normal. Importante para saúde óssea e metabolismo energético.',
     recommendations: ['Manter ingestão adequada']
   },
@@ -482,7 +483,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 36.4, status: 'normal' }
     ],
-    correlatedExams: ['phosphorus', 'calcium'],
+    correlatedExams: ['phosphorus'], // Correlação válida: ambos normais neste período
     clinicalSignificance: 'PTH normal. Regulação de cálcio e fósforo adequada.',
     recommendations: ['Manter ingestão de cálcio e vitamina D']
   },
@@ -504,7 +505,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 24, status: 'normal' }
     ],
-    correlatedExams: ['alt', 'gamma-gt', 'bilirubin'],
+    correlatedExams: ['alt', 'gamma-gt'], // Correlação válida: todas enzimas hepáticas normais
     clinicalSignificance: 'AST normal. Indica função hepática adequada.',
     recommendations: ['Manter monitoramento anual']
   },
@@ -525,7 +526,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 32, status: 'normal' }
     ],
-    correlatedExams: ['ast', 'gamma-gt', 'bilirubin'],
+    correlatedExams: ['ast', 'gamma-gt'], // Correlação válida: todas enzimas hepáticas normais
     clinicalSignificance: 'ALT normal. Indica função hepática adequada.',
     recommendations: ['Manter monitoramento anual']
   },
@@ -546,7 +547,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: 5, status: 'normal' }
     ],
-    correlatedExams: ['ast', 'alt'],
+    correlatedExams: ['ast', 'alt'], // Correlação válida: todas enzimas hepáticas normais
     clinicalSignificance: 'Gama GT normal. Sem evidência de colestase ou doença hepática.',
     recommendations: ['Manter monitoramento anual']
   },
@@ -569,7 +570,7 @@ export const labExamsData: LabExam[] = [
     history: [
       { date: '2026-02-14', value: '>90', status: 'normal' }
     ],
-    correlatedExams: ['urea', 'potassium'],
+    correlatedExams: [], // Sem correlações - único marcador renal capturado
     clinicalSignificance: 'Creatinina normal (TFG > 90). Função renal adequada.',
     recommendations: ['Manter hidratação adequada', 'Monitoramento anual']
   }
@@ -587,65 +588,182 @@ export const labCategories = [
   'Função Renal'
 ];
 
-// Correlações inteligentes entre exames
+// Correlações inteligentes entre exames - APENAS DO MESMO PERÍODO (14/02/2026)
+// Cada correlação valida que ambos os exames têm dados no mesmo dia
 export const examCorrelations = [
   {
     exam1: 'glucose',
     exam2: 'a1c',
-    relationship: 'Ambas medem controle de glicose; A1C reflete média de 3 meses',
-    riskLevel: 'high'
+    relationship: 'Ambas medem controle de glicose; A1C reflete média de 3 meses. Ambas NORMAIS indicam excelente controle metabólico.',
+    riskLevel: 'low' // Ambos normais = risco baixo
   },
   {
     exam1: 'iron-serum',
     exam2: 'b12',
-    relationship: 'Ambas essenciais para produção de hemácias; deficiência em ambas causa anemia',
-    riskLevel: 'critical'
+    relationship: 'Ambas essenciais para produção de hemácias. Ferro CRÍTICO + B12 NORMAL = anemia por deficiência de ferro.',
+    riskLevel: 'critical' // Ferro crítico = risco crítico
   },
   {
     exam1: 'ast',
     exam2: 'alt',
-    relationship: 'Razão AST/ALT indica tipo de lesão hepática',
-    riskLevel: 'medium'
+    relationship: 'Razão AST/ALT indica tipo de lesão hepática. Ambas NORMAIS = função hepática adequada.',
+    riskLevel: 'low' // Ambas normais = risco baixo
   },
   {
-    exam1: 'cholesterol-total',
-    exam2: 'triglycerides',
-    relationship: 'Ambas indicam risco cardiovascular; elevadas aumentam risco de infarto',
-    riskLevel: 'high'
+    exam1: 'ast',
+    exam2: 'gamma-gt',
+    relationship: 'Enzimas hepáticas complementares. Todas NORMAIS = sem evidência de doença hepática.',
+    riskLevel: 'low' // Todas normais = risco baixo
+  },
+  {
+    exam1: 'alt',
+    exam2: 'gamma-gt',
+    relationship: 'Enzimas hepáticas complementares. Todas NORMAIS = sem evidência de doença hepática.',
+    riskLevel: 'low' // Todas normais = risco baixo
   },
   {
     exam1: 'pth',
     exam2: 'phosphorus',
-    relationship: 'PTH regula fósforo; desequilíbrio indica problema renal ou ósseo',
-    riskLevel: 'medium'
+    relationship: 'PTH regula fósforo; ambos NORMAIS = regulação adequada de cálcio e fósforo.',
+    riskLevel: 'low' // Ambos normais = risco baixo
+  },
+  {
+    exam1: 'magnesium',
+    exam2: 'potassium',
+    relationship: 'Eletrólitos essenciais para função cardíaca e muscular. Ambos NORMAIS = balanço eletrolítico adequado.',
+    riskLevel: 'low' // Ambos normais = risco baixo
+  },
+  {
+    exam1: 'tpo-antibodies',
+    exam2: 't4-free',
+    relationship: 'Anticorpos anti-TPO negativos + T4 normal = sem doença autoimune tireoidiana e função tireoidiana adequada.',
+    riskLevel: 'low' // Ambos normais = risco baixo
   }
 ];
 
-// Análise de risco global
+// Análise de risco global - BASEADA APENAS EM DADOS DO PERÍODO ATUAL
 export const riskAnalysis = {
   cardiovascular: {
     score: 'Alto',
-    factors: ['Peso elevado (107 kg)', 'Circunferência abdominal elevada (111 cm)', 'Lipídios não capturados'],
-    recommendations: ['Perder 25 kg', 'Reduzir circunferência abdominal', 'Repetir perfil lipídico']
+    factors: [
+      'Peso elevado (107 kg) - IMC 32.3 (Obesidade Grau I)',
+      'Circunferência abdominal elevada (111 cm) - Risco abdominal alto',
+      'Perfil lipídico não capturado - Impossível avaliar colesterol e triglicerídeos'
+    ],
+    recommendations: [
+      'Repetir perfil lipídico (colesterol total, HDL, LDL, triglicerídeos)',
+      'Perder 25 kg para atingir peso ideal (82 kg)',
+      'Reduzir circunferência abdominal para 85 cm',
+      'Aumentar atividade física aeróbica'
+    ]
   },
   metabolic: {
     score: 'Baixo',
-    factors: ['Glicose normal', 'A1C normal', 'Sem sinais de resistência à insulina'],
-    recommendations: ['Manter dieta atual', 'Exercício regular']
+    factors: [
+      'Glicose em jejum normal (94 mg/dL)',
+      'A1C normal (<5.7%) - Excelente controle glicêmico',
+      'Sem sinais de resistência à insulina'
+    ],
+    recommendations: [
+      'Manter dieta atual com baixo índice glicêmico',
+      'Continuar exercício regular',
+      'Repetir A1C anualmente'
+    ]
   },
   hematologic: {
     score: 'Crítico',
-    factors: ['Ferro sérico criticamente baixo (1.0 mcg/dL)', 'Anemia severa'],
-    recommendations: ['Consultar Hematologista URGENTE', 'Iniciar suplementação de ferro', 'Investigar causa']
+    factors: [
+      'Ferro sérico CRITICAMENTE BAIXO (1.0 mcg/dL) - Anemia severa',
+      'Vitamina B12 normal (331 pg/mL) - Descarta deficiência de B12',
+      'Ferritina não capturada - Necessário para avaliar estoques de ferro'
+    ],
+    recommendations: [
+      'Consultar Hematologista URGENTE (próximos 2-3 dias)',
+      'Investigar causa de sangramento gastrointestinal',
+      'Iniciar suplementação de ferro imediatamente',
+      'Repetir ferro sérico e ferritina em 4-6 semanas'
+    ]
   },
   hepatic: {
     score: 'Baixo',
-    factors: ['AST normal', 'ALT normal', 'Gama GT normal'],
-    recommendations: ['Manter monitoramento anual']
+    factors: [
+      'AST normal (24 U/L)',
+      'ALT normal (32 U/L)',
+      'Gama GT normal (5 U/L)'
+    ],
+    recommendations: [
+      'Função hepática adequada',
+      'Manter monitoramento anual',
+      'Evitar álcool em excesso'
+    ]
   },
   renal: {
     score: 'Baixo',
-    factors: ['Creatinina normal', 'TFG > 90'],
-    recommendations: ['Manter hidratação', 'Monitoramento anual']
+    factors: [
+      'Creatinina normal (TFG > 90 mL/min/1,73m²)',
+      'Função renal adequada'
+    ],
+    recommendations: [
+      'Manter hidratação adequada',
+      'Monitoramento anual',
+      'Potássio normal - sem restrição necessária'
+    ]
   }
 };
+
+// Validação de coerência: Função para verificar inconsistências
+export function validateDataCoherence() {
+  const issues: string[] = [];
+
+  // Validar que todas as correlações existem
+  examCorrelations.forEach((corr) => {
+    const exam1 = labExamsData.find(e => e.id === corr.exam1);
+    const exam2 = labExamsData.find(e => e.id === corr.exam2);
+
+    if (!exam1) issues.push(`Correlação: Exame ${corr.exam1} não encontrado`);
+    if (!exam2) issues.push(`Correlação: Exame ${corr.exam2} não encontrado`);
+
+    // Validar que ambos os exames têm dados no mesmo período
+    if (exam1 && exam2) {
+      if (exam1.collectionDate !== exam2.collectionDate) {
+        issues.push(`Correlação ${corr.exam1}-${corr.exam2}: Datas diferentes`);
+      }
+    }
+
+    // Validar coerência de risco
+    if (exam1 && exam2) {
+      const exam1HasData = exam1.value !== null && exam1.status !== 'unknown';
+      const exam2HasData = exam2.value !== null && exam2.status !== 'unknown';
+
+      if (!exam1HasData || !exam2HasData) {
+        if (corr.riskLevel !== 'low') {
+          issues.push(
+            `Correlação ${corr.exam1}-${corr.exam2}: Um dos exames sem dados, mas riskLevel não é 'low'`
+          );
+        }
+      }
+    }
+  });
+
+  // Validar que correlatedExams referencia exames que existem
+  labExamsData.forEach((exam) => {
+    exam.correlatedExams.forEach((correlatedId) => {
+      const correlatedExam = labExamsData.find(e => e.id === correlatedId);
+      if (!correlatedExam) {
+        issues.push(`Exame ${exam.id}: Correlação com ${correlatedId} não existe`);
+      }
+
+      // Validar que ambos têm dados no mesmo período
+      if (correlatedExam) {
+        if (exam.collectionDate !== correlatedExam.collectionDate) {
+          issues.push(`Exame ${exam.id}: Correlação ${correlatedId} tem data diferente`);
+        }
+      }
+    });
+  });
+
+  return {
+    isValid: issues.length === 0,
+    issues
+  };
+}
