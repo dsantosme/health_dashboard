@@ -53,3 +53,16 @@
 - [x] Atualizar SportsInsights.tsx para usar dados dinâmicos
 - [x] Remover TODOS os imports de dados estáticos (patientsData.ts, completeDatabase.ts, etc.)
 - [x] Validar que nenhuma página usa dados estáticos (todas usam tRPC)
+
+## Normalização de Nomes de Exames
+- [x] Identificar todos os registros de Glicose no banco
+- [x] Unificar "GLICOSE" e "GLICOSE JEJUM" → "Glicose Jejum" (4 registros)
+- [x] Unificar "HEMOGLOBINA GLICADA" e "Hemoglobina Glicada (HbA1c)" → "Hemoglobina Glicada (HbA1c)" (2 registros)
+- [x] Atualizar unidade e faixa de referência para Hemoglobina Glicada
+- [x] Garantir que Glicose e Hemoglobina Glicada aparecem separados na interface
+
+## Correções Identificadas pelo Usuário
+- [x] Verificar se existe exame de Glicose em 2026 no banco de dados (94 mg/dL em 14/02/2026)
+- [x] Glicose de 2026 já existe no banco - não precisa adicionar
+- [x] Corrigir escala mínima do gráfico (agora só inclui 0 se valores forem < 10% do range)
+- [x] Ajustar cálculo de domínio do eixo Y com padding inteligente

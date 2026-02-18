@@ -52,9 +52,13 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
     
     const min = Math.min(...allValues as number[]);
     const max = Math.max(...allValues as number[]);
-    const padding = (max - min) * 0.2; // 20% de padding
+    const range = max - min;
+    const padding = Math.max(range * 0.2, 5); // Mínimo 5 unidades de padding
     
-    return [Math.max(0, min - padding), max + padding];
+    // Só incluir 0 se o valor mínimo for muito próximo de 0 (< 10% do range)
+    const minDomain = min < range * 0.1 ? 0 : Math.max(0, min - padding);
+    
+    return [minDomain, max + padding];
   }, [chartData]);
 
   // Cor da linha baseada na tendência
