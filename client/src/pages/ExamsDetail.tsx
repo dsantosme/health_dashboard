@@ -6,6 +6,7 @@ import { usePatient } from '@/contexts/PatientContext';
 import { getPatientExams } from '@/data/patientsData';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, ReferenceLine } from 'recharts';
 import { ArrowLeft, Search } from 'lucide-react';
+import { DownloadExams } from '@/components/DownloadExams';
 
 export default function ExamsDetail() {
   const [, navigate] = useLocation();
@@ -237,6 +238,9 @@ export default function ExamsDetail() {
                 <p className="text-slate-600">Selecione um exame para ver detalhes</p>
               </Card>
             )}
+
+            {/* Download */}
+            <DownloadExams />
           </div>
         </div>
       </main>
