@@ -102,3 +102,20 @@
 - [x] Dashboard: contar apenas exames de 2026 (normais/anormais/críticos)
 - [ ] Exames sem dados de 2026: mostrar como "Pendente" com recomendação (próxima fase)
 - [ ] Remover alertas críticos baseados em dados antigos (2022-2025) (próxima fase)
+
+## Correcao de Faixas de Referencia
+- [x] Identificar 26 exames com faixa minima = 0 (biologicamente incorreto)
+- [x] Corrigir faixas de referencia para:
+  - [x] COLESTEROL TOTAL: 150-200 mg/dL
+  - [x] COLESTEROL HDL: 40-100 mg/dL
+  - [x] FERRO SERICO: 30-175 mg/dL
+  - [x] VITAMINA B12: 200-890 pg/mL
+  - [x] Eletrolitos (K, Na, Mg, Ca, P): valores biologicamente corretos
+  - [x] Enzimas hepaticas (TGP, TGO, GAMA GT): valores biologicamente corretos
+  - [x] Funcao renal (CREATININA, UREIA): valores biologicamente corretos
+  - [x] Hormonios (TSH, T4, FSH, LH, ESTRADIOL, TESTOSTERONA): valores biologicamente corretos
+
+## Correcao de Valores Atuais
+- [x] ExamsDetail.tsx: valor atual agora mostra o ULTIMO (mais recente) de 2026
+- [x] Todos os testes passam (vitest)
+- [x] TypeScript sem erros

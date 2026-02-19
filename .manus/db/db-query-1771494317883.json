@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE exams SET referenceMin = 7 WHERE name = 'TGP';\nUPDATE exams SET referenceMin = 10 WHERE name = 'TGO';\nUPDATE exams SET referenceMin = 9 WHERE name = 'GAMA GT';\nUPDATE exams SET referenceMin = 0.7 WHERE name = 'CREATININA';\nUPDATE exams SET referenceMin = 15 WHERE name = 'UREIA';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4CL96j1KJtBbj5n.cd364dcd713b --database T3bV8hp3wZ3iZJdo4VhuRX --execute UPDATE exams SET referenceMin = 7 WHERE name = 'TGP';\nUPDATE exams SET referenceMin = 10 WHERE name = 'TGO';\nUPDATE exams SET referenceMin = 9 WHERE name = 'GAMA GT';\nUPDATE exams SET referenceMin = 0.7 WHERE name = 'CREATININA';\nUPDATE exams SET referenceMin = 15 WHERE name = 'UREIA';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 95
+}

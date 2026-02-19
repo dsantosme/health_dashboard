@@ -45,7 +45,8 @@ export default function ExamsDetail() {
   );
 
   const selectedExam = selectedExamName ? examsByName[selectedExamName] : null;
-  const selectedExamData = selectedExam ? selectedExam[0] : null;
+  // Pegar o ÚLTIMO (mais recente) exame de 2026
+  const selectedExamData = selectedExam ? selectedExam[selectedExam.length - 1] : null;
 
   // Verificar se há exames com histórico (para mostrar evolução)
   const examsWithHistory = selectedExam ? selectedExam.filter(e => {
@@ -146,9 +147,9 @@ export default function ExamsDetail() {
                     </div>
                     <div className="text-right">
                       <p className="text-3xl font-bold text-blue-600">
-                        {selectedExam?.[selectedExam.length - 1]?.value}
+                        {selectedExamData?.value}
                       </p>
-                      <p className="text-sm text-slate-600">{selectedExamData.unit}</p>
+                      <p className="text-sm text-slate-600">{selectedExamData?.unit}</p>
                     </div>
                   </div>
                 </Card>
@@ -166,7 +167,7 @@ export default function ExamsDetail() {
                       )}
                       <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                         <p className="text-xs text-blue-700 mb-1">Atual</p>
-                        <p className="text-2xl font-bold text-blue-900">{selectedExam?.[selectedExam.length - 1]?.value}</p>
+                        <p className="text-2xl font-bold text-blue-900">{selectedExamData?.value}</p>
                       </div>
                       {selectedExamData.referenceMax && (
                         <div className="p-4 bg-green-50 rounded-lg border border-green-200">
