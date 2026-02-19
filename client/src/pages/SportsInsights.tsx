@@ -8,25 +8,16 @@ import { useMemo } from 'react';
 export default function SportsInsights() {
   const [, navigate] = useLocation();
   
-  // Buscar exames mais recentes (2025-2026)
-  const { data: allExams = [], isLoading } = trpc.exams.listByPatient.useQuery({
-    patientId: 'denis-santos'
+  // Buscar APENAS exames de 2026 (ano vigente)
+  const { data: recentExams = [], isLoading } = trpc.exams.listByPatientAndPeriod.useQuery({
+    patientId: 'denis-santos',
+    year: 2026
   });
 
-  // Filtrar exames mais recentes (últimos 2 anos)
-  const recentExams = useMemo(() => {
-    const currentYear = new Date().getFullYear();
-    return allExams.filter(exam => {
-      const examYear = new Date(exam.date).getFullYear();
-      return examYear >= currentYear - 1; // 2025 e 2026
-    });
-  }, [allExams]);
-
-  // Função auxiliar para encontrar exame mais recente
+  // Função auxiliar para encontrar exame (dados de 2026 já estão filtrados)
   const findLatestExam = (searchTerm: string) => {
     const matches = recentExams
-      .filter(e => e.examName.toLowerCase().includes(searchTerm.toLowerCase()))
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      .filter(e => e.examName.toLowerCase().includes(searchTerm.toLowerCase()));
     
     if (matches.length === 0) return null;
     
@@ -36,9 +27,9 @@ export default function SportsInsights() {
 
   // Análise de capacidade aeróbica
   const aerobicCapacity = useMemo(() => {
-    const glicose = findLatestExam('glicose');
-    const hemoglobina = findLatestExam('hemoglobina');
-    const hematocrito = findLatestExam('hematócrito');
+    const glicose = findLatestExam('Glicose');
+    const hemoglobina = findLatestExam('Hemoglobina');
+    const hematocrito = findLatestExam('Hematócrito');
     
     let capacity = 'Moderada';
     const recommendations = [];

@@ -8,25 +8,16 @@ import { useMemo } from 'react';
 export default function MedicalInsights() {
   const [, navigate] = useLocation();
   
-  // Buscar exames mais recentes (2025-2026)
-  const { data: allExams = [], isLoading } = trpc.exams.listByPatient.useQuery({
-    patientId: 'denis-santos'
+  // Buscar APENAS exames de 2026 (ano vigente)
+  const { data: recentExams = [], isLoading } = trpc.exams.listByPatientAndPeriod.useQuery({
+    patientId: 'denis-santos',
+    year: 2026
   });
 
-  // Filtrar exames mais recentes (últimos 2 anos)
-  const recentExams = useMemo(() => {
-    const currentYear = new Date().getFullYear();
-    return allExams.filter(exam => {
-      const examYear = new Date(exam.date).getFullYear();
-      return examYear >= currentYear - 1; // 2025 e 2026
-    });
-  }, [allExams]);
-
-  // Função auxiliar para encontrar exame mais recente
+  // Função auxiliar para encontrar exame (dados de 2026 já estão filtrados)
   const findLatestExam = (searchTerm: string) => {
     const matches = recentExams
-      .filter(e => e.examName.toLowerCase().includes(searchTerm.toLowerCase()))
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      .filter(e => e.examName.toLowerCase().includes(searchTerm.toLowerCase()));
     
     if (matches.length === 0) return null;
     
@@ -36,10 +27,10 @@ export default function MedicalInsights() {
 
   // Análise de risco cardiovascular
   const cardiovascularRisk = useMemo(() => {
-    const hdl = findLatestExam('hdl');
-    const ldl = findLatestExam('ldl');
-    const glicose = findLatestExam('glicose');
-    const colesterolTotal = findLatestExam('colesterol total');
+    const hdl = findLatestExam('HDL');
+    const ldl = findLatestExam('LDL');
+    const glicose = findLatestExam('Glicose');
+    const colesterolTotal = findLatestExam('Colesterol Total');
     
     let risk = 0;
     const factors = [];
@@ -70,9 +61,9 @@ export default function MedicalInsights() {
 
   // Análise de risco metabólico
   const metabolicRisk = useMemo(() => {
-    const glicose = findLatestExam('glicose');
-    const triglicerideos = findLatestExam('triglicerídeos');
-    const imc = findLatestExam('índice de massa corporal');
+    const glicose = findLatestExam('Glicose');
+    const triglicerideos = findLatestExam('Triglicérideos');
+    const imc = findLatestExam('IMC');
     
     let risk = 0;
     const factors = [];
@@ -96,12 +87,11 @@ export default function MedicalInsights() {
       factors
     };
   }, [recentExams]);
-
   // Análise de função renal
   const renalFunction = useMemo(() => {
-    const creatinina = findLatestExam('creatinina');
-    const ureia = findLatestExam('ureia') || findLatestExam('uréia');
-    const tgf = findLatestExam('filtração glomerular');
+    const creatinina = findLatestExam('Creatinina');
+    const ureia = findLatestExam('Ureia');
+    const tgf = findLatestExam('Filtração Glomerular');
     
     let status = 'Normal';
     const indicators = [];
@@ -122,10 +112,11 @@ export default function MedicalInsights() {
     return { status, indicators };
   }, [recentExams]);
 
-  // Análise de função hepática
+  //  // Análise de função hepática
   const hepaticFunction = useMemo(() => {
-    const tgo = findLatestExam('tgo') || findLatestExam('ast');
-    const tgp = findLatestExam('tgp') || findLatestExam('alt');
+    const tgo = findLatestExam('TGO');
+    const tgp = findLatestExam('TGP');
+    const gamaGt = findLatestExam('Gama GT');
     const gamaGT = findLatestExam('gama gt');
     
     let status = 'Normal';

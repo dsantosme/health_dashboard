@@ -14,9 +14,10 @@ export default function Home() {
     patientId: 'denis-santos'
   });
 
-  // Carregar todos os exames do paciente do banco
-  const { data: exams = [], isLoading: examsLoading } = trpc.exams.listByPatient.useQuery({
-    patientId: 'denis-santos'
+  // Carregar APENAS exames de 2026 (ano vigente)
+  const { data: exams = [], isLoading: examsLoading } = trpc.exams.listByPatientAndPeriod.useQuery({
+    patientId: 'denis-santos',
+    year: 2026
   });
 
   const isLoading = patientLoading || examsLoading;
@@ -28,7 +29,7 @@ export default function Home() {
   // Encontrar exames críticos (status = 'high')
   const criticalExams = exams.filter(e => e.status === 'high');
   
-  // Últimos exames (mais recentes) - priorizar 2026
+  // Últimos 5 exames de 2026 (mais recentes)
   const latestExams = exams
     .sort((a, b) => {
       const dateA = new Date(a.date).getTime();
@@ -36,6 +37,9 @@ export default function Home() {
       return dateB - dateA; // Mais recente primeiro
     })
     .slice(0, 5);
+  
+  // Total de exames de 2026
+  const totalExams2026 = exams.length;
 
   if (isLoading) {
     return (
@@ -84,13 +88,20 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Indicador de Período */}
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-900">
+            <strong>📊 Dados de 2026:</strong> Mostrando apenas exames do ano vigente. Para visualizar histórico completo (2022-2026), acesse a página de Histórico Completo.
+          </p>
+        </div>
+
         {/* Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          {/* Total Exames */}
+          {/* Total Exames de 2026 */}
           <Card className="p-6 bg-white border-slate-200 hover:shadow-lg transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-600 mb-1">Total de Exames</p>
+                <p className="text-sm text-slate-600 mb-1">Exames em 2026</p>
                 <p className="text-3xl font-bold text-slate-900">{exams.length}</p>
               </div>
               <Microscope className="w-10 h-10 text-blue-600 opacity-20" />

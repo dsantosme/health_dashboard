@@ -75,3 +75,30 @@
 - [x] Garantir que barras de referência apareçam em todos os gráficos
 - [x] Corrigir cor da linha de evolução (sempre verde para continuidade)
 - [ ] Adicionar mais dados históricos para Colesterol HDL se disponíveis
+
+## Doublecheck de Todos os Dados
+- [x] Verificar distribuição de dados por ano (2022: 1, 2023: 14, 2024: 16, 2025: 64, 2026: 31)
+- [x] Identificar valores biologicamente impossíveis (CREATININA 31.60 e 24.70 mg/dL)
+- [x] Corrigir CREATININA de 2023 e 2024 (0.32, 1.16, 0.25, 1.06 mg/dL)
+- [ ] Corrigir faixas de referência de Basófilos, Eosinófilos, Linfócitos (% vs contagem absoluta)
+- [ ] Adicionar faixas de referência para 10 exames sem referência
+
+## Foco EXCLUSIVO em Dados de 2026 (Ano Vigente)
+- [x] Atualizar Home para mostrar APENAS exames de 2026
+  - [x] Indicador visual de que está mostrando dados de 2026
+  - [x] Usar tRPC listByPatientAndPeriod com year=2026
+- [x] Atualizar ExamsDetail para mostrar APENAS exames de 2026
+  - [x] Indicador visual de período 2026
+  - [x] Histórico completo acessível ao selecionar exame
+- [x] Atualizar MedicalInsights para análise EXCLUSIVA de 2026
+  - [x] Usar tRPC listByPatientAndPeriod com year=2026
+  - [x] Corrigir nomes de exames para match correto
+- [x] Atualizar SportsInsights para recomendações baseadas EXCLUSIVAMENTE em 2026
+  - [x] Usar tRPC listByPatientAndPeriod com year=2026
+  - [x] Corrigir nomes de exames para match correto
+- [x] Atualizar CompleteHistory com indicador de histórico completo
+  - [x] Indicador visual de que mostra 2022-2026
+  - [x] Link para voltar à Home para dados de 2026
+- [x] Dashboard: contar apenas exames de 2026 (normais/anormais/críticos)
+- [ ] Exames sem dados de 2026: mostrar como "Pendente" com recomendação (próxima fase)
+- [ ] Remover alertas críticos baseados em dados antigos (2022-2025) (próxima fase)

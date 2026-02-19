@@ -12,9 +12,10 @@ export default function ExamsDetail() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedExamName, setSelectedExamName] = useState<string | null>(null);
 
-  // Carregar todos os exames do paciente
-  const { data: exams = [], isLoading } = trpc.exams.listByPatient.useQuery({
-    patientId: 'denis-santos'
+  // Carregar APENAS exames de 2026 (ano vigente)
+  const { data: exams = [], isLoading } = trpc.exams.listByPatientAndPeriod.useQuery({
+    patientId: 'denis-santos',
+    year: 2026
   });
 
   // Carregar histórico do exame selecionado
@@ -45,6 +46,12 @@ export default function ExamsDetail() {
 
   const selectedExam = selectedExamName ? examsByName[selectedExamName] : null;
   const selectedExamData = selectedExam ? selectedExam[0] : null;
+
+  // Verificar se há exames com histórico (para mostrar evolução)
+  const examsWithHistory = selectedExam ? selectedExam.filter(e => {
+    // Verificar se existe histórico anterior (2025 ou antes)
+    return examHistory.length > 1;
+  }) : [];
 
   // O ExamChart agora lida com a preparação dos dados internamente
 
@@ -79,6 +86,13 @@ export default function ExamsDetail() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Indicador de Periodo */}
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-900">
+            <strong>Dados de 2026:</strong> Exibindo apenas exames do ano vigente. Selecione um exame para ver o historico completo de evolucao.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Lista de Exames */}
           <div className="lg:col-span-1">

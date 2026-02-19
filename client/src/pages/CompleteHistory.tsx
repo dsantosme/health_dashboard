@@ -94,6 +94,13 @@ export default function CompleteHistory() {
           </div>
         </div>
 
+        {/* Indicador de Historico */}
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-900">
+            <strong>Historico Completo (2022-2026):</strong> Todos os exames de todos os periodos. Para ver apenas dados atuais de 2026, retorne a Home.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Anos */}
           <div className="lg:col-span-1">
