@@ -163,3 +163,12 @@
 - [x] Corrigir MAGNÉSIO: 1.70-2.20 mg/dL (estava 7.00-2.60)
 - [x] Corrigir FÓSFORO: 2.50-4.50 mg/dL (estava invertido)
 - [x] Validar que não há mais faixas invertidas no banco
+
+## Melhorias em Gráficos de Projeção
+- [x] Corrigir cálculo de tendência usando regressão linear (todos os dados históricos)
+- [x] Implementar progressão real dos 3 cenários (divergem ao longo de 24 meses)
+- [x] Adicionar linhas de baseline (faixa de referência) no gráfico
+- [x] Melhorar visualização com ComposedChart (barras + linhas)
+- [x] Adicionar interpretação dos cenários com cards descritivos
+- [ ] Pesquisar health prediction frameworks para melhorar CX
+- [ ] Implementar insights de health prediction na plataforma
