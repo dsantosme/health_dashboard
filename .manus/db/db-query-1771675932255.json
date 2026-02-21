@@ -1,0 +1,15 @@
+{
+  "query": "SELECT name, referenceMin, referenceMax FROM exams WHERE referenceMin > referenceMax LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4CL96j1KJtBbj5n.cd364dcd713b --database T3bV8hp3wZ3iZJdo4VhuRX --execute SELECT name, referenceMin, referenceMax FROM exams WHERE referenceMin > referenceMax LIMIT 5;",
+  "rows": [
+    {
+      "name": "Triglicerídeos",
+      "referenceMin": "150.00",
+      "referenceMax": "149.00"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\treferenceMin\treferenceMax\nTriglicerídeos\t150.00\t149.00\n",
+  "stderr": "",
+  "execution_time_ms": 65
+}

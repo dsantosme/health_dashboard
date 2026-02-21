@@ -154,6 +154,12 @@
   - [x] Cenário Otimista: redução de peso/circunferência
   - [x] Cenário Manutenção: dados atuais
   - [x] Cenário Pessimista: aumento de peso/circunferência
-  - Código implementado mas com problema de renderização (cache Vite)
+  - Código implementado e renderizando corretamente
 - [ ] Correlacionar projeções com impacto em exames relevantes
 - [ ] Mostrar recomendações de saúde baseadas nas projeções
+
+## Correção de Faixas Invertidas
+- [x] Identificar faixas de referência invertidas (min > max)
+- [x] Corrigir MAGNÉSIO: 1.70-2.20 mg/dL (estava 7.00-2.60)
+- [x] Corrigir FÓSFORO: 2.50-4.50 mg/dL (estava invertido)
+- [x] Validar que não há mais faixas invertidas no banco
