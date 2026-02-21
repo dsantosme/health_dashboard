@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
+import { FutureProjectionChart } from './FutureProjectionChart';
 
 interface ExamDataPoint {
   date: string | Date;
@@ -13,6 +14,8 @@ interface ExamChartProps {
   data: ExamDataPoint[];
   examName: string;
   unit: string;
+  referenceMin?: number;
+  referenceMax?: number;
 }
 
 export function ExamChart({ data, examName, unit }: ExamChartProps) {
@@ -225,6 +228,21 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
           <div className="w-4 h-4 rounded bg-indigo-200"></div>
           <span className="text-slate-600">Faixa de Referência</span>
         </div>
+      </div>
+
+      {/* Componente de Projeção Futura */}
+      <div className="mt-8">
+        <FutureProjectionChart
+          examName={examName}
+          currentValue={chartData[chartData.length - 1]?.value || 0}
+          referenceMin={chartData[0]?.referenceMin || 0}
+          referenceMax={chartData[0]?.referenceMax || 100}
+          unit={unit}
+          historicalData={chartData.map(d => ({
+            date: d.date,
+            value: d.value
+          }))}
+        />
       </div>
     </div>
   );

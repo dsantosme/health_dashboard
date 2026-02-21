@@ -74,3 +74,4 @@ export const examHistory = mysqlTable("exam_history", {
 
 export type ExamHistory = typeof examHistory.$inferSelect;
 export type InsertExamHistory = typeof examHistory.$inferInsert;
+

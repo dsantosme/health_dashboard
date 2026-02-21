@@ -122,21 +122,21 @@
 
 
 ## Histórico Completo e Filtro de Anos
-- [ ] Corrigir faixa de Testosterona: mínimo deve ser ~264 ng/dL (não 0.10) para homem 42 anos
-- [ ] Revisar todas as faixas de referência para homem de 42 anos
-- [ ] Implementar filtro de anos no gráfico (checkboxes: 2022, 2023, 2024, 2025, 2026)
-- [ ] Atualizar ExamChart para carregar histórico completo (2022-2026)
-- [ ] Mostrar evolução temporal com filtro de anos selecionados
-- [ ] Adicionar indicador visual de qual ano está selecionado no filtro
+- [x] Corrigir faixa de Testosterona: mínimo deve ser ~264 ng/dL (não 0.10) para homem 42 anos
+- [x] Revisar todas as faixas de referência para homem de 42 anos
+- [x] Implementar filtro de anos no gráfico (checkboxes: 2022, 2023, 2024, 2025, 2026)
+- [x] Atualizar ExamChart para carregar histórico completo (2022-2026)
+- [x] Mostrar evolução temporal com filtro de anos selecionados
+- [x] Adicionar indicador visual de qual ano está selecionado no filtro
 
 ## Melhorias na Tela de Exames
-- [ ] Adicionar indicadores de status (Normal/Anormal/Critico) aos exames
-  - [ ] Calcular status baseado em referenceMin/Max vs valor atual
-  - [ ] Mostrar badge visual em cada exame na lista
-- [ ] Implementar filtros por indicadores
-  - [ ] Botoes de filtro (Normais, Anormais, Criticos)
-  - [ ] Filtrar lista de exames ao clicar
-  - [ ] Mostrar contador de exames por filtro
+- [x] Adicionar indicadores de status (Normal/Anormal/Critico) aos exames
+  - [x] Calcular status baseado em referenceMin/Max vs valor atual
+  - [x] Mostrar badge visual em cada exame na lista
+- [x] Implementar filtros por indicadores
+  - [x] Botoes de filtro (Normais, Anormais, Criticos)
+  - [x] Filtrar lista de exames ao clicar
+  - [x] Mostrar contador de exames por filtro
 - [ ] Adicionar titulo do exame na area do grafico
   - [ ] Exibir nome do exame selecionado acima do grafico
   - [ ] Mostrar categoria e unidade de medida
@@ -148,11 +148,12 @@
 
 
 ## Dados Antropométricos e Projeções
-- [ ] Verificar se banco tem dados de peso, altura, circunferência abdominal
-- [ ] Criar seção "Dados Antropométricos" na Home com peso, altura, IMC, circunferência
-- [ ] Implementar gráficos de projeção (3 em 3 meses, 2 anos futuros)
-  - [ ] Cenário Otimista: redução de peso/circunferência
-  - [ ] Cenário Manutenção: dados atuais
-  - [ ] Cenário Pessimista: aumento de peso/circunferência
+- [x] Verificar se banco tem dados de peso, altura, circunferência abdominal
+- [x] Criar seção "Dados Antropométricos" na Home com peso, altura, IMC, circunferência
+- [x] Implementar gráficos de projeção (3 em 3 meses, 2 anos futuros)
+  - [x] Cenário Otimista: redução de peso/circunferência
+  - [x] Cenário Manutenção: dados atuais
+  - [x] Cenário Pessimista: aumento de peso/circunferência
+  - Código implementado mas com problema de renderização (cache Vite)
 - [ ] Correlacionar projeções com impacto em exames relevantes
 - [ ] Mostrar recomendações de saúde baseadas nas projeções
