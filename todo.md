@@ -119,3 +119,29 @@
 - [x] ExamsDetail.tsx: valor atual agora mostra o ULTIMO (mais recente) de 2026
 - [x] Todos os testes passam (vitest)
 - [x] TypeScript sem erros
+
+
+## Histórico Completo e Filtro de Anos
+- [ ] Corrigir faixa de Testosterona: mínimo deve ser ~264 ng/dL (não 0.10) para homem 42 anos
+- [ ] Revisar todas as faixas de referência para homem de 42 anos
+- [ ] Implementar filtro de anos no gráfico (checkboxes: 2022, 2023, 2024, 2025, 2026)
+- [ ] Atualizar ExamChart para carregar histórico completo (2022-2026)
+- [ ] Mostrar evolução temporal com filtro de anos selecionados
+- [ ] Adicionar indicador visual de qual ano está selecionado no filtro
+
+## Melhorias na Tela de Exames
+- [ ] Adicionar indicadores de status (Normal/Anormal/Critico) aos exames
+  - [ ] Calcular status baseado em referenceMin/Max vs valor atual
+  - [ ] Mostrar badge visual em cada exame na lista
+- [ ] Implementar filtros por indicadores
+  - [ ] Botoes de filtro (Normais, Anormais, Criticos)
+  - [ ] Filtrar lista de exames ao clicar
+  - [ ] Mostrar contador de exames por filtro
+- [ ] Adicionar titulo do exame na area do grafico
+  - [ ] Exibir nome do exame selecionado acima do grafico
+  - [ ] Mostrar categoria e unidade de medida
+- [ ] Adicionar box descritivo do exame
+  - [ ] Explicacao do que e o exame
+  - [ ] Importancia clinica
+  - [ ] O que significam valores altos/baixos
+  - [ ] Recomendacoes gerais
