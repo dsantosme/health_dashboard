@@ -1,9 +1,9 @@
-import { useAuth } from '@/_core/hooks/useAuth';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight, Loader2 } from 'lucide-react';
+import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight, Loader2, Weight, Ruler, Zap } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
+import { useAuth } from '@/_core/hooks/useAuth';
 
 export default function Home() {
   const { user, loading: authLoading, error, isAuthenticated, logout } = useAuth();
@@ -20,7 +20,7 @@ export default function Home() {
     year: 2026
   });
 
-  const isLoading = patientLoading || examsLoading;
+  const isLoading = patientLoading || examsLoading || authLoading;
 
   // Agrupar exames por status
   const normalExams = exams.filter(e => e.status === 'normal').length;
@@ -88,6 +88,65 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Dados Antropométricos */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-slate-900 mb-4">Dados Antropométricos</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Peso */}
+            <Card className="p-6 bg-white border-slate-200">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-slate-900">Peso</h3>
+                <Weight className="w-5 h-5 text-blue-600" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-slate-900">{patient.weight || 0}</span>
+                <span className="text-sm text-slate-600">kg</span>
+              </div>
+              <p className="text-xs text-slate-500 mt-2">Medida atual</p>
+            </Card>
+
+            {/* Altura */}
+            <Card className="p-6 bg-white border-slate-200">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-slate-900">Altura</h3>
+                <Ruler className="w-5 h-5 text-indigo-600" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-slate-900">{patient.height || 0}</span>
+                <span className="text-sm text-slate-600">cm</span>
+              </div>
+              <p className="text-xs text-slate-500 mt-2">Medida fixa</p>
+            </Card>
+
+            {/* Circunferência Abdominal */}
+            <Card className="p-6 bg-red-50 border-slate-200">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-slate-900">Circunferência Abdominal</h3>
+                <Activity className="w-5 h-5 text-purple-600" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-slate-900">{patient.waist || 0}</span>
+                <span className="text-sm text-slate-600">cm</span>
+              </div>
+              <p className="text-xs text-red-600 font-medium mt-2">Muito aumentado</p>
+              <p className="text-xs text-slate-500 mt-1">Homem: &lt;94cm normal</p>
+            </Card>
+
+            {/* IMC */}
+            <Card className="p-6 bg-yellow-50 border-slate-200">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-slate-900">IMC</h3>
+                <Zap className="w-5 h-5 text-yellow-600" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-slate-900">{patient.bmi ? parseFloat(patient.bmi.toString()).toFixed(1) : 0}</span>
+                <span className="text-sm text-slate-600">kg/m²</span>
+              </div>
+              <p className="text-xs text-yellow-600 font-medium mt-2">Obesidade Grau I</p>
+            </Card>
+          </div>
+        </div>
+
         {/* Indicador de Período */}
         <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-900">
@@ -102,7 +161,7 @@ export default function Home() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600 mb-1">Exames em 2026</p>
-                <p className="text-3xl font-bold text-slate-900">{exams.length}</p>
+                <p className="text-3xl font-bold text-slate-900">{totalExams2026}</p>
               </div>
               <Microscope className="w-10 h-10 text-blue-600 opacity-20" />
             </div>
@@ -254,31 +313,25 @@ export default function Home() {
             </Button>
           </div>
           
-          {latestExams.length === 0 ? (
-            <p className="text-center text-slate-500 py-8">Nenhum exame encontrado</p>
-          ) : (
-            <div className="space-y-3">
-              {latestExams.map(exam => (
-                <div key={exam.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition">
-                  <div className="flex-1">
-                    <p className="font-medium text-slate-900">{exam.examName}</p>
-                    <p className="text-sm text-slate-600">
-                      {new Date(exam.date).toLocaleDateString('pt-BR')}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-slate-900">{exam.value} {exam.unit}</p>
-                    <p className="text-xs text-slate-600">{exam.category}</p>
-                  </div>
-                  <div className="ml-4">
-                    {exam.status === 'normal' && <span className="text-lg">✅</span>}
-                    {exam.status === 'low' && <span className="text-lg">⬇️</span>}
-                    {exam.status === 'high' && <span className="text-lg">⬆️</span>}
-                  </div>
+          <div className="space-y-3">
+            {latestExams.map(exam => (
+              <div key={exam.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition">
+                <div className="flex-1">
+                  <p className="font-medium text-slate-900">{exam.examName}</p>
+                  <p className="text-sm text-slate-600">{new Date(exam.date).toLocaleDateString('pt-BR')}</p>
                 </div>
-              ))}
-            </div>
-          )}
+                <div className="text-right">
+                  <p className="font-semibold text-slate-900">{exam.value} {exam.unit}</p>
+                  <p className="text-xs text-slate-600">{exam.category}</p>
+                </div>
+                <div className="ml-4">
+                  {exam.status === 'normal' && <span className="text-lg">✅</span>}
+                  {exam.status === 'low' && <span className="text-lg">⬇️</span>}
+                  {exam.status === 'high' && <span className="text-lg">⬆️</span>}
+                </div>
+              </div>
+            ))}
+          </div>
         </Card>
       </main>
     </div>

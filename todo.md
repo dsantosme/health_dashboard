@@ -145,3 +145,14 @@
   - [ ] Importancia clinica
   - [ ] O que significam valores altos/baixos
   - [ ] Recomendacoes gerais
+
+
+## Dados Antropométricos e Projeções
+- [ ] Verificar se banco tem dados de peso, altura, circunferência abdominal
+- [ ] Criar seção "Dados Antropométricos" na Home com peso, altura, IMC, circunferência
+- [ ] Implementar gráficos de projeção (3 em 3 meses, 2 anos futuros)
+  - [ ] Cenário Otimista: redução de peso/circunferência
+  - [ ] Cenário Manutenção: dados atuais
+  - [ ] Cenário Pessimista: aumento de peso/circunferência
+- [ ] Correlacionar projeções com impacto em exames relevantes
+- [ ] Mostrar recomendações de saúde baseadas nas projeções
