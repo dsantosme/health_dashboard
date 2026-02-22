@@ -2,55 +2,53 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { ExamChart } from '@/components/ExamChart';
-import { ArrowLeft, Search, Loader2, TrendingUp, TrendingDown, Minus, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Search, Loader2, Info } from 'lucide-react';
 import { DownloadExams } from '@/components/DownloadExams';
 import { trpc } from '@/lib/trpc';
 import { useCurrentPatient } from '@/hooks/useCurrentPatient';
-import { getExamIcon } from '@/components/ExamIcons';
 
-// Descrições dos exames
+// Descricoes dos exames
 const examDescriptions: Record<string, { description: string; importance: string; interpretation: string }> = {
   'VITAMINA B12': {
-    description: 'Vitamina essencial para formação de glóbulos vermelhos e função neurológica. Importante para energia e memória.',
-    importance: 'Deficiência pode causar anemia, fadiga e problemas neurológicos.',
-    interpretation: 'Valores baixos indicam deficiência; valores altos são raros e geralmente não prejudiciais.'
+    description: 'Vitamina essencial para formacao de globulos vermelhos e funcao neurologica. Importante para energia e memoria.',
+    importance: 'Deficiencia pode causar anemia, fadiga e problemas neurologicos.',
+    interpretation: 'Valores baixos indicam deficiencia; valores altos sao raros e geralmente nao prejudiciais.'
   },
   'FERRO SERICO': {
-    description: 'Mineral essencial para transportar oxigênio no sangue. Componente chave da hemoglobina.',
-    importance: 'Deficiência causa anemia e fadiga; excesso pode danificar órgãos.',
+    description: 'Mineral essencial para transportar oxigenio no sangue. Componente chave da hemoglobina.',
+    importance: 'Deficiencia causa anemia e fadiga; excesso pode danificar orgaos.',
     interpretation: 'Valores baixos indicam anemia; valores altos podem indicar sobrecarga de ferro.'
   },
   'COLESTEROL TOTAL': {
-    description: 'Gordura no sangue essencial para produção de hormônio e vitamina D. Indicador importante de saúde cardiovascular.',
-    importance: 'Níveis altos aumentam risco de doença cardíaca e acidente vascular cerebral.',
-    interpretation: 'Ideal manter abaixo de 200 mg/dL. Valores altos requerem mudanças no estilo de vida ou medicação.'
+    description: 'Gordura no sangue essencial para producao de hormonio e vitamina D. Indicador importante de saude cardiovascular.',
+    importance: 'Niveis altos aumentam risco de doenca cardiaca e acidente vascular cerebral.',
+    interpretation: 'Ideal manter abaixo de 200 mg/dL. Valores altos requerem mudancas no estilo de vida ou medicacao.'
   },
   'GLICOSE JEJUM': {
-    description: 'Nível de açúcar no sangue após 8-12 horas sem comer. Indicador principal de metabolismo de carboidratos.',
-    importance: 'Valores altos indicam risco de diabetes; valores baixos podem causar tontura e confusão.',
-    interpretation: 'Normal: 70-100 mg/dL; Pré-diabetes: 100-125 mg/dL; Diabetes: acima de 126 mg/dL.'
+    description: 'Nivel de acucar no sangue apos 8-12 horas sem comer. Indicador principal de metabolismo de carboidratos.',
+    importance: 'Valores altos indicam risco de diabetes; valores baixos podem causar tontura e confusao.',
+    interpretation: 'Normal: 70-100 mg/dL; Pre-diabetes: 100-125 mg/dL; Diabetes: acima de 126 mg/dL.'
   },
   'CREATININA': {
-    description: 'Produto do metabolismo muscular filtrado pelos rins. Indicador da função renal.',
-    importance: 'Valores altos indicam problemas renais; valores baixos são raros e geralmente não significativos.',
-    interpretation: 'Níveis normais indicam rins funcionando bem. Aumento gradual pode indicar declínio renal.'
+    description: 'Produto do metabolismo muscular filtrado pelos rins. Indicador da funcao renal.',
+    importance: 'Valores altos indicam problemas renais; valores baixos sao raros e geralmente nao significativos.',
+    interpretation: 'Niveis normais indicam rins funcionando bem. Aumento gradual pode indicar declinio renal.'
   },
   'TSH ULTRA SENSIVEL': {
-    description: 'Hormônio que controla a tireoide. Regulador do metabolismo, energia e temperatura corporal.',
+    description: 'Hormonio que controla a tireoide. Regulador do metabolismo, energia e temperatura corporal.',
     importance: 'Descontrole da tireoide afeta metabolismo, peso e energia.',
     interpretation: 'Valores altos indicam hipotireoidismo; valores baixos indicam hipertireoidismo.'
   },
   'COLESTEROL HDL': {
-    description: 'Colesterol "bom" que remove gordura das artérias. Protege contra doença cardíaca.',
-    importance: 'Níveis altos são protetores; níveis baixos aumentam risco cardiovascular.',
+    description: 'Colesterol "bom" que remove gordura das arterias. Protege contra doenca cardiaca.',
+    importance: 'Niveis altos sao protetores; niveis baixos aumentam risco cardiovascular.',
     interpretation: 'Quanto mais alto, melhor. Ideal acima de 40 mg/dL para homens, 50 mg/dL para mulheres.'
   },
   'COLESTEROL LDL': {
-    description: 'Colesterol "ruim" que se acumula nas artérias. Principal fator de risco para doença cardíaca.',
-    importance: 'Níveis altos aumentam significativamente o risco de infarto e AVC.',
-    interpretation: 'Quanto mais baixo, melhor. Ideal abaixo de 100 mg/dL; ótimo abaixo de 70 mg/dL.'
+    description: 'Colesterol "ruim" que se acumula nas arterias. Principal fator de risco para doenca cardiaca.',
+    importance: 'Niveis altos aumentam significativamente o risco de infarto e AVC.',
+    interpretation: 'Quanto mais baixo, melhor. Ideal abaixo de 100 mg/dL; otimo abaixo de 70 mg/dL.'
   }
 };
 
@@ -59,6 +57,7 @@ export default function ExamsDetail() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedExamName, setSelectedExamName] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'normal' | 'abnormal' | 'critical'>('all');
+  const [selectedYears, setSelectedYears] = useState<number[]>([2026]); // Por padrão, mostrar 2026
   const { patientId } = useCurrentPatient();
 
   // Carregar APENAS exames de 2026 (ano vigente)
@@ -72,7 +71,7 @@ export default function ExamsDetail() {
     }
   );
 
-  // Carregar histórico do exame selecionado
+  // Carregar historico do exame selecionado
   const { data: examHistory = [] } = trpc.exams.getHistory.useQuery(
     {
       patientId: patientId!,
@@ -83,7 +82,13 @@ export default function ExamsDetail() {
     }
   );
 
-  // Função para calcular o status do exame
+  // Filtrar historico por anos selecionados
+  const filteredExamHistory = examHistory.filter(exam => {
+    const year = new Date(exam.date).getFullYear();
+    return selectedYears.includes(year);
+  });
+
+  // Funcao para calcular o status do exame
   const getExamStatus = (exam: typeof exams[0]): 'normal' | 'abnormal' | 'critical' => {
     const value = typeof exam.value === 'number' ? exam.value : parseFloat(String(exam.value));
     const min = typeof exam.referenceMin === 'number' ? exam.referenceMin : parseFloat(String(exam.referenceMin));
@@ -93,258 +98,359 @@ export default function ExamsDetail() {
 
     if (value < min || value > max) {
       const rangeSize = (max - min) || 1;
-      const deviation = Math.abs(value < min ? (min - value) : (value - max));
-      const deviationPercent = (deviation / rangeSize) * 100;
-      
-      if (deviationPercent > 50) return 'critical';
-      return 'abnormal';
+      const deviation = value < min ? min - value : value - max;
+      return deviation > rangeSize * 0.2 ? 'critical' : 'abnormal';
     }
-    
     return 'normal';
   };
 
-  // Agrupar exames por nome (pegar apenas o mais recente)
-  const latestExams = exams.reduce((acc, exam) => {
-    const existing = acc.find(e => e.examName === exam.examName);
-    if (!existing || new Date(exam.date) > new Date(existing.date)) {
-      return [...acc.filter(e => e.examName !== exam.examName), exam];
+  // Agrupar por nome de exame
+  const examsByName = exams.reduce((acc, exam) => {
+    const name = exam.examName;
+    if (!acc[name]) {
+      acc[name] = [];
     }
+    acc[name].push(exam);
     return acc;
-  }, [] as typeof exams);
+  }, {} as Record<string, typeof exams>);
 
-  // Filtrar exames
-  const filteredExams = latestExams.filter(exam => {
-    const matchesSearch = exam.examName.toLowerCase().includes(searchTerm.toLowerCase());
+  // Filtrar por busca e status
+  const filteredExams = Object.entries(examsByName).filter(([name]) => {
+    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase());
+    if (statusFilter === 'all') return matchesSearch;
+    
+    const exam = examsByName[name][examsByName[name].length - 1];
     const status = getExamStatus(exam);
-    const matchesStatus = statusFilter === 'all' || status === statusFilter;
-    return matchesSearch && matchesStatus;
+    return matchesSearch && status === statusFilter;
   });
 
-  // Contar status
-  const statusCounts = {
-    all: latestExams.length,
-    normal: latestExams.filter(e => getExamStatus(e) === 'normal').length,
-    abnormal: latestExams.filter(e => getExamStatus(e) === 'abnormal').length,
-    critical: latestExams.filter(e => getExamStatus(e) === 'critical').length
-  };
+  const selectedExam = selectedExamName ? examsByName[selectedExamName] : null;
+  const selectedExamData = selectedExam ? selectedExam[selectedExam.length - 1] : null;
 
-  // Calcular tendência do exame selecionado
-  const getTrend = () => {
-    if (examHistory.length < 2) return null;
-    const sorted = [...examHistory].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    const latest = typeof sorted[0].value === 'number' ? sorted[0].value : parseFloat(String(sorted[0].value));
-    const previous = typeof sorted[1].value === 'number' ? sorted[1].value : parseFloat(String(sorted[1].value));
-    const diff = latest - previous;
-    const percentChange = ((diff / previous) * 100).toFixed(1);
-    
-    if (Math.abs(diff) < 0.01) return { type: 'stable', text: 'Estável', percent: '0.0' };
-    if (diff > 0) return { type: 'up', text: 'Aumento', percent: `+${percentChange}` };
-    return { type: 'down', text: 'Redução', percent: percentChange };
-  };
-
-  const trend = getTrend();
+  const examsWithHistory = selectedExam ? selectedExam.filter(e => {
+    return filteredExamHistory.length > 1;
+  }) : [];
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+          <p className="text-slate-600">Carregando exames...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+
       {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="container py-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate('/')}
-              className="text-foreground"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Exames Detalhados</h1>
-              <p className="text-sm text-muted-foreground">Ano vigente: 2026</p>
-            </div>
-          </div>
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Voltar
+          </Button>
+          <h1 className="text-2xl font-bold text-slate-900">Exames Detalhados</h1>
         </div>
       </header>
 
-      <main className="container py-6 space-y-6">
-        {/* Filtros e Busca */}
-        <Card className="p-6 bg-card border-border">
-          <div className="space-y-4">
-            {/* Status Filters */}
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant={statusFilter === 'all' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setStatusFilter('all')}
-                className={statusFilter === 'all' ? '' : 'bg-transparent text-foreground border-border'}
-              >
-                Todos ({statusCounts.all})
-              </Button>
-              <Button
-                variant={statusFilter === 'normal' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setStatusFilter('normal')}
-                className={statusFilter === 'normal' ? 'bg-green-500 hover:bg-green-600' : 'bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20'}
-              >
-                ✓ Normais ({statusCounts.normal})
-              </Button>
-              <Button
-                variant={statusFilter === 'abnormal' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setStatusFilter('abnormal')}
-                className={statusFilter === 'abnormal' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20 hover:bg-yellow-500/20'}
-              >
-                ⚠ Anormais ({statusCounts.abnormal})
-              </Button>
-              <Button
-                variant={statusFilter === 'critical' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setStatusFilter('critical')}
-                className={statusFilter === 'critical' ? 'bg-red-500 hover:bg-red-600' : 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20'}
-              >
-                ● Críticos ({statusCounts.critical})
-              </Button>
-            </div>
-
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Buscar exame..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-background border-border text-foreground"
-              />
-            </div>
-          </div>
-        </Card>
-
-        {/* Lista de Exames */}
-        <div className="space-y-3">
-          {filteredExams.map((exam) => {
-            const status = getExamStatus(exam);
-            const Icon = getExamIcon(exam.examName);
-                const isSelected = selectedExamName === exam.examName;
-            
-            return (
-              <Card
-                key={exam.id}
-                className={`p-4 cursor-pointer transition-all ${
-                  isSelected
-                    ? 'bg-primary/10 border-primary'
-                    : 'bg-card border-border hover:border-primary/50'
-                }`}
-                onClick={() => setSelectedExamName(exam.examName)}
-              >
-                <div className="flex items-center gap-4">
-                  {/* Ícone */}
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                    status === 'normal' ? 'bg-green-500/10 text-green-400' :
-                    status === 'abnormal' ? 'bg-yellow-500/10 text-yellow-400' :
-                    'bg-red-500/10 text-red-400'
-                  }`}>
-                    <Icon size={24} />
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground truncate">{exam.examName}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {new Date(exam.date).toLocaleDateString('pt-BR')}
-                    </p>
-                  </div>
-
-                  {/* Valor e Status */}
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-foreground">
-                      {(() => {
-                        const val = typeof exam.value === 'number' ? exam.value : parseFloat(String(exam.value));
-                        return isNaN(val) ? exam.value : val.toFixed(2);
-                      })()} {exam.unit}
-                    </p>
-                    <div className="flex items-center justify-end gap-1">
-                      {status === 'normal' && <span className="text-xs text-green-400">✓ Normal</span>}
-                      {status === 'abnormal' && <span className="text-xs text-yellow-400">⚠ Anormal</span>}
-                      {status === 'critical' && <span className="text-xs text-red-400">● Crítico</span>}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
-
-          {filteredExams.length === 0 && (
-            <Card className="p-8 bg-card border-border text-center">
-              <p className="text-muted-foreground">Nenhum exame encontrado</p>
-            </Card>
-          )}
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Indicador de Periodo */}
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-900">
+            <strong>Dados de 2026:</strong> Exibindo apenas exames do ano vigente. Selecione um exame para ver o historico completo de evolucao.
+          </p>
         </div>
 
-        {/* Detalhes do Exame Selecionado */}
-        {selectedExamName && (
-          <Card className="p-6 bg-card border-border space-y-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground">{selectedExamName}</h2>
-                {trend && (
-                  <div className="flex items-center gap-2 mt-2">
-                    {trend.type === 'up' && <TrendingUp className="w-4 h-4 text-red-400" />}
-                    {trend.type === 'down' && <TrendingDown className="w-4 h-4 text-green-400" />}
-                    {trend.type === 'stable' && <Minus className="w-4 h-4 text-muted-foreground" />}
-                    <span className={`text-sm font-medium ${
-                      trend.type === 'up' ? 'text-red-400' :
-                      trend.type === 'down' ? 'text-green-400' :
-                      'text-muted-foreground'
-                    }`}>
-                      {trend.text} {trend.percent}%
-                    </span>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Lista de Exames */}
+          <div className="lg:col-span-1">
+            <Card className="p-6 bg-white border-slate-200 sticky top-24">
+              <h2 className="text-lg font-bold text-slate-900 mb-4">Exames ({filteredExams.length})</h2>
+              
+              {/* Filtros de Status */}
+              <div className="mb-4 flex gap-2 flex-wrap">
+                <button
+                  onClick={() => setStatusFilter('all')}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition ${
+                    statusFilter === 'all'
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  Todos
+                </button>
+                <button
+                  onClick={() => setStatusFilter('normal')}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition ${
+                    statusFilter === 'normal'
+                      ? 'bg-green-600 text-white'
+                      : 'bg-green-100 text-green-700 hover:bg-green-200'
+                  }`}
+                >
+                  ✓ Normais
+                </button>
+                <button
+                  onClick={() => setStatusFilter('abnormal')}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition ${
+                    statusFilter === 'abnormal'
+                      ? 'bg-yellow-600 text-white'
+                      : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
+                  }`}
+                >
+                  ⚠ Anormais
+                </button>
+                <button
+                  onClick={() => setStatusFilter('critical')}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition ${
+                    statusFilter === 'critical'
+                      ? 'bg-red-600 text-white'
+                      : 'bg-red-100 text-red-700 hover:bg-red-200'
+                  }`}
+                >
+                  🔴 Criticos
+                </button>
+              </div>
+
+              {/* Search */}
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar exame..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* Exam List */}
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {filteredExams.map(([name]) => {
+                  const exam = examsByName[name][examsByName[name].length - 1];
+                  const status = getExamStatus(exam);
+                  const statusColors = {
+                    normal: 'bg-green-50 border-green-200 hover:bg-green-100',
+                    abnormal: 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100',
+                    critical: 'bg-red-50 border-red-200 hover:bg-red-100'
+                  };
+                  const statusIcons = {
+                    normal: '✓',
+                    abnormal: '⚠',
+                    critical: '🔴'
+                  };
+
+                  return (
+                    <button
+                      key={name}
+                      onClick={() => setSelectedExamName(name)}
+                      className={`w-full text-left p-3 rounded-lg transition border ${
+                        selectedExamName === name
+                          ? 'bg-blue-100 border-2 border-blue-500 text-blue-900'
+                          : `border-slate-200 text-slate-700 ${statusColors[status]}`
+                      }`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <p className="font-medium text-sm">{name}</p>
+                          <p className="text-xs text-slate-600 mt-1">
+                            {examsByName[name].length} coleta{examsByName[name].length > 1 ? 's' : ''}
+                          </p>
+                        </div>
+                        <span className="text-lg ml-2">{statusIcons[status]}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </Card>
+          </div>
+
+          {/* Detalhes do Exame */}
+          <div className="lg:col-span-2 space-y-6">
+            {selectedExamData ? (
+              <>
+                {/* Header com Titulo */}
+                <Card className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-2xl font-bold text-slate-900">{selectedExamData.examName}</h3>
+                      <p className="text-sm text-slate-600 mt-1">{selectedExamData.category}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-3xl font-bold text-blue-600">
+                        {selectedExamData?.value}
+                      </p>
+                      <p className="text-sm text-slate-600">{selectedExamData?.unit}</p>
+                    </div>
                   </div>
+                </Card>
+
+                {/* Box Descritivo */}
+                {examDescriptions[selectedExamData.examName] && (
+                  <Card className="p-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200">
+                    <div className="flex gap-4">
+                      <Info className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-1" />
+                      <div className="flex-1">
+                        <h4 className="font-bold text-indigo-900 mb-2">O que e este exame?</h4>
+                        <p className="text-sm text-indigo-800 mb-3">
+                          {examDescriptions[selectedExamData.examName].description}
+                        </p>
+                        <p className="text-sm text-indigo-800 mb-2">
+                          <strong>Importancia:</strong> {examDescriptions[selectedExamData.examName].importance}
+                        </p>
+                        <p className="text-sm text-indigo-800">
+                          <strong>Interpretacao:</strong> {examDescriptions[selectedExamData.examName].interpretation}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
                 )}
-              </div>
-            </div>
 
-            {/* Descrição */}
-            {examDescriptions[selectedExamName] && (
-              <div className="space-y-3 p-4 bg-background/50 rounded-xl">
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">📋 O que é este exame?</h3>
-                  <p className="text-sm text-muted-foreground">{examDescriptions[selectedExamName].description}</p>
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">⚠️ Importância</h3>
-                  <p className="text-sm text-muted-foreground">{examDescriptions[selectedExamName].importance}</p>
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">🔍 Interpretação</h3>
-                  <p className="text-sm text-muted-foreground">{examDescriptions[selectedExamName].interpretation}</p>
-                </div>
-              </div>
+                {/* Faixa de Referencia */}
+                {(selectedExamData.referenceMin || selectedExamData.referenceMax) && (
+                  <Card className="p-6 bg-white border-slate-200">
+                    <h4 className="font-bold text-slate-900 mb-4">Faixa de Referencia</h4>
+                    <div className="grid grid-cols-3 gap-4">
+                      {selectedExamData.referenceMin && (
+                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                          <p className="text-xs text-green-700 mb-1">Minimo</p>
+                          <p className="text-2xl font-bold text-green-900">{selectedExamData.referenceMin}</p>
+                        </div>
+                      )}
+                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <p className="text-xs text-blue-700 mb-1">Atual</p>
+                        <p className="text-2xl font-bold text-blue-900">{selectedExamData?.value}</p>
+                      </div>
+                      {selectedExamData.referenceMax && (
+                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                          <p className="text-xs text-green-700 mb-1">Maximo</p>
+                          <p className="text-2xl font-bold text-green-900">{selectedExamData.referenceMax}</p>
+                        </div>
+                      )}
+                    </div>
+                  </Card>
+                )}
+
+                {/* Filtro de Anos */}
+                {examHistory.length > 0 && (
+                  <Card className="p-6 bg-white border-slate-200">
+                    <h4 className="font-bold text-slate-900 mb-4">Filtrar por Anos</h4>
+                    <div className="flex flex-wrap gap-3">
+                      {[2022, 2023, 2024, 2025, 2026].map(year => {
+                        const hasDataForYear = examHistory.some(exam => new Date(exam.date).getFullYear() === year);
+                        if (!hasDataForYear) return null;
+                        return (
+                          <button
+                            key={year}
+                            onClick={() => {
+                              setSelectedYears(prev => 
+                                prev.includes(year)
+                                  ? prev.filter(y => y !== year)
+                                  : [...prev, year]
+                              );
+                            }}
+                            className={`px-4 py-2 rounded-lg font-medium transition ${
+                              selectedYears.includes(year)
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            }`}
+                          >
+                            {year}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </Card>
+                )}
+
+                {/* Grafico Temporal */}
+                <Card className="p-6 bg-white border-slate-200">
+                  <h4 className="font-bold text-slate-900 mb-4">Evolucao Temporal ({selectedYears.join(', ')})</h4>
+                  {filteredExamHistory.length > 0 ? (
+                    <ExamChart 
+                      data={filteredExamHistory}
+                      examName={selectedExamName || ''}
+                      unit={selectedExamData?.unit || ''}
+                    />
+                  ) : (
+                    <p className="text-center text-slate-500 py-8">Sem dados historicos disponiveis</p>
+                  )}
+                </Card>
+
+                {/* Historico Detalhado */}
+                <Card className="p-6 bg-white border-slate-200">
+                  <h4 className="font-bold text-slate-900 mb-4">Historico Completo</h4>
+                  <div className="space-y-3">
+                    {filteredExamHistory.length > 0 ? (
+                      filteredExamHistory
+                        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                        .map((exam, idx) => {
+                          const value = typeof exam.value === 'number' ? exam.value : parseFloat(String(exam.value));
+                          const prevValue = idx < filteredExamHistory.length - 1 
+                            ? (typeof filteredExamHistory[idx + 1].value === 'number' 
+                                ? filteredExamHistory[idx + 1].value 
+                                : parseFloat(String(filteredExamHistory[idx + 1].value)))
+                            : null;
+                          
+                          return (
+                            <div key={exam.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                              <div className="flex-1">
+                                <p className="font-medium text-slate-900">
+                                  {new Date(exam.date).toLocaleDateString('pt-BR')}
+                                </p>
+                                <p className="text-sm text-slate-600 mt-1">
+                                  {exam.value} {exam.unit}
+                                  {exam.referenceMin && exam.referenceMax && (
+                                    <span className="ml-2 text-xs text-slate-500">
+                                      (Ref: {exam.referenceMin}-{exam.referenceMax})
+                                    </span>
+                                  )}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                {prevValue !== null && typeof prevValue === 'number' && (
+                                  <div className="text-xs text-slate-600">
+                                    {value > prevValue ? (
+                                      <span className="text-red-600">↑ +{(value - prevValue).toFixed(2)}</span>
+                                    ) : value < prevValue ? (
+                                      <span className="text-green-600">↓ -{(prevValue - value).toFixed(2)}</span>
+                                    ) : (
+                                      <span className="text-gray-600">→ Estavel</span>
+                                    )}
+                                  </div>
+                                )}
+                                {exam.status === 'normal' && <span className="text-lg">✅</span>}
+                                {exam.status === 'low' && <span className="text-lg">⬇️</span>}
+                                {exam.status === 'high' && <span className="text-lg">⬆️</span>}
+                              </div>
+                            </div>
+                          );
+                        })
+                    ) : (
+                      <p className="text-center text-slate-500 py-8">Nenhum historico disponivel</p>
+                    )}
+                  </div>
+                </Card>
+              </>
+            ) : (
+              <Card className="p-12 bg-white border-slate-200 text-center">
+                <p className="text-slate-600">Selecione um exame para ver detalhes</p>
+              </Card>
             )}
 
-            {/* Gráfico */}
-            {examHistory.length > 0 && (
-              <ExamChart
-                data={examHistory}
-                examName={selectedExamName}
-                unit={examHistory[0]?.unit || ''}
-                referenceMin={examHistory[0]?.referenceMin ? parseFloat(String(examHistory[0].referenceMin)) : undefined}
-                referenceMax={examHistory[0]?.referenceMax ? parseFloat(String(examHistory[0].referenceMax)) : undefined}
-              />
-            )}
-          </Card>
-        )}
-
-        {/* Download */}
-        <DownloadExams />
+            {/* Download */}
+            <DownloadExams />
+          </div>
+        </div>
       </main>
     </div>
   );
