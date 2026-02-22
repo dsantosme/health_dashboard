@@ -30,6 +30,7 @@ export type InsertUser = typeof users.$inferInsert;
  */
 export const patients = mysqlTable("patients", {
   id: varchar("id", { length: 64 }).primaryKey(),
+  userId: int("userId").notNull(), // FK to users.id - LGPD compliance
   name: text("name").notNull(),
   birthDate: date("birthDate"),
   weight: decimal("weight", { precision: 5, scale: 2 }),
@@ -63,6 +64,7 @@ export type InsertExam = typeof exams.$inferInsert;
  */
 export const examHistory = mysqlTable("exam_history", {
   id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(), // FK to users.id - LGPD compliance
   patientId: varchar("patientId", { length: 64 }).notNull(),
   examName: varchar("examName", { length: 100 }).notNull(),
   date: date("date").notNull(),
@@ -80,6 +82,7 @@ export type InsertExamHistory = typeof examHistory.$inferInsert;
  */
 export const examCorrelations = mysqlTable("exam_correlations", {
   id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(), // FK to users.id - LGPD compliance
   patientId: varchar("patientId", { length: 64 }).notNull(),
   correlationDate: date("correlationDate").notNull(),
   examsInvolved: text("examsInvolved").notNull(), // JSON array de nomes de exames

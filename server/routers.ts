@@ -1,7 +1,7 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { publicProcedure, router, ownershipProcedure } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
 import * as correlationEngine from "./correlationEngine";
@@ -22,18 +22,18 @@ export const appRouter = router({
 
   // Rotas de Pacientes
   patients: router({
-    list: publicProcedure.query(async () => {
-      return await db.getAllPatients();
+    list: ownershipProcedure.query(async ({ ctx }) => {
+      return await db.getAllPatients(ctx.user.id);
     }),
-    getById: publicProcedure
+    getById: ownershipProcedure
       .input(z.object({ patientId: z.string() }))
-      .query(async ({ input }) => {
-        return await db.getPatientById(input.patientId);
+      .query(async ({ input, ctx }) => {
+        return await db.getPatientById(input.patientId, ctx.user.id);
       }),
-    getAnthropometricData: publicProcedure
+    getAnthropometricData: ownershipProcedure
       .input(z.object({ patientId: z.string() }))
-      .query(async ({ input }) => {
-        const patient = await db.getPatientById(input.patientId);
+      .query(async ({ input, ctx }) => {
+        const patient = await db.getPatientById(input.patientId, ctx.user.id);
         if (!patient) {
           return null;
         }
@@ -48,29 +48,29 @@ export const appRouter = router({
 
   // Rotas de Exames
   exams: router({
-    listByPatient: publicProcedure
+    listByPatient: ownershipProcedure
       .input(z.object({ patientId: z.string() }))
-      .query(async ({ input }) => {
-        return await db.getExamsByPatientId(input.patientId);
+      .query(async ({ input, ctx }) => {
+        return await db.getExamsByPatientId(input.patientId, ctx.user.id);
       }),
-    listByPatientAndPeriod: publicProcedure
+    listByPatientAndPeriod: ownershipProcedure
       .input(z.object({ patientId: z.string(), year: z.number() }))
-      .query(async ({ input }) => {
-        return await db.getExamsByPatientIdAndPeriod(input.patientId, input.year);
+      .query(async ({ input, ctx }) => {
+        return await db.getExamsByPatientIdAndPeriod(input.patientId, input.year, ctx.user.id);
       }),
-    getHistory: publicProcedure
+    getHistory: ownershipProcedure
       .input(z.object({ patientId: z.string(), examName: z.string() }))
-      .query(async ({ input }) => {
-        return await db.getExamHistoryByName(input.patientId, input.examName);
+      .query(async ({ input, ctx }) => {
+        return await db.getExamHistoryByName(input.patientId, input.examName, ctx.user.id);
       }),
   }),
 
   // Rotas de Histórico de Exames
   examHistory: router({
-    listByPatient: publicProcedure
+    listByPatient: ownershipProcedure
       .input(z.object({ patientId: z.string() }))
-      .query(async ({ input }) => {
-        return await db.getExamHistoryByPatientId(input.patientId);
+      .query(async ({ input, ctx }) => {
+        return await db.getExamHistoryByPatientId(input.patientId, ctx.user.id);
       }),
   }),
 
@@ -91,18 +91,18 @@ export const appRouter = router({
       }),
     
     // Processar correlações para uma data específica
-    processForDate: publicProcedure
+    processForDate: ownershipProcedure
       .input(z.object({ patientId: z.string(), date: z.string() }))
-      .mutation(async ({ input }) => {
-        await correlationEngine.processCorrelationsForDate(input.patientId, input.date);
+      .mutation(async ({ input, ctx }) => {
+        await correlationEngine.processCorrelationsForDate(input.patientId, input.date, ctx.user.id);
         return { success: true };
       }),
     
     // Processar todas as correlações de um paciente (histórico completo)
-    processAll: publicProcedure
+    processAll: ownershipProcedure
       .input(z.object({ patientId: z.string() }))
-      .mutation(async ({ input }) => {
-        await correlationEngine.processAllCorrelationsForPatient(input.patientId);
+      .mutation(async ({ input, ctx }) => {
+        await correlationEngine.processAllCorrelationsForPatient(input.patientId, ctx.user.id);
         return { success: true };
       }),
   }),

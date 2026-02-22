@@ -92,24 +92,26 @@ export async function getUserByOpenId(openId: string) {
 
 // ===== FUNÇÕES DE PACIENTES =====
 
-export async function getAllPatients() {
+export async function getAllPatients(userId: number) {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get patients: database not available");
     return [];
   }
 
-  return await db.select().from(patients);
+  return await db.select().from(patients).where(eq(patients.userId, userId));
 }
 
-export async function getPatientById(patientId: string) {
+export async function getPatientById(patientId: string, userId: number) {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get patient: database not available");
     return undefined;
   }
 
-  const result = await db.select().from(patients).where(eq(patients.id, patientId)).limit(1);
+  const result = await db.select().from(patients).where(
+    and(eq(patients.id, patientId), eq(patients.userId, userId))
+  ).limit(1);
   return result.length > 0 ? result[0] : undefined;
 }
 
@@ -138,7 +140,7 @@ export async function getExamByName(examName: string) {
 
 // ===== FUNÇÕES DE HISTÓRICO DE EXAMES =====
 
-export async function getExamsByPatientId(patientId: string) {
+export async function getExamsByPatientId(patientId: string, userId: number) {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get exam history: database not available");
@@ -161,12 +163,12 @@ export async function getExamsByPatientId(patientId: string) {
     })
     .from(examHistory)
     .leftJoin(exams, eq(examHistory.examName, exams.name))
-    .where(eq(examHistory.patientId, patientId));
+    .where(and(eq(examHistory.patientId, patientId), eq(examHistory.userId, userId)));
 
   return history;
 }
 
-export async function getExamsByPatientIdAndPeriod(patientId: string, year: number) {
+export async function getExamsByPatientIdAndPeriod(patientId: string, year: number, userId: number) {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get exams: database not available");
@@ -192,6 +194,7 @@ export async function getExamsByPatientIdAndPeriod(patientId: string, year: numb
     .where(
       and(
         eq(examHistory.patientId, patientId),
+        eq(examHistory.userId, userId),
         sql`YEAR(${examHistory.date}) = ${year}`
       )
     );
@@ -199,7 +202,7 @@ export async function getExamsByPatientIdAndPeriod(patientId: string, year: numb
   return history;
 }
 
-export async function getExamHistoryByName(patientId: string, examName: string) {
+export async function getExamHistoryByName(patientId: string, examName: string, userId: number) {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get exam history: database not available");
@@ -225,6 +228,7 @@ export async function getExamHistoryByName(patientId: string, examName: string) 
     .where(
       and(
         eq(examHistory.patientId, patientId),
+        eq(examHistory.userId, userId),
         eq(examHistory.examName, examName)
       )
     )
@@ -233,14 +237,16 @@ export async function getExamHistoryByName(patientId: string, examName: string) 
   return history;
 }
 
-export async function getExamHistoryByPatientId(patientId: string) {
+export async function getExamHistoryByPatientId(patientId: string, userId: number) {
   const db = await getDb();
   if (!db) {
     console.warn("[Database] Cannot get exam history: database not available");
     return [];
   }
 
-  return await db.select().from(examHistory).where(eq(examHistory.patientId, patientId));
+  return await db.select().from(examHistory).where(
+    and(eq(examHistory.patientId, patientId), eq(examHistory.userId, userId))
+  );
 }
 
 
@@ -262,16 +268,16 @@ export async function insertExamHistory(examsData: InsertExamHistory | InsertExa
     
     // Disparar processamento de correlações para cada paciente/data única
     const uniquePatientDates = new Set(
-      examsArray.map(e => `${e.patientId}|${e.date}`)
+      examsArray.map(e => `${e.patientId}|${e.date}|${e.userId}`)
     );
     
     // Importar dinamicamente para evitar dependência circular
     const { processCorrelationsForDate } = await import('./correlationEngine');
     
     for (const patientDate of Array.from(uniquePatientDates)) {
-      const [patientId, date] = patientDate.split('|');
+      const [patientId, date, userId] = patientDate.split('|');
       // Processar em background (não bloquear a inserção)
-      processCorrelationsForDate(patientId, date).catch(error => {
+      processCorrelationsForDate(patientId, date, parseInt(userId)).catch(error => {
         console.error(`[Correlations] Failed to process for ${patientId} on ${date}:`, error);
       });
     }

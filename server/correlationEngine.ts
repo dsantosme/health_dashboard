@@ -196,7 +196,7 @@ Responda em JSON com a seguinte estrutura:
 /**
  * Processa correlações para um paciente em uma data específica
  */
-export async function processCorrelationsForDate(patientId: string, targetDate: string): Promise<void> {
+export async function processCorrelationsForDate(patientId: string, targetDate: string, userId: number): Promise<void> {
   // Buscar exames do paciente em um período de 7 dias ao redor da data alvo
   const dateObj = new Date(targetDate);
   const weekBefore = new Date(dateObj);
@@ -275,6 +275,7 @@ export async function processCorrelationsForDate(patientId: string, targetDate: 
       
       // Salvar correlação no banco
       await db.insert(examCorrelations).values({
+        userId,
         patientId,
         correlationDate: new Date(group.date),
         examsInvolved: JSON.stringify(relevantExams.map(e => e.name)),
@@ -292,7 +293,7 @@ export async function processCorrelationsForDate(patientId: string, targetDate: 
 /**
  * Processa todas as correlações para um paciente (histórico completo)
  */
-export async function processAllCorrelationsForPatient(patientId: string): Promise<void> {
+export async function processAllCorrelationsForPatient(patientId: string, userId: number): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error('Database not available');
   
@@ -306,7 +307,7 @@ export async function processAllCorrelationsForPatient(patientId: string): Promi
   const uniqueDates = allExams.map((e: any) => e.date);
   
   for (const date of uniqueDates) {
-    await processCorrelationsForDate(patientId, String(date));
+    await processCorrelationsForDate(patientId, String(date), userId);
   }
 }
 

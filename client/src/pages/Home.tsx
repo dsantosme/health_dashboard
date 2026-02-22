@@ -4,21 +4,25 @@ import { Card } from '@/components/ui/card';
 import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight, Loader2, Weight, Ruler, Zap, Network } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/_core/hooks/useAuth';
+import { useCurrentPatient } from '@/hooks/useCurrentPatient';
 
 export default function Home() {
   const { user, loading: authLoading, error, isAuthenticated, logout } = useAuth();
   const [, navigate] = useLocation();
   
-  // Carregar paciente do banco
-  const { data: patient, isLoading: patientLoading } = trpc.patients.getById.useQuery({
-    patientId: 'denis-santos'
-  });
+  // Obter paciente do usuário autenticado (LGPD compliant)
+  const { patient, patientId, loading: patientLoading } = useCurrentPatient();
 
   // Carregar APENAS exames de 2026 (ano vigente)
-  const { data: exams = [], isLoading: examsLoading } = trpc.exams.listByPatientAndPeriod.useQuery({
-    patientId: 'denis-santos',
-    year: 2026
-  });
+  const { data: exams = [], isLoading: examsLoading } = trpc.exams.listByPatientAndPeriod.useQuery(
+    {
+      patientId: patientId!,
+      year: 2026
+    },
+    {
+      enabled: !!patientId, // Só executa se tiver patientId
+    }
+  );
 
   const isLoading = patientLoading || examsLoading || authLoading;
 

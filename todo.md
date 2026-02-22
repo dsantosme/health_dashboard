@@ -248,3 +248,40 @@
 - [x] Adicionar seletor de data para visualizar correlações anteriores
 - [x] Testar motor com inserção de novos exames
 - [x] Validar que correlações são geradas automaticamente
+
+
+## Redesign Mobile-First Inspirado em Samsung Health e Sleep Cycle
+- [ ] Atualizar tema dark para background #0f1419 (azul-escuro sofisticado, não preto puro)
+- [ ] Configurar paleta de cores com gradientes ciano/turquesa (#00d4ff, #00b8d4)
+- [ ] Atualizar sistema de design com border-radius: 24px para cards
+- [ ] Configurar tipografia grande e legível para mobile
+- [ ] Criar componente de card arredondado reutilizável
+- [ ] Redesenhar Home com cards de dados antropométricos estilo Samsung Health
+- [ ] Adicionar gráficos circulares de progresso (estilo coração colorido)
+- [ ] Criar barras de progresso horizontais coloridas
+- [ ] Implementar navegação bottom tab fixa (Home, Exames, Correlações, Perfil)
+- [ ] Redesenhar página de exames com gráficos otimizados para mobile
+- [ ] Adicionar medidores circulares para valores de exame
+- [ ] Criar timeline vertical de exames com badges coloridos
+- [ ] Redesenhar página de correlações com insights visuais
+- [ ] Adicionar ilustrações coloridas e amigáveis
+- [ ] Testar responsividade em telas pequenas (320px-428px)
+- [ ] Validar navegação touch-friendly (botões grandes, espaçamento adequado)
+
+
+## Segurança e LGPD - Isolamento de Dados por Usuário
+- [x] Adicionar coluna `userId` na tabela `patients` vinculando ao `user.id`
+- [x] Adicionar coluna `userId` na tabela `examHistory` para redundância e performance
+- [x] Adicionar coluna `userId` na tabela `exam_correlations`
+- [x] Criar middleware `ownershipProcedure` que valida `ctx.user.id`
+- [x] Atualizar todos os procedures de `patients.*` para filtrar por `userId`
+- [x] Atualizar todos os procedures de `exams.*` para filtrar por `userId`
+- [x] Atualizar todos os procedures de `correlations.*` para filtrar por `userId`
+- [x] Remover `patientId: 'denis-santos'` hardcoded de Home.tsx
+- [x] Remover `patientId: 'denis-santos'` hardcoded de ExamsDetail.tsx
+- [x] Remover `patientId: 'denis-santos'` hardcoded de todas as páginas
+- [x] Criar hook `useCurrentPatient()` que retorna patient do usuário autenticado
+- [x] Adicionar índices no banco: `patients(userId)`, `examHistory(userId)`, `exam_correlations(userId)`
+- [ ] Testar que usuário A não consegue acessar dados do usuário B
+- [ ] Adicionar logs de auditoria para acessos a dados sensíveis
+- [ ] Documentar política de privacidade e retenção de dados

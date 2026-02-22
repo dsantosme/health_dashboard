@@ -43,3 +43,25 @@ export const adminProcedure = t.procedure.use(
     });
   }),
 );
+
+/**
+ * Middleware de ownership - garante que o usuário está autenticado
+ * Use este middleware para procedures que acessam dados do usuário
+ * O userId estará disponível em ctx.user.id
+ */
+const requireOwnership = t.middleware(async opts => {
+  const { ctx, next } = opts;
+
+  if (!ctx.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: UNAUTHED_ERR_MSG });
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      user: ctx.user,
+    },
+  });
+});
+
+export const ownershipProcedure = t.procedure.use(requireOwnership);

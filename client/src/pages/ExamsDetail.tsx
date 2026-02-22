@@ -6,6 +6,7 @@ import { ExamChart } from '@/components/ExamChart';
 import { ArrowLeft, Search, Loader2, Info } from 'lucide-react';
 import { DownloadExams } from '@/components/DownloadExams';
 import { trpc } from '@/lib/trpc';
+import { useCurrentPatient } from '@/hooks/useCurrentPatient';
 
 // Descricoes dos exames
 const examDescriptions: Record<string, { description: string; importance: string; interpretation: string }> = {
@@ -57,21 +58,27 @@ export default function ExamsDetail() {
   const [selectedExamName, setSelectedExamName] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'normal' | 'abnormal' | 'critical'>('all');
   const [selectedYears, setSelectedYears] = useState<number[]>([2026]); // Por padrão, mostrar 2026
+  const { patientId } = useCurrentPatient();
 
   // Carregar APENAS exames de 2026 (ano vigente)
-  const { data: exams = [], isLoading } = trpc.exams.listByPatientAndPeriod.useQuery({
-    patientId: 'denis-santos',
-    year: 2026
-  });
+  const { data: exams = [], isLoading } = trpc.exams.listByPatientAndPeriod.useQuery(
+    {
+      patientId: patientId!,
+      year: 2026
+    },
+    {
+      enabled: !!patientId,
+    }
+  );
 
   // Carregar historico do exame selecionado
   const { data: examHistory = [] } = trpc.exams.getHistory.useQuery(
     {
-      patientId: 'denis-santos',
+      patientId: patientId!,
       examName: selectedExamName || ''
     },
     {
-      enabled: !!selectedExamName
+      enabled: !!selectedExamName && !!patientId
     }
   );
 

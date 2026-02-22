@@ -4,15 +4,22 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, Activity, Zap, Heart, AlertCircle, Loader2 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { useMemo } from 'react';
+import { useCurrentPatient } from '@/hooks/useCurrentPatient';
 
 export default function SportsInsights() {
   const [, navigate] = useLocation();
+  const { patientId } = useCurrentPatient();
   
   // Buscar APENAS exames de 2026 (ano vigente)
-  const { data: recentExams = [], isLoading } = trpc.exams.listByPatientAndPeriod.useQuery({
-    patientId: 'denis-santos',
-    year: 2026
-  });
+  const { data: recentExams = [], isLoading } = trpc.exams.listByPatientAndPeriod.useQuery(
+    {
+      patientId: patientId!,
+      year: 2026
+    },
+    {
+      enabled: !!patientId,
+    }
+  );
 
   // Função auxiliar para encontrar exame (dados de 2026 já estão filtrados)
   const findLatestExam = (searchTerm: string) => {

@@ -5,25 +5,32 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, TrendingUp, TrendingDown, Minus, Calendar, Loader2 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { trpc } from '@/lib/trpc';
+import { useCurrentPatient } from '@/hooks/useCurrentPatient';
 
 export default function CompleteHistory() {
   const [, navigate] = useLocation();
   const [selectedYear, setSelectedYear] = useState<number | undefined>();
   const [selectedExam, setSelectedExam] = useState<string | undefined>();
+  const { patientId } = useCurrentPatient();
 
   // Carregar todos os exames do paciente
-  const { data: allExams = [], isLoading } = trpc.exams.listByPatient.useQuery({
-    patientId: 'denis-santos'
-  });
+  const { data: allExams = [], isLoading } = trpc.exams.listByPatient.useQuery(
+    {
+      patientId: patientId!
+    },
+    {
+      enabled: !!patientId,
+    }
+  );
 
   // Carregar histórico do exame selecionado
   const { data: examHistory = [] } = trpc.exams.getHistory.useQuery(
     {
-      patientId: 'denis-santos',
+      patientId: patientId!,
       examName: selectedExam || ''
     },
     {
-      enabled: !!selectedExam
+      enabled: !!selectedExam && !!patientId
     }
   );
 

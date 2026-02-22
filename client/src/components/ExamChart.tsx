@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { trpc } from '@/lib/trpc';
 import { useMemo } from 'react';
+import { useCurrentPatient } from '@/hooks/useCurrentPatient';
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
 import { FutureProjectionChart } from './FutureProjectionChart';
 import { Button } from '@/components/ui/button';
@@ -25,11 +26,17 @@ interface ExamChartProps {
 
 export function ExamChart({ data, examName, unit }: ExamChartProps) {
   const [showCorrelations, setShowCorrelations] = useState(false);
+  const { patientId } = useCurrentPatient();
 
   // Buscar dados antropométricos do banco
-  const { data: anthropometricData } = trpc.patients.getAnthropometricData.useQuery({
-    patientId: 'denis-santos'
-  });
+  const { data: anthropometricData } = trpc.patients.getAnthropometricData.useQuery(
+    {
+      patientId: patientId!
+    },
+    {
+      enabled: !!patientId,
+    }
+  );
 
   // Preparar dados para o gráfico
   const chartData = useMemo(() => {
