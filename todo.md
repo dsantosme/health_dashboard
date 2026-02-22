@@ -223,3 +223,14 @@
 - [x] Calcular IMC ideal baseado em altura e idade
 - [x] Ajustar velocidade de perda/ganho conforme proximidade do IMC ideal
 - [x] Testar progressões com múltiplos cenários de peso
+
+
+## Sistema de Correlação entre Exames
+- [x] Criar modelo de correlações entre exames (colesterol, glicemia, ferro, ferritina, etc)
+- [x] Implementar busca de exames correlacionados dentro de período aceitável (mesma data ou curto período)
+- [x] Criar análise em linguagem natural de especialista médico
+- [x] Implementar sistema de recomendação de especialistas (cardiologista, nutrólogo, endocrinologista, etc)
+- [x] Construir interface com botão "Correlações" ao lado de "Projeção"
+- [x] Adicionar explicações sobre status (bom/ruim/precisa melhorar)
+- [x] Testar correlações com múltiplos exames
+- [x] Validar recomendações de especialistas

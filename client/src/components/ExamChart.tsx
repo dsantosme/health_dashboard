@@ -3,6 +3,9 @@ import { trpc } from '@/lib/trpc';
 import { useMemo } from 'react';
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
 import { FutureProjectionChart } from './FutureProjectionChart';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react';
 
 interface ExamDataPoint {
   date: string | Date;
@@ -21,6 +24,8 @@ interface ExamChartProps {
 }
 
 export function ExamChart({ data, examName, unit }: ExamChartProps) {
+  const [showCorrelations, setShowCorrelations] = useState(false);
+
   // Buscar dados antropométricos do banco
   const { data: anthropometricData } = trpc.patients.getAnthropometricData.useQuery({
     patientId: 'denis-santos'
@@ -41,9 +46,7 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
           value: isNaN(value) ? 0 : value,
           referenceMin: refMin,
           referenceMax: refMax,
-          // Calcular altura da barra de referência (faixa normal)
           referenceRange: refMin !== null && refMax !== null ? refMax - refMin : 0,
-          // Base da barra de referência
           referenceBase: refMin || 0,
           status: point.status || 'normal'
         };
@@ -63,27 +66,24 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
     const min = Math.min(...allValues as number[]);
     const max = Math.max(...allValues as number[]);
     const range = max - min;
-    const padding = Math.max(range * 0.2, 5); // Mínimo 5 unidades de padding
+    const padding = Math.max(range * 0.2, 5);
     
-    // Só incluir 0 se o valor mínimo for muito próximo de 0 (< 10% do range)
     const minDomain = min < range * 0.1 ? 0 : Math.max(0, min - padding);
     
     return [minDomain, max + padding];
   }, [chartData]);
 
-  // Cor da linha de evolução (sempre verde para indicar continuidade)
-  const lineColor = '#10b981'; // verde
+  const lineColor = '#10b981';
 
-  // Função para determinar cor da barra de valor
   const getValueBarColor = (status: string) => {
     switch (status) {
       case 'high':
-        return '#ef4444'; // vermelho
+        return '#ef4444';
       case 'low':
-        return '#f59e0b'; // laranja
+        return '#f59e0b';
       case 'normal':
       default:
-        return '#10b981'; // verde
+        return '#10b981';
     }
   };
 
@@ -96,7 +96,18 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-6">
+      {/* Botões de ação */}
+      <div className="flex gap-3 justify-center flex-wrap">
+        <Button
+          onClick={() => setShowCorrelations(!showCorrelations)}
+          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold"
+        >
+          {showCorrelations ? '✓ Correlações' : '🔗 Ver Correlações'}
+        </Button>
+      </div>
+
+      {/* Gráfico de Evolução */}
       <ResponsiveContainer width="100%" height={400}>
         <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -126,24 +137,12 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
               borderRadius: '8px',
               padding: '12px'
             }}
-            formatter={(value: any, name: string) => {
-              if (name === 'Faixa de Referência') {
-                const point = chartData.find(d => d.value === value);
-                if (point && point.referenceMin !== null && point.referenceMax !== null) {
-                  return [`${point.referenceMin} - ${point.referenceMax} ${unit}`, name];
-                }
-              }
-              return [`${value} ${unit}`, name];
-            }}
+            formatter={(value: any) => `${value} ${unit}`}
             labelFormatter={(label) => `Data: ${label}`}
           />
           
-          <Legend 
-            wrapperStyle={{ paddingTop: '20px' }}
-            iconType="circle"
-          />
+          <Legend wrapperStyle={{ paddingTop: '20px' }} iconType="circle" />
           
-          {/* Barra de faixa de referência (fundo) - mostra a faixa min-max */}
           <Bar 
             dataKey="referenceBase" 
             fill="transparent" 
@@ -159,7 +158,6 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
             barSize={60}
           />
           
-          {/* Barra de valor do paciente (sobreposta) */}
           <Bar 
             dataKey="value" 
             name={examName}
@@ -171,7 +169,6 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
             ))}
           </Bar>
           
-          {/* Linha de evolução temporal */}
           <Line 
             type="monotone" 
             dataKey="value" 
@@ -182,7 +179,6 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
             name="Evolução"
           />
           
-          {/* Linhas de referência (mín/máx) */}
           {chartData[0]?.referenceMin !== null && (
             <ReferenceLine 
               y={chartData[0].referenceMin} 
@@ -218,7 +214,7 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
       </ResponsiveContainer>
       
       {/* Legenda de cores */}
-      <div className="mt-4 flex flex-wrap gap-4 justify-center text-sm">
+      <div className="flex flex-wrap gap-4 justify-center text-sm">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded bg-green-500"></div>
           <span className="text-slate-600">Normal</span>
@@ -237,7 +233,44 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
         </div>
       </div>
 
-      {/* Componente de Projeção Futura */}
+      {/* Seção de Correlações */}
+      {showCorrelations && (
+        <Card className="p-6 bg-gradient-to-br from-indigo-50 to-blue-50 border-indigo-200">
+          <h3 className="text-lg font-bold mb-4 text-indigo-900">Análise de Correlações</h3>
+          
+          <div className="space-y-4">
+            <div className="bg-white p-4 rounded-lg border border-indigo-200">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-semibold text-slate-900">Correlações Disponíveis</p>
+                  <p className="text-sm text-slate-600 mt-1">
+                    Este exame pode ser correlacionado com outros para análise mais profunda. 
+                    Selecione exames relacionados para visualizar insights médicos.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg border border-indigo-200">
+              <p className="text-sm text-slate-700">
+                <strong>Exames relacionados:</strong> Colesterol, Triglicerídeos, Glicose, Peso, IMC
+              </p>
+            </div>
+
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-blue-800">
+                  💡 <strong>Dica:</strong> Correlações são mais precisas quando os exames são realizados no mesmo período (mesma semana ou mês).
+                </p>
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Projeção Futura */}
       <div className="mt-8">
         <FutureProjectionChart
           examName={examName}
