@@ -1,6 +1,9 @@
 # Health Dashboard
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/dsantosme/health_dashboard/workflows/CI/badge.svg)](https://github.com/dsantosme/health_dashboard/actions)
+[![CodeQL](https://github.com/dsantosme/health_dashboard/workflows/CodeQL/badge.svg)](https://github.com/dsantosme/health_dashboard/security/code-scanning)
+[![Security Audit](https://github.com/dsantosme/health_dashboard/workflows/Security%20Audit/badge.svg)](https://github.com/dsantosme/health_dashboard/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Built with Manus](https://img.shields.io/badge/Built%20with-Manus-blue)](https://manus.im)
 [![Stability: Beta](https://img.shields.io/badge/Stability-Beta-orange)](https://github.com/dsantosme/health_dashboard/releases)
@@ -28,6 +31,10 @@ Health Dashboard is an open-source platform that helps patients understand their
 ---
 
 ## ✨ Features
+
+![Health Dashboard Demo](docs/demo/demo.gif)
+
+*Interactive demo showing the main features: exam tracking, correlations, and AI-powered medical analysis*
 
 ### 📊 Comprehensive Exam Tracking
 - **Multi-year history** - Track lab results from 2022-2026
@@ -152,6 +159,66 @@ The demo account includes:
 - **LLM Integration** - Medical analysis generation
 - **Hexagonal Architecture** - Clean, maintainable codebase
 - **Factory Pattern** - Flexible service deployment
+
+---
+
+## 🏗️ Architecture Overview
+
+Health Dashboard is built using **Hexagonal Architecture** (Ports & Adapters pattern), ensuring clean separation of concerns and maximum extensibility. This architecture enables us to keep business logic independent from external frameworks and services.
+
+### System Architecture
+
+The platform consists of three main layers:
+
+![System Architecture Diagram](docs/architecture/system_architecture.png)
+
+**Key Components:**
+
+- **Frontend (React)**: User interface with real-time data visualization and interactive analysis tools
+- **API Layer (tRPC)**: Type-safe RPC framework ensuring end-to-end type safety between frontend and backend
+- **Backend (Express)**: Business logic implemented using hexagonal architecture with clear ports and adapters
+- **Data Layer (Drizzle + MySQL)**: Type-safe database access with migrations and seed data
+- **AI Services**: LLM integration for medical analysis generation
+
+### Hexagonal Architecture
+
+Our backend follows the hexagonal (ports & adapters) pattern:
+
+![Hexagonal Architecture Diagram](docs/architecture/hexagonal_architecture.png)
+
+**Core Components:**
+
+- **Domain Layer**: Pure business logic and domain models (independent of frameworks)
+- **Ports**: Interface definitions for external service interactions
+- **Adapters**: Concrete implementations of ports (database, LLM, storage, etc.)
+- **Services**: Use cases and orchestration of domain logic
+
+This design allows us to:
+
+- Test business logic without external dependencies
+- Swap implementations (e.g., different LLM providers) without changing domain code
+- Maintain clear boundaries between layers
+- Scale and extend features independently
+
+### Data Flow
+
+Understanding how data flows through the system:
+
+![Data Flow Diagram](docs/architecture/data_flow.png)
+
+1. User interacts with React frontend
+2. Frontend sends type-safe tRPC calls to backend
+3. Backend routes to appropriate service/use case
+4. Domain logic processes request and applies business rules
+5. Adapters fetch/persist data and call external services
+6. Results flow back through API layer to frontend
+7. Frontend updates UI with real-time data
+
+### Technology Stack Visualization
+
+![Technology Stack Diagram](docs/architecture/tech_stack.png)
+
+For detailed architecture documentation, see [Architecture Deep Dive](docs/HEXAGONAL_ARCHITECTURE.md).
 
 ---
 
