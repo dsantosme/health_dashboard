@@ -1,0 +1,55 @@
+{
+  "query": "SELECT \n  eh.examName,\n  eh.value,\n  eh.date,\n  eh.status,\n  e.unit,\n  e.referenceMin,\n  e.referenceMax\nFROM exam_history eh\nINNER JOIN exams e ON eh.examName = e.name\nWHERE eh.patientId = 'denis-santos'\n  AND eh.date >= '2026-02-07'\n  AND eh.date <= '2026-02-21'\nLIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4CL96j1KJtBbj5n.cd364dcd713b --database T3bV8hp3wZ3iZJdo4VhuRX --execute SELECT \n  eh.examName,\n  eh.value,\n  eh.date,\n  eh.status,\n  e.unit,\n  e.referenceMin,\n  e.referenceMax\nFROM exam_history eh\nINNER JOIN exams e ON eh.examName = e.name\nWHERE eh.patientId = 'denis-santos'\n  AND eh.date >= '2026-02-07'\n  AND eh.date <= '2026-02-21'\nLIMIT 5;",
+  "rows": [
+    {
+      "examName": "25-HIDROXIVITAMINA D",
+      "value": "33.30",
+      "date": "2026-02-14",
+      "status": "normal",
+      "unit": "ng/mL",
+      "referenceMin": "30.00",
+      "referenceMax": "60.00"
+    },
+    {
+      "examName": "ANTICORPOS ANTI-TPO",
+      "value": "6.60",
+      "date": "2026-02-14",
+      "status": "normal",
+      "unit": "UI/mL",
+      "referenceMin": "NULL",
+      "referenceMax": "13.80"
+    },
+    {
+      "examName": "CÁLCIO",
+      "value": "8.50",
+      "date": "2026-02-14",
+      "status": "low",
+      "unit": "mg/dL",
+      "referenceMin": "8.50",
+      "referenceMax": "10.90"
+    },
+    {
+      "examName": "COLESTEROL HDL",
+      "value": "38.00",
+      "date": "2026-02-14",
+      "status": "low",
+      "unit": "mg/dL",
+      "referenceMin": "40.00",
+      "referenceMax": "60.00"
+    },
+    {
+      "examName": "COLESTEROL LDL",
+      "value": "109.00",
+      "date": "2026-02-14",
+      "status": "normal",
+      "unit": "mg/dL",
+      "referenceMin": "0.00",
+      "referenceMax": "130.00"
+    }
+  ],
+  "messages": [],
+  "stdout": "examName\tvalue\tdate\tstatus\tunit\treferenceMin\treferenceMax\n25-HIDROXIVITAMINA D\t33.30\t2026-02-14\tnormal\tng/mL\t30.00\t60.00\nANTICORPOS ANTI-TPO\t6.60\t2026-02-14\tnormal\tUI/mL\tNULL\t13.80\nCÁLCIO\t8.50\t2026-02-14\tlow\tmg/dL\t8.50\t10.90\nCOLESTEROL HDL\t38.00\t2026-02-14\tlow\tmg/dL\t40.00\t60.00\nCOLESTEROL LDL\t109.00\t2026-02-14\tnormal\tmg/dL\t0.00\t130.00\n",
+  "stderr": "",
+  "execution_time_ms": 67
+}

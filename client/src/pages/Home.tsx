@@ -1,11 +1,12 @@
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight, Loader2, Weight, Ruler, Zap, Network, LogIn } from 'lucide-react';
+import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight, Loader2, LogIn, Network } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { useCurrentPatient } from '@/hooks/useCurrentPatient';
 import { getLoginUrl } from '@/const';
+import AnthropometricCard from '@/components/AnthropometricCard';
 
 export default function Home() {
   const { user, loading: authLoading, error, isAuthenticated, logout } = useAuth();
@@ -109,23 +110,23 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+      <header className="bg-card border-b border-border sticky top-0 z-10 backdrop-blur-lg bg-card/80">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Microscope className="w-7 h-7 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center">
+                <Microscope className="w-7 h-7 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-900">Health Monitor</h1>
-                <p className="text-sm text-slate-600">Análise de Saúde Personalizada</p>
+                <h1 className="text-2xl font-bold text-foreground">Health Monitor</h1>
+                <p className="text-sm text-muted-foreground">Análise de Saúde Personalizada</p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-sm text-slate-600">Paciente</p>
-              <p className="text-lg font-semibold text-slate-900">{patient.name}</p>
+              <p className="text-sm text-muted-foreground">Paciente</p>
+              <p className="text-lg font-semibold text-foreground">{patient.name}</p>
             </div>
           </div>
         </div>
@@ -133,68 +134,21 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Dados Antropométricos */}
+        {/* Dados Antropométricos - Compacto */}
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-slate-900 mb-4">Dados Antropométricos</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Peso */}
-            <Card className="p-6 bg-white border-slate-200">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-slate-900">Peso</h3>
-                <Weight className="w-5 h-5 text-blue-600" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-slate-900">{patient.weight || 0}</span>
-                <span className="text-sm text-slate-600">kg</span>
-              </div>
-              <p className="text-xs text-slate-500 mt-2">Medida atual</p>
-            </Card>
-
-            {/* Altura */}
-            <Card className="p-6 bg-white border-slate-200">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-slate-900">Altura</h3>
-                <Ruler className="w-5 h-5 text-indigo-600" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-slate-900">{patient.height || 0}</span>
-                <span className="text-sm text-slate-600">cm</span>
-              </div>
-              <p className="text-xs text-slate-500 mt-2">Medida fixa</p>
-            </Card>
-
-            {/* Circunferência Abdominal */}
-            <Card className="p-6 bg-red-50 border-slate-200">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-slate-900">Circunferência Abdominal</h3>
-                <Activity className="w-5 h-5 text-purple-600" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-slate-900">{patient.waist || 0}</span>
-                <span className="text-sm text-slate-600">cm</span>
-              </div>
-              <p className="text-xs text-red-600 font-medium mt-2">Muito aumentado</p>
-              <p className="text-xs text-slate-500 mt-1">Homem: &lt;94cm normal</p>
-            </Card>
-
-            {/* IMC */}
-            <Card className="p-6 bg-yellow-50 border-slate-200">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-slate-900">IMC</h3>
-                <Zap className="w-5 h-5 text-yellow-600" />
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-slate-900">{patient.bmi ? parseFloat(patient.bmi.toString()).toFixed(1) : 0}</span>
-                <span className="text-sm text-slate-600">kg/m²</span>
-              </div>
-              <p className="text-xs text-yellow-600 font-medium mt-2">Obesidade Grau I</p>
-            </Card>
-          </div>
+          <AnthropometricCard 
+            data={{
+              weight: parseFloat(patient.weight?.toString() || '0'),
+              height: parseInt(patient.height?.toString() || '0'),
+              waist: parseInt(patient.waist?.toString() || '0'),
+              bmi: parseFloat(patient.bmi?.toString() || '0')
+            }}
+          />
         </div>
 
         {/* Indicador de Período */}
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-900">
+        <div className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-xl">
+          <p className="text-sm text-foreground">
             <strong>📊 Dados de 2026:</strong> Mostrando apenas exames do ano vigente. Para visualizar histórico completo (2022-2026), acesse a página de Histórico Completo.
           </p>
         </div>
@@ -202,44 +156,44 @@ export default function Home() {
         {/* Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           {/* Total Exames de 2026 */}
-          <Card className="p-6 bg-white border-slate-200 hover:shadow-lg transition">
+          <Card className="p-6 bg-card border-border hover:shadow-lg transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-600 mb-1">Exames em 2026</p>
-                <p className="text-3xl font-bold text-slate-900">{totalExams2026}</p>
+                <p className="text-sm text-muted-foreground mb-1">Exames em 2026</p>
+                <p className="text-3xl font-bold text-foreground">{totalExams2026}</p>
               </div>
-              <Microscope className="w-10 h-10 text-blue-600 opacity-20" />
+              <Microscope className="w-10 h-10 text-primary opacity-20" />
             </div>
           </Card>
 
           {/* Normais */}
-          <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+          <Card className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-green-700 mb-1">Normais</p>
-                <p className="text-3xl font-bold text-green-900">{normalExams}</p>
+                <p className="text-sm text-green-400 mb-1">Normais</p>
+                <p className="text-3xl font-bold text-green-300">{normalExams}</p>
               </div>
               <div className="text-3xl">✅</div>
             </div>
           </Card>
 
           {/* Anormais */}
-          <Card className="p-6 bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200">
+          <Card className="p-6 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-yellow-700 mb-1">Anormais</p>
-                <p className="text-3xl font-bold text-yellow-900">{abnormalExams}</p>
+                <p className="text-sm text-yellow-400 mb-1">Anormais</p>
+                <p className="text-3xl font-bold text-yellow-300">{abnormalExams}</p>
               </div>
               <div className="text-3xl">⚠️</div>
             </div>
           </Card>
 
           {/* Críticos */}
-          <Card className="p-6 bg-gradient-to-br from-red-50 to-rose-50 border-red-200">
+          <Card className="p-6 bg-gradient-to-br from-red-500/10 to-rose-500/10 border-red-500/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-red-700 mb-1">Críticos</p>
-                <p className="text-3xl font-bold text-red-900">{criticalExams.length}</p>
+                <p className="text-sm text-red-400 mb-1">Críticos</p>
+                <p className="text-3xl font-bold text-red-300">{criticalExams.length}</p>
               </div>
               <div className="text-3xl">🔴</div>
             </div>
@@ -248,19 +202,19 @@ export default function Home() {
 
         {/* Critical Alerts */}
         {criticalExams.length > 0 && (
-          <Card className="p-6 mb-8 bg-gradient-to-r from-red-50 to-rose-50 border-red-200">
+          <Card className="p-6 mb-8 bg-gradient-to-r from-red-500/10 to-rose-500/10 border-red-500/20">
             <div className="flex items-start gap-4">
-              <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
+              <AlertCircle className="w-6 h-6 text-red-400 flex-shrink-0 mt-1" />
               <div className="flex-1">
-                <h3 className="font-bold text-red-900 mb-2">⚠️ Alertas Críticos</h3>
+                <h3 className="font-bold text-red-300 mb-2">⚠️ Alertas Críticos</h3>
                 <div className="space-y-2">
                   {criticalExams.map(exam => (
-                    <p key={exam.id} className="text-sm text-red-800">
+                    <p key={exam.id} className="text-sm text-red-200">
                       <strong>{exam.examName}</strong>: {exam.value} {exam.unit} (Alto)
                     </p>
                   ))}
                 </div>
-                <p className="text-xs text-red-700 mt-3">⚠️ Acompanhamento recomendado</p>
+                <p className="text-xs text-red-300 mt-3">⚠️ Acompanhamento recomendado</p>
               </div>
             </div>
           </Card>

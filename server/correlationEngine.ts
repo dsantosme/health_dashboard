@@ -52,7 +52,7 @@ function groupExamsByPeriod(exams: ExamData[]): CorrelationGroup[] {
  * Identifica exames correlacionáveis em um grupo
  */
 function findCorrelatableExams(exams: ExamData[]): string[][] {
-  const examNames = exams.map(e => e.name.toUpperCase());
+  const examNames = exams.filter(e => e.name).map(e => e.name.toUpperCase());
   const correlations: string[][] = [];
   
   // Painel Lipídico (Colesterol)
@@ -230,11 +230,11 @@ export async function processCorrelationsForDate(patientId: string, targetDate: 
   const examsList: ExamData[] = examsData.map((e: any) => ({
     name: e.examName,
     value: parseFloat(String(e.value)),
-    date: e.date.toString(),
-    unit: e.unit,
+    date: e.date ? (e.date instanceof Date ? e.date.toISOString().split('T')[0] : String(e.date)) : targetDate,
+    unit: e.unit || '',
     referenceMin: parseFloat(String(e.referenceMin || '0')),
     referenceMax: parseFloat(String(e.referenceMax || '100')),
-    status: e.status
+    status: e.status || 'normal'
   }));
   
   // Agrupar exames por período

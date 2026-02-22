@@ -1,0 +1,70 @@
+{
+  "query": "-- Verificar exames de 2026 do Denis Santos\nSELECT \n  examName, \n  DATE_FORMAT(date, '%Y-%m-%d') as exam_date,\n  value,\n  status\nFROM exam_history \nWHERE patientId = 'denis-santos' \n  AND YEAR(date) = 2026\nORDER BY date DESC\nLIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4CL96j1KJtBbj5n.cd364dcd713b --database T3bV8hp3wZ3iZJdo4VhuRX --execute -- Verificar exames de 2026 do Denis Santos\nSELECT \n  examName, \n  DATE_FORMAT(date, '%Y-%m-%d') as exam_date,\n  value,\n  status\nFROM exam_history \nWHERE patientId = 'denis-santos' \n  AND YEAR(date) = 2026\nORDER BY date DESC\nLIMIT 10;",
+  "rows": [
+    {
+      "examName": "FERRO SÉRICO",
+      "exam_date": "2026-02-14",
+      "value": "59.00",
+      "status": "low"
+    },
+    {
+      "examName": "FERRITINA SÉRICA",
+      "exam_date": "2026-02-14",
+      "value": "174.40",
+      "status": "normal"
+    },
+    {
+      "examName": "Glicose Jejum",
+      "exam_date": "2026-02-14",
+      "value": "94.00",
+      "status": "normal"
+    },
+    {
+      "examName": "CREATININA",
+      "exam_date": "2026-02-14",
+      "value": "0.99",
+      "status": "normal"
+    },
+    {
+      "examName": "RITMO DE FILTRAÇÃO GLOMERULAR",
+      "exam_date": "2026-02-14",
+      "value": "90.00",
+      "status": "normal"
+    },
+    {
+      "examName": "UREIA",
+      "exam_date": "2026-02-14",
+      "value": "37.20",
+      "status": "normal"
+    },
+    {
+      "examName": "TGP",
+      "exam_date": "2026-02-14",
+      "value": "32.00",
+      "status": "normal"
+    },
+    {
+      "examName": "TGO",
+      "exam_date": "2026-02-14",
+      "value": "24.00",
+      "status": "normal"
+    },
+    {
+      "examName": "GAMA GT",
+      "exam_date": "2026-02-14",
+      "value": "19.00",
+      "status": "normal"
+    },
+    {
+      "examName": "VITAMINA B12",
+      "exam_date": "2026-02-14",
+      "value": "331.00",
+      "status": "normal"
+    }
+  ],
+  "messages": [],
+  "stdout": "examName\texam_date\tvalue\tstatus\nFERRO SÉRICO\t2026-02-14\t59.00\tlow\nFERRITINA SÉRICA\t2026-02-14\t174.40\tnormal\nGlicose Jejum\t2026-02-14\t94.00\tnormal\nCREATININA\t2026-02-14\t0.99\tnormal\nRITMO DE FILTRAÇÃO GLOMERULAR\t2026-02-14\t90.00\tnormal\nUREIA\t2026-02-14\t37.20\tnormal\nTGP\t2026-02-14\t32.00\tnormal\nTGO\t2026-02-14\t24.00\tnormal\nGAMA GT\t2026-02-14\t19.00\tnormal\nVITAMINA B12\t2026-02-14\t331.00\tnormal\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

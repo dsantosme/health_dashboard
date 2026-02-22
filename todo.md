@@ -304,3 +304,15 @@
 - [x] Separar estados: não autenticado vs autenticado sem paciente
 - [x] Botão "Fazer Login com Google" implementado
 - [ ] Testar fluxo completo no mobile: não autenticado → login → dados aparecem
+
+
+## Processamento de Correlações e Redesign
+- [x] Processar correlações automáticas do Denis Santos (exames de 2026)
+- [x] Implementar tema dark (#0f1419) com gradientes ciano/turquesa
+- [x] Atualizar paleta de cores para dark mode
+- [x] Redesenhar cards antropométricos com avatar dinâmico baseado no IMC
+- [x] Criar componente de avatar que muda conforme IMC (magro/normal/sobrepeso/obeso)
+- [x] Agrupar dados antropométricos em card único mais compacto
+- [x] Atualizar cores dos cards de status para tema dark
+- [ ] Testar correlações processadas na interface
+- [ ] Validar tema dark em todas as páginas
