@@ -1,6 +1,9 @@
 # Health Dashboard
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/dsantosme/health_dashboard/workflows/CI/badge.svg)](https://github.com/dsantosme/health_dashboard/actions)
+[![CodeQL](https://github.com/dsantosme/health_dashboard/workflows/CodeQL/badge.svg)](https://github.com/dsantosme/health_dashboard/security/code-scanning)
+[![Security Audit](https://github.com/dsantosme/health_dashboard/workflows/Security%20Audit/badge.svg)](https://github.com/dsantosme/health_dashboard/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Built with Manus](https://img.shields.io/badge/Built%20with-Manus-blue)](https://manus.im)
 [![Stability: Beta](https://img.shields.io/badge/Stability-Beta-orange)](https://github.com/dsantosme/health_dashboard/releases)
@@ -28,6 +31,10 @@ Health Dashboard is an open-source platform that helps patients understand their
 ---
 
 ## ✨ Features
+
+![Health Dashboard Demo](docs/demo/demo.gif)
+
+*Interactive demo showing the main features: exam tracking, correlations, and AI-powered medical analysis*
 
 ### 📊 Comprehensive Exam Tracking
 - **Multi-year history** - Track lab results from 2022-2026
