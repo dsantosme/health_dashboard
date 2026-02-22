@@ -1,10 +1,10 @@
 # Health Dashboard
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/YOUR_USERNAME/health-dashboard/workflows/CI/badge.svg)](https://github.com/YOUR_USERNAME/health-dashboard/actions)
+[![CI](https://github.com/dsantosme/health_dashboard/workflows/CI/badge.svg)](https://github.com/dsantosme/health_dashboard/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Built with Manus](https://img.shields.io/badge/Built%20with-Manus-blue)](https://manus.im)
-[![Stability: Beta](https://img.shields.io/badge/Stability-Beta-orange)](https://github.com/YOUR_USERNAME/health-dashboard/releases)
+[![Stability: Beta](https://img.shields.io/badge/Stability-Beta-orange)](https://github.com/dsantosme/health_dashboard/releases)
 
 > **⚠️ Beta Software**: This project is under active development. Do not use as the sole source of medical information. Always consult qualified healthcare professionals.
 
@@ -79,7 +79,7 @@ This project was developed using [Manus](https://manus.im), an AI-powered develo
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/health-dashboard.git
+   git clone https://github.com/dsantosme/health_dashboard.git
    cd health-dashboard
    ```
 
@@ -257,9 +257,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact & Support
 
-- **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/health-dashboard/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/YOUR_USERNAME/health-dashboard/discussions)
-- **Email**: health.dashboard@example.com
+- **Issues**: [GitHub Issues](https://github.com/dsantosme/health_dashboard/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/dsantosme/health_dashboard/discussions)
+- **Email**: d.santos.me@outlook.com
 
 ---
 
