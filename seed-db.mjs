@@ -425,7 +425,7 @@ async function seed() {
     // 1. Criar paciente Denis Santos
     console.log("📝 Criando paciente Denis Santos...");
     await db.insert(patients).values({
-      id: "denis-santos",
+      id: "john-doe",
       name: "Denis Santos",
       birthDate: "1984-02-17",
       weight: "107",
@@ -466,7 +466,7 @@ async function seed() {
     console.log("📝 Criando histórico de exames...");
     
     const historyRecords = allExamsData.map(exam => ({
-      patientId: "denis-santos",
+      patientId: "john-doe",
       examName: exam.name,
       date: exam.date,
       value: exam.value.toString(),

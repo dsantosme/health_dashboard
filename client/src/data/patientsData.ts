@@ -49,12 +49,12 @@ export interface PatientTrend {
   }>;
 }
 
-// Dados do paciente Denis Santos - HISTÓRICO COMPLETO 2022-2026
-export const denisExams: PatientExam[] = [
+// Dados do paciente Sample Patient - HISTÓRICO COMPLETO 2022-2026
+export const sampleExams: PatientExam[] = [
   // GLICOSE - 2022
   {
     id: 'glucose-2022',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Glicose em Jejum',
     category: 'Metabolismo de Glicose',
     unit: 'mg/dL',
@@ -67,7 +67,7 @@ export const denisExams: PatientExam[] = [
   // GLICOSE - 2023
   {
     id: 'glucose-2023',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Glicose em Jejum',
     category: 'Metabolismo de Glicose',
     unit: 'mg/dL',
@@ -80,7 +80,7 @@ export const denisExams: PatientExam[] = [
   // GLICOSE - 2024
   {
     id: 'glucose-2024',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Glicose em Jejum',
     category: 'Metabolismo de Glicose',
     unit: 'mg/dL',
@@ -94,7 +94,7 @@ export const denisExams: PatientExam[] = [
   // CREATININA - 2023
   {
     id: 'creatinine-2023',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Creatinina (Função Renal)',
     category: 'Função Renal',
     unit: 'mg/dL',
@@ -107,7 +107,7 @@ export const denisExams: PatientExam[] = [
   // CREATININA - 2024
   {
     id: 'creatinine-2024',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Creatinina (Função Renal)',
     category: 'Função Renal',
     unit: 'mg/dL',
@@ -121,7 +121,7 @@ export const denisExams: PatientExam[] = [
   // FERRITINA - 2023
   {
     id: 'ferritin-2023',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Ferritina Sérica',
     category: 'Hematologia',
     unit: 'ng/mL',
@@ -134,7 +134,7 @@ export const denisExams: PatientExam[] = [
   // FERRITINA - 2024
   {
     id: 'ferritin-2024',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Ferritina Sérica',
     category: 'Hematologia',
     unit: 'ng/mL',
@@ -147,7 +147,7 @@ export const denisExams: PatientExam[] = [
   // FERRITINA - 2026
   {
     id: 'ferritin-2026',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Ferritina Sérica',
     category: 'Hematologia',
     unit: 'ng/mL',
@@ -161,7 +161,7 @@ export const denisExams: PatientExam[] = [
   // FOSFATASE ALCALINA - 2023
   {
     id: 'alk-phos-2023',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Fosfatase Alcalina',
     category: 'Função Hepática',
     unit: 'U/L',
@@ -173,7 +173,7 @@ export const denisExams: PatientExam[] = [
   // FOSFATASE ALCALINA - 2024
   {
     id: 'alk-phos-2024',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Fosfatase Alcalina',
     category: 'Função Hepática',
     unit: 'U/L',
@@ -186,7 +186,7 @@ export const denisExams: PatientExam[] = [
   // HEMOGLOBINA - 2023
   {
     id: 'hemoglobin-2023',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Hemoglobina',
     category: 'Hematologia',
     unit: 'g/dL',
@@ -199,7 +199,7 @@ export const denisExams: PatientExam[] = [
   // HEMOGLOBINA - 2024
   {
     id: 'hemoglobin-2024',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Hemoglobina',
     category: 'Hematologia',
     unit: 'g/dL',
@@ -213,7 +213,7 @@ export const denisExams: PatientExam[] = [
   // PLAQUETAS - 2023
   {
     id: 'platelets-2023',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Plaquetas',
     category: 'Hematologia',
     unit: '10³/µL',
@@ -226,7 +226,7 @@ export const denisExams: PatientExam[] = [
   // PLAQUETAS - 2024
   {
     id: 'platelets-2024',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Plaquetas',
     category: 'Hematologia',
     unit: '10³/µL',
@@ -240,7 +240,7 @@ export const denisExams: PatientExam[] = [
   // COLESTEROL TOTAL - 2023
   {
     id: 'cholesterol-2023',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Colesterol Total',
     category: 'Lipídios',
     unit: 'mg/dL',
@@ -252,7 +252,7 @@ export const denisExams: PatientExam[] = [
   // COLESTEROL TOTAL - 2024
   {
     id: 'cholesterol-2024',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Colesterol Total',
     category: 'Lipídios',
     unit: 'mg/dL',
@@ -265,7 +265,7 @@ export const denisExams: PatientExam[] = [
   // GAMA GT - 2023
   {
     id: 'gamma-gt-2023',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Gama GT',
     category: 'Função Hepática',
     unit: 'U/L',
@@ -277,7 +277,7 @@ export const denisExams: PatientExam[] = [
   // GAMA GT - 2024
   {
     id: 'gamma-gt-2024',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Gama GT',
     category: 'Função Hepática',
     unit: 'U/L',
@@ -290,7 +290,7 @@ export const denisExams: PatientExam[] = [
   // FERRO SÉRICO - 2026
   {
     id: 'iron-2026',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Ferro Sérico',
     category: 'Hematologia',
     unit: 'mcg/dL',
@@ -304,7 +304,7 @@ export const denisExams: PatientExam[] = [
   // VITAMINA B12 - 2026
   {
     id: 'b12-2026',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     name: 'Vitamina B12',
     category: 'Hematologia',
     unit: 'pg/mL',
@@ -316,11 +316,11 @@ export const denisExams: PatientExam[] = [
   }
 ];
 
-// Tendências do paciente Denis Santos
-export const denisTrends: PatientTrend[] = [
+// Tendências do paciente Sample Patient
+export const sampleTrends: PatientTrend[] = [
   {
     id: 'trend-glucose',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     examName: 'Glicose em Jejum',
     category: 'Metabolismo de Glicose',
     unit: 'mg/dL',
@@ -334,7 +334,7 @@ export const denisTrends: PatientTrend[] = [
   },
   {
     id: 'trend-creatinine',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     examName: 'Creatinina (Função Renal)',
     category: 'Função Renal',
     unit: 'mg/dL',
@@ -348,7 +348,7 @@ export const denisTrends: PatientTrend[] = [
   },
   {
     id: 'trend-ferritin',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     examName: 'Ferritina Sérica',
     category: 'Hematologia',
     unit: 'ng/mL',
@@ -362,7 +362,7 @@ export const denisTrends: PatientTrend[] = [
   },
   {
     id: 'trend-hemoglobin',
-    patientId: 'denis-santos',
+    patientId: 'john-doe',
     examName: 'Hemoglobina',
     category: 'Hematologia',
     unit: 'g/dL',
@@ -376,10 +376,10 @@ export const denisTrends: PatientTrend[] = [
   }
 ];
 
-// Paciente Denis Santos
-export const denisSantos: Patient = {
-  id: 'denis-santos',
-  name: 'Denis Santos',
+// Paciente Sample Patient
+export const samplePatient: Patient = {
+  id: 'john-doe',
+  name: 'Sample Patient',
   birthDate: '1984-02-17',
   age: 41,
   gender: 'Masculino',
@@ -388,7 +388,7 @@ export const denisSantos: Patient = {
 };
 
 // Lista de pacientes
-export const patients: Patient[] = [denisSantos];
+export const patients: Patient[] = [samplePatient];
 
 // Função para obter paciente
 export function getPatient(patientId: string): Patient | undefined {
@@ -397,16 +397,16 @@ export function getPatient(patientId: string): Patient | undefined {
 
 // Função para obter exames de um paciente
 export function getPatientExams(patientId: string): PatientExam[] {
-  if (patientId === 'denis-santos') {
-    return denisExams;
+  if (patientId === 'john-doe') {
+    return sampleExams;
   }
   return [];
 }
 
 // Função para obter tendências de um paciente
 export function getPatientTrends(patientId: string): PatientTrend[] {
-  if (patientId === 'denis-santos') {
-    return denisTrends;
+  if (patientId === 'john-doe') {
+    return sampleTrends;
   }
   return [];
 }

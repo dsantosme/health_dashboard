@@ -1,5 +1,5 @@
 // Histórico completo de exames - Todos os períodos (2022-2026)
-// Denis Santos
+// Owner Patient
 
 export const allPeriodsExams = [
   // ============ 2022-03-20 ============

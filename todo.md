@@ -307,7 +307,7 @@
 
 
 ## Processamento de Correlações e Redesign
-- [x] Processar correlações automáticas do Denis Santos (exames de 2026)
+- [x] Processar correlações automáticas do John Doe (exames de 2026)
 - [x] Implementar tema dark (#0f1419) com gradientes ciano/turquesa
 - [x] Atualizar paleta de cores para dark mode
 - [x] Redesenhar cards antropométricos com avatar dinâmico baseado no IMC
@@ -350,7 +350,7 @@
 - [ ] Identificar especialista médico apropriado (cardiologista, endocrinologista, etc)
 - [ ] Criar explicação "como se fosse um médico falando com paciente"
 - [ ] Atualizar ExamsDetail.tsx para exibir correlações reais
-- [ ] Testar com dados do Denis Santos (2026-02-14)
+- [ ] Testar com dados do John Doe (2026-02-14)
 
 
 ## Refatoração de Análise de Correlações
@@ -362,7 +362,7 @@
 - [x] Exibir analysis, recommendations e specialists do banco
 - [x] Adicionar indicadores visuais (good/attention/urgent)
 - [x] Integrar CorrelationSection em ExamsDetail.tsx
-- [ ] Testar com dados reais do Denis Santos
+- [ ] Testar com dados reais do John Doe
 
 
 ## Melhoria de UX da Lista de Exames
@@ -385,7 +385,7 @@
 - [ ] Adicionar recomendações práticas (dieta, exercícios, acompanhamento)
 - [ ] Estruturar para futuro consumo via MCP
 - [ ] Atualizar CorrelationSection para exibir análise detalhada
-- [x] Testar com dados reais do Denis Santos (HDL 38, LDL 138, TG 198)
+- [x] Testar com dados reais do John Doe (HDL 38, LDL 138, TG 198)
 
 
 ## Análise Médica em Linguagem Natural
@@ -401,7 +401,7 @@
 - [x] Criar componente MedicalAnalysisSection para exibir análise detalhada
 - [x] Integrar MedicalAnalysisSection em ExamsDetail.tsx
 - [x] Criar tRPC procedure medicalAnalysis.generate
-- [x] Testar com dados reais do Denis Santos (HDL 38, LDL 138, TG 198)
+- [x] Testar com dados reais do John Doe (HDL 38, LDL 138, TG 198)
 
 
 ## Análise de Múltiplos Exames Correlacionados
@@ -467,7 +467,7 @@
 - [x] Criar SECURITY.md
 - [x] Criar script de seed para dados demo: `pnpm seed:demo`
 - [x] Criar usuário demo: health.demo@manus.im
-- [x] Criar dados fictícios de paciente (Denis Santos)
+- [x] Criar dados fictícios de paciente (John Doe)
 - [x] Adicionar badges (License, CI, PRs Welcome, Built with Manus, Stability)
 - [x] Criar templates GitHub (bug_report, feature_request, pull_request)
 - [x] Criar workflow CI (.github/workflows/ci.yml)
@@ -476,3 +476,25 @@
 - [x] Criar CONTRIBUTORS.md
 - [x] Criar ENV_SETUP.md com guia de variáveis de ambiente
 - [ ] Testar setup local com usuário demo
+
+
+## Substituição de Dados do Paciente Demo
+- [ ] Atualizar script seed-demo.mjs com dados fictícios de John Doe
+- [ ] Substituir todos os valores de exames por dados completamente fictícios
+- [ ] Atualizar dados antropométricos (peso, altura, IMC, circunferência)
+- [ ] Atualizar documentação (README, CHANGELOG, materiais promocionais)
+- [ ] Substituir referências "John Doe" por "John Doe"
+- [ ] Limpar histórico Git para remover dados reais
+- [ ] Fazer force push para GitHub
+- [ ] Testar seed com dados de John Doe
+
+
+## Refatoração de Nomes Próprios para Nomes Genéricos
+- [x] Refatorar patientsData.ts para usar nomes genéricos (patient, exams, trends)
+- [x] Remover variáveis com nomes próprios (denisSantos, denisExams, denisTrends)
+- [x] Usar padrões como `samplePatient`, `sampleExams`, `sampleTrends`
+- [x] Refatorar completeDatabase.ts para usar nomes genéricos
+- [x] Verificar todos os arquivos .ts/.tsx para remover nomes próprios
+- [x] Manter "John Doe" apenas em seed-demo.mjs e documentação
+- [x] Limpar histórico Git para remover dados reais (Denis Santos)
+- [x] Force push para GitHub com histórico limpo

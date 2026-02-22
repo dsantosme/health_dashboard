@@ -102,14 +102,14 @@ for (const result of successfulResults) {
       const [existing] = await connection.execute(`
         SELECT id FROM exam_history 
         WHERE patientId = ? AND examName = ? AND date = ?
-      `, ['denis-santos', exam.examName, date]);
+      `, ['john-doe', exam.examName, date]);
       
       if (existing.length === 0) {
         // Inserir histórico
         await connection.execute(`
           INSERT INTO exam_history (patientId, examName, date, value, status, sourceFile)
           VALUES (?, ?, ?, ?, ?, ?)
-        `, ['denis-santos', exam.examName, date, numericValue, status, result.input]);
+        `, ['john-doe', exam.examName, date, numericValue, status, result.input]);
         
         insertedExams++;
       } else {

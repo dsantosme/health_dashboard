@@ -22,7 +22,7 @@ export interface ExamTrend {
   status: "normal" | "low" | "high" | "unknown";
 }
 
-export const denisSantosBirthDate = "1984-02-17";
+export const samplePatientBirthDate = "1984-02-17";
 
 export const allExamPeriods = [
   "2022-03-20",

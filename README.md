@@ -119,7 +119,7 @@ This project was developed using [Manus](https://manus.im), an AI-powered develo
 ### Demo Data
 
 The demo account includes:
-- **Patient**: Denis Santos (fictional)
+- **Patient**: John Doe (fictional)
 - **Exam history**: 2022-2026 (31 different lab tests)
 - **Anthropometric data**: Weight, height, BMI, waist circumference
 - **Complete lipid profile**: HDL, LDL, Total Cholesterol, Triglycerides

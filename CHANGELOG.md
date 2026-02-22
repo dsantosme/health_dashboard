@@ -97,7 +97,7 @@ This project was developed using [Manus](https://manus.im), demonstrating how AI
 
 ### 📝 Notes
 
-- All exam data is fictional (patient: Denis Santos)
+- All exam data is fictional (patient: John Doe)
 - Demo account: health.demo@manus.im
 - Requires MySQL/TiDB database for local development
 - Node.js 22+ required

@@ -96,7 +96,7 @@ server/
 ```bash
 pnpm seed:demo
 ```
-Instantly creates a demo user (`health.demo@manus.im`) with fictional patient data (Denis Santos) including:
+Instantly creates a demo user (`health.demo@manus.im`) with fictional patient data (John Doe) including:
 - 126 exam records (2022-2026)
 - Anthropometric data (weight, height, BMI, waist circumference)
 - Pre-calculated correlations

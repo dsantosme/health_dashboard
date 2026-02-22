@@ -2,13 +2,15 @@
 /**
  * Demo Data Seeder
  * 
- * Populates the database with fictional patient data for local testing.
+ * Populates the database with COMPLETELY FICTIONAL patient data for local testing.
  * Run with: pnpm seed:demo
  * 
  * Demo Account:
  * - Email: health.demo@manus.im
- * - Patient: Denis Santos (fictional)
+ * - Patient: John Doe (FICTIONAL - all data is randomly generated)
  * - Data: Complete exam history 2022-2026
+ * 
+ * ⚠️ IMPORTANT: All values are FICTIONAL and do not represent any real person's medical data.
  */
 
 import { drizzle } from 'drizzle-orm/mysql2';
@@ -21,20 +23,20 @@ const DEMO_USER_OPEN_ID = 'demo-user-open-id-12345';
 const DEMO_USER_EMAIL = 'health.demo@manus.im';
 const DEMO_USER_NAME = 'Demo User';
 
-// Fictional patient data
+// FICTIONAL patient data - John Doe
 const DEMO_PATIENT = {
-  name: 'Denis Santos',
-  birthDate: '1985-03-15',
+  name: 'John Doe',
+  birthDate: '1980-06-20', // 45 years old
   gender: 'male',
 };
 
-// Anthropometric data over time
+// FICTIONAL anthropometric data over time (progressive weight loss)
 const ANTHROPOMETRIC_DATA = [
-  { date: '2022-02-10', weight: 115, height: 182, waistCircumference: 118 },
-  { date: '2023-02-15', weight: 112, height: 182, waistCircumference: 115 },
-  { date: '2024-02-12', weight: 110, height: 182, waistCircumference: 113 },
-  { date: '2025-02-14', weight: 108, height: 182, waistCircumference: 112 },
-  { date: '2026-02-14', weight: 107, height: 182, waistCircumference: 111 },
+  { date: '2022-02-10', weight: 92, height: 178, waistCircumference: 98 },
+  { date: '2023-02-15', weight: 89, height: 178, waistCircumference: 95 },
+  { date: '2024-02-12', weight: 87, height: 178, waistCircumference: 93 },
+  { date: '2025-02-14', weight: 85, height: 178, waistCircumference: 91 },
+  { date: '2026-02-14', weight: 83, height: 178, waistCircumference: 89 },
 ];
 
 // Complete exam definitions with reference ranges
@@ -73,382 +75,376 @@ const EXAM_DEFINITIONS = [
   { name: 'ANTICORPOS ANTI-TPO', unit: 'UI/mL', category: 'Thyroid', referenceMin: null, referenceMax: 34 },
 ];
 
-// Exam history data (2022-2026)
+// FICTIONAL exam history data (2022-2026) - All values are randomly generated
 const EXAM_HISTORY = {
   'COLESTEROL HDL': [
-    { date: '2022-02-10', value: 41 },
-    { date: '2023-02-15', value: 40 },
-    { date: '2024-02-12', value: 39 },
-    { date: '2025-02-14', value: 38 },
-    { date: '2026-02-14', value: 38 },
+    { date: '2022-02-10', value: 45 },
+    { date: '2023-02-15', value: 47 },
+    { date: '2024-02-12', value: 49 },
+    { date: '2025-02-14', value: 51 },
+    { date: '2026-02-14', value: 53 },
   ],
   'COLESTEROL LDL': [
-    { date: '2022-02-10', value: 138 },
-    { date: '2023-02-15', value: 130 },
-    { date: '2024-02-12', value: 125 },
-    { date: '2025-02-14', value: 117 },
-    { date: '2026-02-14', value: 109 },
+    { date: '2022-02-10', value: 125 },
+    { date: '2023-02-15', value: 118 },
+    { date: '2024-02-12', value: 110 },
+    { date: '2025-02-14', value: 102 },
+    { date: '2026-02-14', value: 95 },
   ],
   'COLESTEROL TOTAL': [
-    { date: '2022-02-10', value: 219 },
-    { date: '2023-02-15', value: 210 },
-    { date: '2024-02-12', value: 195 },
-    { date: '2025-02-14', value: 179 },
-    { date: '2026-02-14', value: 172 },
+    { date: '2022-02-10', value: 210 },
+    { date: '2023-02-15', value: 198 },
+    { date: '2024-02-12', value: 185 },
+    { date: '2025-02-14', value: 172 },
+    { date: '2026-02-14', value: 165 },
   ],
   'Triglicerídeos': [
-    { date: '2022-02-10', value: 198 },
-    { date: '2023-02-15', value: 180 },
-    { date: '2024-02-12', value: 155 },
-    { date: '2025-02-14', value: 120 },
-    { date: '2026-02-14', value: 100 },
+    { date: '2022-02-10', value: 165 },
+    { date: '2023-02-15', value: 152 },
+    { date: '2024-02-12', value: 138 },
+    { date: '2025-02-14', value: 125 },
+    { date: '2026-02-14', value: 112 },
   ],
   'COLESTEROL VLDL': [
-    { date: '2022-02-10', value: 40 },
-    { date: '2023-02-15', value: 36 },
-    { date: '2024-02-12', value: 31 },
-    { date: '2025-02-14', value: 24 },
-    { date: '2026-02-14', value: 25 },
+    { date: '2022-02-10', value: 33 },
+    { date: '2023-02-15', value: 30 },
+    { date: '2024-02-12', value: 28 },
+    { date: '2025-02-14', value: 25 },
+    { date: '2026-02-14', value: 22 },
   ],
   'COLESTEROL NÃO-HDL': [
-    { date: '2022-02-10', value: 178 },
-    { date: '2023-02-15', value: 170 },
-    { date: '2024-02-12', value: 156 },
-    { date: '2025-02-14', value: 141 },
-    { date: '2026-02-14', value: 134 },
+    { date: '2022-02-10', value: 165 },
+    { date: '2023-02-15', value: 151 },
+    { date: '2024-02-12', value: 136 },
+    { date: '2025-02-14', value: 121 },
+    { date: '2026-02-14', value: 112 },
   ],
   'Glicose Jejum': [
-    { date: '2022-02-10', value: 102 },
-    { date: '2023-02-15', value: 98 },
-    { date: '2024-02-12', value: 96 },
-    { date: '2025-02-14', value: 95 },
-    { date: '2026-02-14', value: 94 },
+    { date: '2022-02-10', value: 96 },
+    { date: '2023-02-15', value: 92 },
+    { date: '2024-02-12', value: 88 },
+    { date: '2025-02-14', value: 85 },
+    { date: '2026-02-14', value: 82 },
   ],
   'TESTOSTERONA': [
-    { date: '2022-02-10', value: 285 },
-    { date: '2023-02-15', value: 295 },
-    { date: '2024-02-12', value: 305 },
-    { date: '2025-02-14', value: 312 },
-    { date: '2026-02-14', value: 317 },
+    { date: '2022-02-10', value: 520 },
+    { date: '2023-02-15', value: 535 },
+    { date: '2024-02-12', value: 550 },
+    { date: '2025-02-14', value: 565 },
+    { date: '2026-02-14', value: 580 },
   ],
   'TESTOSTERONA LIVRE': [
-    { date: '2022-02-10', value: 6.5 },
-    { date: '2023-02-15', value: 6.8 },
-    { date: '2024-02-12', value: 7.0 },
-    { date: '2025-02-14', value: 7.2 },
-    { date: '2026-02-14', value: 7.31 },
+    { date: '2022-02-10', value: 12.5 },
+    { date: '2023-02-15', value: 13.2 },
+    { date: '2024-02-12', value: 13.8 },
+    { date: '2025-02-14', value: 14.5 },
+    { date: '2026-02-14', value: 15.2 },
   ],
   'ESTRADIOL': [
-    { date: '2022-02-10', value: 38.5 },
-    { date: '2023-02-15', value: 37.2 },
-    { date: '2024-02-12', value: 36.0 },
-    { date: '2025-02-14', value: 35.5 },
-    { date: '2026-02-14', value: 35.3 },
-  ],
-  'TSH ULTRA SENSÍVEL': [
-    { date: '2022-02-10', value: 1.85 },
-    { date: '2023-02-15', value: 1.78 },
-    { date: '2024-02-12', value: 1.72 },
-    { date: '2025-02-14', value: 1.70 },
-    { date: '2026-02-14', value: 1.68 },
-  ],
-  'T4 LIVRE': [
-    { date: '2022-02-10', value: 1.12 },
-    { date: '2023-02-15', value: 1.10 },
-    { date: '2024-02-12', value: 1.08 },
-    { date: '2025-02-14', value: 1.06 },
-    { date: '2026-02-14', value: 1.05 },
-  ],
-  'CREATININA': [
-    { date: '2022-02-10', value: 1.05 },
-    { date: '2023-02-15', value: 1.02 },
-    { date: '2024-02-12', value: 1.00 },
-    { date: '2025-02-14', value: 0.99 },
-    { date: '2026-02-14', value: 0.99 },
-  ],
-  'UREIA': [
-    { date: '2022-02-10', value: 42.5 },
-    { date: '2023-02-15', value: 40.8 },
-    { date: '2024-02-12', value: 39.2 },
-    { date: '2025-02-14', value: 38.0 },
-    { date: '2026-02-14', value: 37.2 },
-  ],
-  'RITMO DE FILTRAÇÃO GLOMERULAR': [
-    { date: '2022-02-10', value: 85 },
-    { date: '2023-02-15', value: 87 },
-    { date: '2024-02-12', value: 89 },
-    { date: '2025-02-14', value: 90 },
-    { date: '2026-02-14', value: 90 },
-  ],
-  '25-HIDROXIVITAMINA D': [
-    { date: '2022-02-10', value: 28.5 },
-    { date: '2023-02-15', value: 30.2 },
-    { date: '2024-02-12', value: 31.8 },
-    { date: '2025-02-14', value: 32.5 },
-    { date: '2026-02-14', value: 33.3 },
-  ],
-  'VITAMINA B12': [
-    { date: '2022-02-10', value: 295 },
-    { date: '2023-02-15', value: 310 },
-    { date: '2024-02-12', value: 320 },
-    { date: '2025-02-14', value: 328 },
-    { date: '2026-02-14', value: 331 },
-  ],
-  'FERRITINA SÉRICA': [
-    { date: '2022-02-10', value: 185.2 },
-    { date: '2023-02-15', value: 180.5 },
-    { date: '2024-02-12', value: 177.8 },
-    { date: '2025-02-14', value: 176.0 },
-    { date: '2026-02-14', value: 174.4 },
-  ],
-  'FERRO SÉRICO': [
-    { date: '2022-02-10', value: 65 },
-    { date: '2023-02-15', value: 62 },
-    { date: '2024-02-12', value: 60 },
-    { date: '2025-02-14', value: 59 },
-    { date: '2026-02-14', value: 59 },
-  ],
-  'CÁLCIO': [
-    { date: '2022-02-10', value: 8.8 },
-    { date: '2023-02-15', value: 8.7 },
-    { date: '2024-02-12', value: 8.6 },
-    { date: '2025-02-14', value: 8.5 },
-    { date: '2026-02-14', value: 8.5 },
-  ],
-  'MAGNÉSIO': [
-    { date: '2022-02-10', value: 1.95 },
-    { date: '2023-02-15', value: 1.93 },
-    { date: '2024-02-12', value: 1.91 },
-    { date: '2025-02-14', value: 1.90 },
-    { date: '2026-02-14', value: 1.90 },
-  ],
-  'FÓSFORO': [
-    { date: '2022-02-10', value: 4.5 },
-    { date: '2023-02-15', value: 4.4 },
-    { date: '2024-02-12', value: 4.3 },
-    { date: '2025-02-14', value: 4.2 },
-    { date: '2026-02-14', value: 4.2 },
-  ],
-  'POTÁSSIO': [
-    { date: '2022-02-10', value: 4.5 },
-    { date: '2023-02-15', value: 4.4 },
-    { date: '2024-02-12', value: 4.3 },
-    { date: '2025-02-14', value: 4.3 },
-    { date: '2026-02-14', value: 4.3 },
-  ],
-  'SÓDIO': [
-    { date: '2022-02-10', value: 140 },
-    { date: '2023-02-15', value: 141 },
-    { date: '2024-02-12', value: 141 },
-    { date: '2025-02-14', value: 142 },
-    { date: '2026-02-14', value: 142 },
-  ],
-  'TGO': [
     { date: '2022-02-10', value: 28 },
     { date: '2023-02-15', value: 26 },
     { date: '2024-02-12', value: 25 },
     { date: '2025-02-14', value: 24 },
-    { date: '2026-02-14', value: 24 },
+    { date: '2026-02-14', value: 23 },
+  ],
+  'TSH ULTRA SENSÍVEL': [
+    { date: '2022-02-10', value: 2.1 },
+    { date: '2023-02-15', value: 2.0 },
+    { date: '2024-02-12', value: 1.9 },
+    { date: '2025-02-14', value: 1.8 },
+    { date: '2026-02-14', value: 1.7 },
+  ],
+  'T4 LIVRE': [
+    { date: '2022-02-10', value: 1.2 },
+    { date: '2023-02-15', value: 1.25 },
+    { date: '2024-02-12', value: 1.3 },
+    { date: '2025-02-14', value: 1.32 },
+    { date: '2026-02-14', value: 1.35 },
+  ],
+  'CREATININA': [
+    { date: '2022-02-10', value: 1.05 },
+    { date: '2023-02-15', value: 1.02 },
+    { date: '2024-02-12', value: 0.98 },
+    { date: '2025-02-14', value: 0.95 },
+    { date: '2026-02-14', value: 0.92 },
+  ],
+  'UREIA': [
+    { date: '2022-02-10', value: 35 },
+    { date: '2023-02-15', value: 33 },
+    { date: '2024-02-12', value: 31 },
+    { date: '2025-02-14', value: 29 },
+    { date: '2026-02-14', value: 27 },
+  ],
+  'RITMO DE FILTRAÇÃO GLOMERULAR': [
+    { date: '2022-02-10', value: 95 },
+    { date: '2023-02-15', value: 97 },
+    { date: '2024-02-12', value: 99 },
+    { date: '2025-02-14', value: 101 },
+    { date: '2026-02-14', value: 103 },
+  ],
+  '25-HIDROXIVITAMINA D': [
+    { date: '2022-02-10', value: 28 },
+    { date: '2023-02-15', value: 32 },
+    { date: '2024-02-12', value: 36 },
+    { date: '2025-02-14', value: 40 },
+    { date: '2026-02-14', value: 44 },
+  ],
+  'VITAMINA B12': [
+    { date: '2022-02-10', value: 450 },
+    { date: '2023-02-15', value: 480 },
+    { date: '2024-02-12', value: 510 },
+    { date: '2025-02-14', value: 540 },
+    { date: '2026-02-14', value: 570 },
+  ],
+  'FERRITINA SÉRICA': [
+    { date: '2022-02-10', value: 180 },
+    { date: '2023-02-15', value: 175 },
+    { date: '2024-02-12', value: 170 },
+    { date: '2025-02-14', value: 165 },
+    { date: '2026-02-14', value: 160 },
+  ],
+  'FERRO SÉRICO': [
+    { date: '2022-02-10', value: 95 },
+    { date: '2023-02-15', value: 98 },
+    { date: '2024-02-12', value: 101 },
+    { date: '2025-02-14', value: 104 },
+    { date: '2026-02-14', value: 107 },
+  ],
+  'CÁLCIO': [
+    { date: '2022-02-10', value: 9.2 },
+    { date: '2023-02-15', value: 9.3 },
+    { date: '2024-02-12', value: 9.4 },
+    { date: '2025-02-14', value: 9.5 },
+    { date: '2026-02-14', value: 9.6 },
+  ],
+  'MAGNÉSIO': [
+    { date: '2022-02-10', value: 1.9 },
+    { date: '2023-02-15', value: 1.92 },
+    { date: '2024-02-12', value: 1.94 },
+    { date: '2025-02-14', value: 1.96 },
+    { date: '2026-02-14', value: 1.98 },
+  ],
+  'FÓSFORO': [
+    { date: '2022-02-10', value: 3.2 },
+    { date: '2023-02-15', value: 3.3 },
+    { date: '2024-02-12', value: 3.4 },
+    { date: '2025-02-14', value: 3.5 },
+    { date: '2026-02-14', value: 3.6 },
+  ],
+  'POTÁSSIO': [
+    { date: '2022-02-10', value: 4.2 },
+    { date: '2023-02-15', value: 4.1 },
+    { date: '2024-02-12', value: 4.0 },
+    { date: '2025-02-14', value: 3.9 },
+    { date: '2026-02-14', value: 3.8 },
+  ],
+  'SÓDIO': [
+    { date: '2022-02-10', value: 140 },
+    { date: '2023-02-15', value: 139 },
+    { date: '2024-02-12', value: 138 },
+    { date: '2025-02-14', value: 139 },
+    { date: '2026-02-14', value: 140 },
+  ],
+  'TGO': [
+    { date: '2022-02-10', value: 28 },
+    { date: '2023-02-15', value: 26 },
+    { date: '2024-02-12', value: 24 },
+    { date: '2025-02-14', value: 22 },
+    { date: '2026-02-14', value: 20 },
   ],
   'TGP': [
-    { date: '2022-02-10', value: 38 },
-    { date: '2023-02-15', value: 36 },
-    { date: '2024-02-12', value: 34 },
-    { date: '2025-02-14', value: 33 },
-    { date: '2026-02-14', value: 32 },
+    { date: '2022-02-10', value: 32 },
+    { date: '2023-02-15', value: 30 },
+    { date: '2024-02-12', value: 28 },
+    { date: '2025-02-14', value: 26 },
+    { date: '2026-02-14', value: 24 },
   ],
   'GAMA GT': [
-    { date: '2022-02-10', value: 25 },
-    { date: '2023-02-15', value: 23 },
-    { date: '2024-02-12', value: 21 },
-    { date: '2025-02-14', value: 20 },
-    { date: '2026-02-14', value: 19 },
+    { date: '2022-02-10', value: 45 },
+    { date: '2023-02-15', value: 42 },
+    { date: '2024-02-12', value: 39 },
+    { date: '2025-02-14', value: 36 },
+    { date: '2026-02-14', value: 33 },
   ],
   'PARATORMÔNIO PTH': [
-    { date: '2022-02-10', value: 42.5 },
-    { date: '2023-02-15', value: 40.2 },
-    { date: '2024-02-12', value: 38.5 },
-    { date: '2025-02-14', value: 37.0 },
-    { date: '2026-02-14', value: 36.4 },
+    { date: '2022-02-10', value: 42 },
+    { date: '2023-02-15', value: 40 },
+    { date: '2024-02-12', value: 38 },
+    { date: '2025-02-14', value: 36 },
+    { date: '2026-02-14', value: 34 },
   ],
   'FSH': [
-    { date: '2022-02-10', value: 8.2 },
-    { date: '2023-02-15', value: 7.9 },
-    { date: '2024-02-12', value: 7.7 },
-    { date: '2025-02-14', value: 7.65 },
-    { date: '2026-02-14', value: 7.63 },
+    { date: '2022-02-10', value: 6.5 },
+    { date: '2023-02-15', value: 6.8 },
+    { date: '2024-02-12', value: 7.1 },
+    { date: '2025-02-14', value: 7.4 },
+    { date: '2026-02-14', value: 7.7 },
   ],
   'LH': [
-    { date: '2022-02-10', value: 4.5 },
-    { date: '2023-02-15', value: 4.3 },
-    { date: '2024-02-12', value: 4.1 },
-    { date: '2025-02-14', value: 4.0 },
-    { date: '2026-02-14', value: 3.95 },
+    { date: '2022-02-10', value: 4.2 },
+    { date: '2023-02-15', value: 4.4 },
+    { date: '2024-02-12', value: 4.6 },
+    { date: '2025-02-14', value: 4.8 },
+    { date: '2026-02-14', value: 5.0 },
   ],
   'SHBG': [
-    { date: '2022-02-10', value: 22 },
-    { date: '2023-02-15', value: 23 },
-    { date: '2024-02-12', value: 24 },
-    { date: '2025-02-14', value: 25 },
-    { date: '2026-02-14', value: 25 },
+    { date: '2022-02-10', value: 35 },
+    { date: '2023-02-15', value: 36 },
+    { date: '2024-02-12', value: 37 },
+    { date: '2025-02-14', value: 38 },
+    { date: '2026-02-14', value: 39 },
   ],
   'ANTICORPOS ANTI-TPO': [
-    { date: '2022-02-10', value: 8.5 },
-    { date: '2023-02-15', value: 7.8 },
-    { date: '2024-02-12', value: 7.2 },
-    { date: '2025-02-14', value: 6.8 },
-    { date: '2026-02-14', value: 6.6 },
+    { date: '2022-02-10', value: 12 },
+    { date: '2023-02-15', value: 11 },
+    { date: '2024-02-12', value: 10 },
+    { date: '2025-02-14', value: 9 },
+    { date: '2026-02-14', value: 8 },
   ],
 };
 
 async function main() {
-  console.log('🌱 Seeding demo data...\n');
+  console.log('🌱 Starting demo data seeder...\n');
 
   // Connect to database
   const connection = await mysql.createConnection(process.env.DATABASE_URL);
   const db = drizzle(connection, { schema, mode: 'default' });
 
   try {
-    // 1. Create or update demo user
+    // 1. Create or get demo user
     console.log('👤 Creating demo user...');
-    const existingUser = await db.query.user.findFirst({
+    let demoUser = await db.query.user.findFirst({
       where: eq(schema.user.openId, DEMO_USER_OPEN_ID),
     });
 
-    let userId;
-    if (existingUser) {
-      console.log('   ✓ Demo user already exists, updating...');
-      await db
-        .update(schema.user)
-        .set({
-          name: DEMO_USER_NAME,
-          email: DEMO_USER_EMAIL,
-          updatedAt: new Date(),
-        })
-        .where(eq(schema.user.openId, DEMO_USER_OPEN_ID));
-      userId = existingUser.id;
-    } else {
-      console.log('   ✓ Creating new demo user...');
-      const [newUser] = await db.insert(schema.user).values({
+    if (!demoUser) {
+      const [insertedUser] = await db.insert(schema.user).values({
         openId: DEMO_USER_OPEN_ID,
-        name: DEMO_USER_NAME,
         email: DEMO_USER_EMAIL,
+        name: DEMO_USER_NAME,
         role: 'user',
       });
-      userId = newUser.insertId;
+      demoUser = await db.query.user.findFirst({
+        where: eq(schema.user.id, insertedUser.insertId),
+      });
     }
 
-    // 2. Create or update demo patient
-    console.log('\n🏥 Creating demo patient...');
-    const existingPatient = await db.query.patient.findFirst({
-      where: eq(schema.patient.userId, userId),
+    console.log(`✅ Demo user ready: ${demoUser.email} (ID: ${demoUser.id})\n`);
+
+    // 2. Create or get demo patient
+    console.log('🏥 Creating demo patient (John Doe - FICTIONAL)...');
+    let demoPatient = await db.query.patients.findFirst({
+      where: eq(schema.patients.userId, demoUser.id),
     });
 
-    let patientId;
-    if (existingPatient) {
-      console.log('   ✓ Demo patient already exists, updating...');
-      await db
-        .update(schema.patient)
-        .set({
-          name: DEMO_PATIENT.name,
-          birthDate: DEMO_PATIENT.birthDate,
-          gender: DEMO_PATIENT.gender,
-        })
-        .where(eq(schema.patient.id, existingPatient.id));
-      patientId = existingPatient.id;
-    } else {
-      console.log('   ✓ Creating new demo patient...');
-      const [newPatient] = await db.insert(schema.patient).values({
-        userId,
+    if (!demoPatient) {
+      const patientId = `john-doe-${Date.now()}`;
+      await db.insert(schema.patients).values({
+        id: patientId,
+        userId: demoUser.id,
         name: DEMO_PATIENT.name,
         birthDate: DEMO_PATIENT.birthDate,
         gender: DEMO_PATIENT.gender,
       });
-      patientId = newPatient.insertId;
+      demoPatient = await db.query.patients.findFirst({
+        where: eq(schema.patients.id, patientId),
+      });
     }
 
-    // 3. Insert anthropometric data
-    console.log('\n📏 Inserting anthropometric data...');
-    for (const data of ANTHROPOMETRIC_DATA) {
+    console.log(`✅ Demo patient ready: ${demoPatient.name} (ID: ${demoPatient.id})\n`);
+
+    // 3. Insert exam definitions
+    console.log('📋 Inserting exam definitions...');
+    for (const examDef of EXAM_DEFINITIONS) {
+      const existing = await db.query.exams.findFirst({
+        where: eq(schema.exams.name, examDef.name),
+      });
+
+      if (!existing) {
+        await db.insert(schema.exams).values(examDef);
+      }
+    }
+    console.log(`✅ ${EXAM_DEFINITIONS.length} exam definitions ready\n`);
+
+    // 4. Insert anthropometric data
+    console.log('📏 Inserting anthropometric data...');
+    for (const anthro of ANTHROPOMETRIC_DATA) {
       const existing = await db.query.anthropometricData.findFirst({
-        where: eq(schema.anthropometricData.patientId, patientId),
+        where: (table, { and, eq }) =>
+          and(
+            eq(table.patientId, demoPatient.id),
+            eq(table.date, anthro.date)
+          ),
       });
 
       if (!existing) {
         await db.insert(schema.anthropometricData).values({
-          patientId,
-          date: data.date,
-          weight: data.weight,
-          height: data.height,
-          waistCircumference: data.waistCircumference,
+          patientId: demoPatient.id,
+          userId: demoUser.id,
+          date: anthro.date,
+          weight: anthro.weight,
+          height: anthro.height,
+          waistCircumference: anthro.waistCircumference,
         });
-        console.log(`   ✓ ${data.date}: ${data.weight}kg, ${data.waistCircumference}cm waist`);
       }
     }
-
-    // 4. Insert exam definitions
-    console.log('\n🧪 Inserting exam definitions...');
-    const examIds = {};
-    for (const exam of EXAM_DEFINITIONS) {
-      const existing = await db.query.exams.findFirst({
-        where: eq(schema.exams.name, exam.name),
-      });
-
-      if (existing) {
-        examIds[exam.name] = existing.id;
-      } else {
-        const [newExam] = await db.insert(schema.exams).values({
-          name: exam.name,
-          unit: exam.unit,
-          category: exam.category,
-          referenceMin: exam.referenceMin,
-          referenceMax: exam.referenceMax,
-        });
-        examIds[exam.name] = newExam.insertId;
-        console.log(`   ✓ ${exam.name} (${exam.category})`);
-      }
-    }
+    console.log(`✅ ${ANTHROPOMETRIC_DATA.length} anthropometric records inserted\n`);
 
     // 5. Insert exam history
-    console.log('\n📊 Inserting exam history...');
+    console.log('🧪 Inserting exam history (FICTIONAL data)...');
     let totalExams = 0;
+
     for (const [examName, history] of Object.entries(EXAM_HISTORY)) {
-      const examId = examIds[examName];
-      if (!examId) {
-        console.log(`   ⚠ Skipping ${examName} (exam not found)`);
+      const exam = await db.query.exams.findFirst({
+        where: eq(schema.exams.name, examName),
+      });
+
+      if (!exam) {
+        console.warn(`⚠️  Exam not found: ${examName}`);
         continue;
       }
 
       for (const record of history) {
         const existing = await db.query.examHistory.findFirst({
-          where: eq(schema.examHistory.examId, examId),
+          where: (table, { and, eq }) =>
+            and(
+              eq(table.patientId, demoPatient.id),
+              eq(table.examId, exam.id),
+              eq(table.date, record.date)
+            ),
         });
 
         if (!existing) {
           await db.insert(schema.examHistory).values({
-            patientId,
-            examId,
-            value: record.value,
+            patientId: demoPatient.id,
+            userId: demoUser.id,
+            examId: exam.id,
             date: record.date,
+            value: record.value,
           });
           totalExams++;
         }
       }
     }
-    console.log(`   ✓ Inserted ${totalExams} exam records across ${Object.keys(EXAM_HISTORY).length} exam types`);
 
-    console.log('\n✅ Demo data seeding completed successfully!\n');
-    console.log('🎉 You can now login with:');
+    console.log(`✅ ${totalExams} exam records inserted\n`);
+
+    console.log('✨ Demo data seeding completed successfully!\n');
+    console.log('📝 Demo Account Details:');
     console.log(`   Email: ${DEMO_USER_EMAIL}`);
-    console.log(`   Patient: ${DEMO_PATIENT.name}`);
-    console.log('\n');
+    console.log(`   Patient: ${DEMO_PATIENT.name} (FICTIONAL)`);
+    console.log(`   Exam History: 2022-2026 (${totalExams} records)`);
+    console.log('\n⚠️  IMPORTANT: All data is FICTIONAL and does not represent any real person.\n');
 
   } catch (error) {
     console.error('❌ Error seeding demo data:', error);
-    process.exit(1);
+    throw error;
   } finally {
     await connection.end();
   }
 }
 
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

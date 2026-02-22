@@ -74,13 +74,13 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     });
 
     // Migração automática de dados para o owner
-    if (user.email === 'denissys@gmail.com' || user.openId === ENV.ownerOpenId) {
+    if (user.email === 'health.demo@manus.im' || user.openId === ENV.ownerOpenId) {
       // Buscar o userId do owner recém criado/atualizado
       const ownerUser = await db.select().from(users).where(eq(users.openId, user.openId)).limit(1);
       
       if (ownerUser.length > 0) {
         const ownerUserId = ownerUser[0].id;
-        const ownerEmail = ownerUser[0].email || user.email || 'denissys@gmail.com';
+        const ownerEmail = ownerUser[0].email || user.email || 'health.demo@manus.im';
         
         // Importar função de migração
         const { migrateOwnerData, checkMigrationStatus } = await import('./migrateOwnerData');

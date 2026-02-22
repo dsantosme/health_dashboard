@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { ENV } from './_core/env';
 
 /**
- * Script de inicialização que garante que os dados do Denis Santos
+ * Script de inicialização que garante que os dados do Owner Patient
  * estejam vinculados ao owner (OWNER_OPEN_ID)
  * 
  * Roda automaticamente no startup do servidor
@@ -32,8 +32,8 @@ export async function initOwnerData(): Promise<void> {
       
       await db.insert(users).values({
         openId: ENV.ownerOpenId,
-        name: 'Denis Santos',
-        email: 'denissys@gmail.com',
+        name: 'Owner Patient',
+        email: 'health.demo@manus.im',
         role: 'admin',
         lastSignedIn: new Date(),
       });
@@ -56,11 +56,11 @@ export async function initOwnerData(): Promise<void> {
     const patient = await db
       .select()
       .from(patients)
-      .where(eq(patients.id, 'denis-santos'))
+      .where(eq(patients.id, 'john-doe'))
       .limit(1);
 
     if (patient.length === 0) {
-      console.log('[InitOwnerData] Patient denis-santos not found, skipping migration');
+      console.log('[InitOwnerData] Patient john-doe not found, skipping migration');
       return;
     }
 
@@ -76,22 +76,22 @@ export async function initOwnerData(): Promise<void> {
     await db
       .update(patients)
       .set({ userId: ownerUserId })
-      .where(eq(patients.id, 'denis-santos'));
+      .where(eq(patients.id, 'john-doe'));
 
     // Atualizar exames
     await db
       .update(examHistory)
       .set({ userId: ownerUserId })
-      .where(eq(examHistory.patientId, 'denis-santos'));
+      .where(eq(examHistory.patientId, 'john-doe'));
 
     // Atualizar correlações
     await db
       .update(examCorrelations)
       .set({ userId: ownerUserId })
-      .where(eq(examCorrelations.patientId, 'denis-santos'));
+      .where(eq(examCorrelations.patientId, 'john-doe'));
 
     console.log('[InitOwnerData] ✅ Data migration completed successfully!');
-    console.log(`[InitOwnerData] All data for 'denis-santos' is now linked to owner userId=${ownerUserId}`);
+    console.log(`[InitOwnerData] All data for 'john-doe' is now linked to owner userId=${ownerUserId}`);
   } catch (error) {
     console.error('[InitOwnerData] ❌ Error during initialization:', error);
   }
