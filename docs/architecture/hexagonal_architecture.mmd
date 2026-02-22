@@ -1,0 +1,74 @@
+graph TB
+    subgraph External_Left["External Systems"]
+        Client["Frontend Client"]
+        LLM_Service["LLM Provider"]
+        OAuth["OAuth Provider"]
+    end
+
+    subgraph Ports_Left["Primary Ports<br/>(Inbound)"]
+        HTTP["HTTP Port<br/>REST/tRPC"]
+        Events["Event Port"]
+    end
+
+    subgraph Domain_Core["🎯 Domain Layer<br/>Business Logic"]
+        UseCases["Use Cases<br/>• Analyze Exams<br/>• Track Results<br/>• Generate Reports"]
+        Models["Domain Models<br/>• Exam<br/>• Patient<br/>• Analysis<br/>• Report"]
+        Rules["Business Rules<br/>• Correlations<br/>• Validations<br/>• Calculations"]
+    end
+
+    subgraph Ports_Right["Secondary Ports<br/>(Outbound)"]
+        DB_Port["Database Port<br/>Query Interface"]
+        LLM_Port["LLM Port<br/>Analysis Interface"]
+        Storage_Port["Storage Port<br/>File Interface"]
+    end
+
+    subgraph Adapters_Right["Adapters<br/>Implementation"]
+        DB_Adapter["Drizzle ORM<br/>MySQL/TiDB"]
+        LLM_Adapter["LLM Adapter<br/>OpenAI/Claude"]
+        Storage_Adapter["Storage Adapter<br/>File System"]
+    end
+
+    subgraph External_Right["External Services"]
+        Database["💾 Database"]
+        LLM_Impl["🤖 LLM API"]
+        FileSystem["📁 Storage"]
+    end
+
+    subgraph Services["Service Layer"]
+        Auth_Service["Authentication<br/>Service"]
+        Correlation_Service["Correlation<br/>Engine"]
+        Report_Service["Report<br/>Generator"]
+    end
+
+    Client -->|HTTP/tRPC| HTTP
+    OAuth -->|OAuth Flow| HTTP
+    LLM_Service -.->|Async| Events
+
+    HTTP -->|Request| UseCases
+    Events -->|Trigger| UseCases
+
+    UseCases -->|Apply| Rules
+    Rules -->|Use| Models
+    Models -->|Query| UseCases
+
+    UseCases -->|Query| DB_Port
+    UseCases -->|Generate| LLM_Port
+    UseCases -->|Save| Storage_Port
+
+    DB_Port -->|Drizzle| DB_Adapter
+    LLM_Port -->|Adapter| LLM_Adapter
+    Storage_Port -->|Adapter| Storage_Adapter
+
+    DB_Adapter -->|SQL| Database
+    LLM_Adapter -->|API Call| LLM_Impl
+    Storage_Adapter -->|File I/O| FileSystem
+
+    Auth_Service -.->|Validate| UseCases
+    Correlation_Service -.->|Calculate| Rules
+    Report_Service -.->|Format| Models
+
+    style Domain_Core fill:#fff9c4,stroke:#f57f17,stroke-width:3px
+    style Ports_Left fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style Ports_Right fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    style Adapters_Right fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    style Services fill:#fce4ec,stroke:#880e4f,stroke-width:2px
