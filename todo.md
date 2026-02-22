@@ -437,3 +437,42 @@
 - [x] Testar modo interno (chamadas diretas via tRPC)
 - [ ] Testar modo MCP (servidor standalone, comunicação via stdio/HTTP)
 - [ ] Criar diagrama de arquitetura hexagonal
+
+
+## Preparação para Open Source
+- [ ] Criar LICENSE (MIT)
+- [ ] Criar README.md principal em inglês (completo, com badges, screenshots, quick start)
+- [ ] Criar CONTRIBUTING.md (guia de contribuição)
+- [ ] Criar CODE_OF_CONDUCT.md (código de conduta)
+- [ ] Criar SECURITY.md (política de segurança)
+- [ ] Criar .github/ISSUE_TEMPLATE/ (templates de issues)
+- [ ] Criar .github/PULL_REQUEST_TEMPLATE.md (template de PR)
+- [ ] Criar .github/workflows/ (CI/CD básico)
+- [ ] Adicionar badges (build status, license, version, stability)
+- [ ] Adicionar referências ao Manus (desenvolvido com IA usando Manus)
+- [ ] Traduzir HEXAGONAL_ARCHITECTURE.md para inglês
+- [ ] Criar usuário demo: health.demo@manus.im
+- [ ] Criar dados fictícios de paciente para teste local
+- [ ] Criar script de seed para popular BD local com dados demo
+- [ ] Atualizar .env.example com configurações demo
+- [ ] Adicionar disclaimer médico (não substituir médico, em desenvolvimento)
+- [ ] Testar git clone + setup local com usuário demo
+
+
+## Preparação para Open Source (CONCLUÍDO)
+- [x] Criar LICENSE (MIT)
+- [x] Criar README.md principal em inglês com badges e referências Manus
+- [x] Criar CONTRIBUTING.md
+- [x] Criar CODE_OF_CONDUCT.md
+- [x] Criar SECURITY.md
+- [x] Criar script de seed para dados demo: `pnpm seed:demo`
+- [x] Criar usuário demo: health.demo@manus.im
+- [x] Criar dados fictícios de paciente (Denis Santos)
+- [x] Adicionar badges (License, CI, PRs Welcome, Built with Manus, Stability)
+- [x] Criar templates GitHub (bug_report, feature_request, pull_request)
+- [x] Criar workflow CI (.github/workflows/ci.yml)
+- [x] Traduzir documentação técnica para inglês
+- [x] Adicionar referências Manus em documentação
+- [x] Criar CONTRIBUTORS.md
+- [x] Criar ENV_SETUP.md com guia de variáveis de ambiente
+- [ ] Testar setup local com usuário demo

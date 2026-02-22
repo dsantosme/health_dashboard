@@ -1,17 +1,17 @@
-# Arquitetura Hexagonal (Ports & Adapters)
+# Hexagonal Architecture (Ports & Adapters)
 
-## Visão Geral
+## Overview
 
-Este projeto utiliza **Arquitetura Hexagonal** (também conhecida como Ports & Adapters) para permitir que serviços de processamento de dados operem de forma flexível, podendo ser executados como:
+This project uses **Hexagonal Architecture** (also known as Ports & Adapters) to enable data processing services to operate flexibly, allowing them to run as:
 
-- **Chamadas internas** (direct calls via tRPC)
-- **Servidores MCP externos** (Model Context Protocol)
+- **Internal calls** (direct calls via tRPC)
+- **External MCP servers** (Model Context Protocol)
 
-A decisão de deployment é configurável via variável de ambiente, permitindo mudanças sem alteração de código.
+The deployment decision is configurable via environment variable, allowing changes without code modification.
 
 ---
 
-## Estrutura de Diretórios
+## Directory Structure
 
 ```
 server/
@@ -34,40 +34,40 @@ server/
 
 ---
 
-## Camadas da Arquitetura
+## Architecture Layers
 
 ### 1. **Domain (Core)**
-Lógica de negócio pura, sem dependências externas. Implementa as interfaces (ports) e contém toda a lógica de domínio.
+Pure business logic with no external dependencies. Implements interfaces (ports) and contains all domain logic.
 
-**Exemplo:** `MedicalAnalysisDomain.ts`
-- Calcula índices clínicos
-- Determina especialista médico
-- Gera análise em linguagem natural
-- Extrai recomendações
+**Example:** `MedicalAnalysisDomain.ts`
+- Calculates clinical indices
+- Determines medical specialist
+- Generates analysis in natural language
+- Extracts recommendations
 
 ### 2. **Ports (Interfaces)**
-Contratos que definem como o domínio se comunica com o mundo externo.
+Contracts that define how the domain communicates with the external world.
 
-**Exemplos:**
-- `IMedicalAnalysisService`: Interface principal do serviço
-- `ILLMProvider`: Interface para provedor de LLM
-- `IDataRepository`: Interface para acesso a dados
+**Examples:**
+- `IMedicalAnalysisService`: Main service interface
+- `ILLMProvider`: Interface for LLM provider
+- `IDataRepository`: Interface for data access
 
-### 3. **Adapters (Implementações)**
-Implementações concretas dos ports para diferentes contextos.
+### 3. **Adapters (Implementations)**
+Concrete implementations of ports for different contexts.
 
 #### **Internal Adapters**
-- `InternalLLMAdapter`: Usa `invokeLLM` interno
-- `InternalDataAdapter`: Usa Drizzle ORM direto
+- `InternalLLMAdapter`: Uses internal `invokeLLM`
+- `InternalDataAdapter`: Uses Drizzle ORM directly
 
 #### **MCP Adapters** (TODO)
-- `MCPLLMAdapter`: Cliente MCP para LLM
-- `MCPDataAdapter`: Cliente MCP para dados
+- `MCPLLMAdapter`: MCP client for LLM
+- `MCPDataAdapter`: MCP client for data
 
 ### 4. **Factory**
-Decide qual adapter usar baseado em configuração.
+Decides which adapter to use based on configuration.
 
-**Exemplo:** `MedicalAnalysisServiceFactory.ts`
+**Example:** `MedicalAnalysisServiceFactory.ts`
 ```typescript
 const mode = process.env.MEDICAL_ANALYSIS_DEPLOYMENT_MODE; // 'internal' | 'mcp'
 const service = MedicalAnalysisServiceFactory.create(mode);
@@ -75,32 +75,32 @@ const service = MedicalAnalysisServiceFactory.create(mode);
 
 ---
 
-## Configuração de Deployment
+## Deployment Configuration
 
-### Modo Interno (Padrão)
+### Internal Mode (Default)
 ```env
 MEDICAL_ANALYSIS_DEPLOYMENT_MODE=internal
 ```
 
-- Usa adapters internos
-- Chamadas diretas via tRPC
-- Sem overhead de rede
+- Uses internal adapters
+- Direct calls via tRPC
+- No network overhead
 
-### Modo MCP (Futuro)
+### MCP Mode (Future)
 ```env
 MEDICAL_ANALYSIS_DEPLOYMENT_MODE=mcp
 MCP_MEDICAL_ANALYSIS_URL=http://localhost:3001
 ```
 
-- Usa adapters MCP
-- Comunicação via HTTP/stdio
-- Permite escalabilidade independente
+- Uses MCP adapters
+- Communication via HTTP/stdio
+- Enables independent scalability
 
 ---
 
-## Como Adicionar Novos Serviços
+## How to Add New Services
 
-### 1. Criar Port (Interface)
+### 1. Create Port (Interface)
 ```typescript
 // server/ports/IMyService.ts
 export interface IMyService {
@@ -108,7 +108,7 @@ export interface IMyService {
 }
 ```
 
-### 2. Criar Domain (Core Logic)
+### 2. Create Domain (Core Logic)
 ```typescript
 // server/domain/MyServiceDomain.ts
 export class MyServiceDomain implements IMyService {
@@ -123,7 +123,7 @@ export class MyServiceDomain implements IMyService {
 }
 ```
 
-### 3. Criar Adapters
+### 3. Create Adapters
 ```typescript
 // server/adapters/internal/InternalDependency1Adapter.ts
 export class InternalDependency1Adapter implements IDependency1 {
@@ -131,7 +131,7 @@ export class InternalDependency1Adapter implements IDependency1 {
 }
 ```
 
-### 4. Criar Factory
+### 4. Create Factory
 ```typescript
 // server/adapters/MyServiceFactory.ts
 export class MyServiceFactory {
@@ -147,7 +147,7 @@ export class MyServiceFactory {
 }
 ```
 
-### 5. Usar no Router
+### 5. Use in Router
 ```typescript
 // server/routers/myService.ts
 import { MyServiceFactory } from '../adapters/MyServiceFactory';
@@ -165,21 +165,34 @@ export const myServiceRouter = router({
 
 ---
 
-## Benefícios
+## Benefits
 
-1. **Testabilidade**: Fácil criar mocks dos ports para testes
-2. **Flexibilidade**: Trocar implementações sem alterar lógica de negócio
-3. **Escalabilidade**: Mover serviços para MCP quando necessário
-4. **Manutenibilidade**: Separação clara de responsabilidades
-5. **Portabilidade**: Lógica de negócio independente de infraestrutura
+1. **Testability**: Easy to create mocks of ports for testing
+2. **Flexibility**: Swap implementations without changing business logic
+3. **Scalability**: Move services to MCP when needed
+4. **Maintainability**: Clear separation of concerns
+5. **Portability**: Business logic independent of infrastructure
 
 ---
 
-## Próximos Passos
+## Next Steps
 
-- [ ] Implementar MCP adapters
-- [ ] Criar script de build para MCP: `pnpm build:mcp`
-- [ ] Adicionar testes unitários para domain
-- [ ] Adicionar testes de integração para adapters
-- [ ] Documentar protocolo MCP
-- [ ] Criar diagrama de arquitetura visual
+- [ ] Implement MCP adapters
+- [ ] Create build script for MCP: `pnpm build:mcp`
+- [ ] Add unit tests for domain
+- [ ] Add integration tests for adapters
+- [ ] Document MCP protocol
+- [ ] Create visual architecture diagram
+
+---
+
+## Built with Manus
+
+This architectural pattern was implemented using [Manus](https://manus.im), an AI-powered development platform that helped:
+
+- Design the hexagonal architecture structure
+- Generate clean, maintainable code following SOLID principles
+- Create comprehensive documentation
+- Ensure type safety across all layers
+
+**Interested in building with AI?** Check out [Manus](https://manus.im) to see how AI can enhance your development workflow while maintaining architectural excellence.
