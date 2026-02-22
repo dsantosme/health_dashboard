@@ -1,0 +1,21 @@
+{
+  "query": "SELECT * FROM patients WHERE id = 'denis-santos'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4CL96j1KJtBbj5n.cd364dcd713b --database T3bV8hp3wZ3iZJdo4VhuRX --execute SELECT * FROM patients WHERE id = 'denis-santos'",
+  "rows": [
+    {
+      "id": "denis-santos",
+      "name": "Denis Santos",
+      "birthDate": "1984-02-17",
+      "weight": "107.00",
+      "height": "182",
+      "waist": "111",
+      "bmi": "32.3",
+      "createdAt": "2026-02-18 17:23:20",
+      "updatedAt": "2026-02-18 17:23:20"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tname\tbirthDate\tweight\theight\twaist\tbmi\tcreatedAt\tupdatedAt\ndenis-santos\tDenis Santos\t1984-02-17\t107.00\t182\t111\t32.3\t2026-02-18 17:23:20\t2026-02-18 17:23:20\n",
+  "stderr": "",
+  "execution_time_ms": 66
+}

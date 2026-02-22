@@ -1,0 +1,18 @@
+{
+  "query": "SELECT * FROM exams LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4CL96j1KJtBbj5n.cd364dcd713b --database T3bV8hp3wZ3iZJdo4VhuRX --execute SELECT * FROM exams LIMIT 1;",
+  "rows": [
+    {
+      "name": "25-HIDROXIVITAMINA D",
+      "category": "Vitaminas",
+      "unit": "ng/mL",
+      "referenceMin": "30.00",
+      "referenceMax": "60.00",
+      "createdAt": "2026-02-18 17:43:20"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\tcategory\tunit\treferenceMin\treferenceMax\tcreatedAt\n25-HIDROXIVITAMINA D\tVitaminas\tng/mL\t30.00\t60.00\t2026-02-18 17:43:20\n",
+  "stderr": "",
+  "execution_time_ms": 63
+}

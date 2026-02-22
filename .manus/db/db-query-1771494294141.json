@@ -1,0 +1,166 @@
+{
+  "query": "SELECT name, referenceMin, referenceMax, unit FROM exams WHERE referenceMin = 0 LIMIT 30;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4CL96j1KJtBbj5n.cd364dcd713b --database T3bV8hp3wZ3iZJdo4VhuRX --execute SELECT name, referenceMin, referenceMax, unit FROM exams WHERE referenceMin = 0 LIMIT 30;",
+  "rows": [
+    {
+      "name": "Alanina Aminotransferase (ALT/TGP)",
+      "referenceMin": "0.00",
+      "referenceMax": "45.00",
+      "unit": "U/L"
+    },
+    {
+      "name": "Bastões",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "%"
+    },
+    {
+      "name": "Blastos",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "%"
+    },
+    {
+      "name": "COLESTEROL LDL",
+      "referenceMin": "0.00",
+      "referenceMax": "130.00",
+      "unit": "mg/dL"
+    },
+    {
+      "name": "COLESTEROL TOTAL",
+      "referenceMin": "0.00",
+      "referenceMax": "200.00",
+      "unit": "mg/dL"
+    },
+    {
+      "name": "COLESTEROL VLDL",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "mg/dL"
+    },
+    {
+      "name": "Dist1 A",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "mm"
+    },
+    {
+      "name": "Dist2 A",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "mm"
+    },
+    {
+      "name": "Dist3 A",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "mm"
+    },
+    {
+      "name": "GAMA GT",
+      "referenceMin": "0.00",
+      "referenceMax": "55.00",
+      "unit": "U/L"
+    },
+    {
+      "name": "GLICOSE",
+      "referenceMin": "0.00",
+      "referenceMax": "100.00",
+      "unit": "mg/dL"
+    },
+    {
+      "name": "Hemossedimentação (VHS)",
+      "referenceMin": "0.00",
+      "referenceMax": "15.00",
+      "unit": "mm"
+    },
+    {
+      "name": "Linfócitos Reativos",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "%"
+    },
+    {
+      "name": "Metamielócitos",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "%"
+    },
+    {
+      "name": "Mielócitos",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "%"
+    },
+    {
+      "name": "Pressão Gástrica",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "mmHg"
+    },
+    {
+      "name": "Promielócitos",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "%"
+    },
+    {
+      "name": "Próstata D1",
+      "referenceMin": "0.00",
+      "referenceMax": "39.00",
+      "unit": "mm"
+    },
+    {
+      "name": "Próstata D2",
+      "referenceMin": "0.00",
+      "referenceMax": "42.00",
+      "unit": "mm"
+    },
+    {
+      "name": "Próstata D3",
+      "referenceMin": "0.00",
+      "referenceMax": "38.00",
+      "unit": "mm"
+    },
+    {
+      "name": "Próstata Volume",
+      "referenceMin": "0.00",
+      "referenceMax": "25.00",
+      "unit": "cm3"
+    },
+    {
+      "name": "PSA",
+      "referenceMin": "0.00",
+      "referenceMax": "4.00",
+      "unit": "ng/mL"
+    },
+    {
+      "name": "PSA Total",
+      "referenceMin": "0.00",
+      "referenceMax": "4.00",
+      "unit": "ng/mL"
+    },
+    {
+      "name": "Triglicerídeos",
+      "referenceMin": "0.00",
+      "referenceMax": "149.00",
+      "unit": "mg/dL"
+    },
+    {
+      "name": "Velocidade A",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "cm/s"
+    },
+    {
+      "name": "Volume A",
+      "referenceMin": "0.00",
+      "referenceMax": "0.00",
+      "unit": "cm3"
+    }
+  ],
+  "messages": [],
+  "stdout": "name\treferenceMin\treferenceMax\tunit\nAlanina Aminotransferase (ALT/TGP)\t0.00\t45.00\tU/L\nBastões\t0.00\t0.00\t%\nBlastos\t0.00\t0.00\t%\nCOLESTEROL LDL\t0.00\t130.00\tmg/dL\nCOLESTEROL TOTAL\t0.00\t200.00\tmg/dL\nCOLESTEROL VLDL\t0.00\t0.00\tmg/dL\nDist1 A\t0.00\t0.00\tmm\nDist2 A\t0.00\t0.00\tmm\nDist3 A\t0.00\t0.00\tmm\nGAMA GT\t0.00\t55.00\tU/L\nGLICOSE\t0.00\t100.00\tmg/dL\nHemossedimentação (VHS)\t0.00\t15.00\tmm\nLinfócitos Reativos\t0.00\t0.00\t%\nMetamielócitos\t0.00\t0.00\t%\nMielócitos\t0.00\t0.00\t%\nPressão Gástrica\t0.00\t0.00\tmmHg\nPromielócitos\t0.00\t0.00\t%\nPróstata D1\t0.00\t39.00\tmm\nPróstata D2\t0.00\t42.00\tmm\nPróstata D3\t0.00\t38.00\tmm\nPróstata Volume\t0.00\t25.00\tcm3\nPSA\t0.00\t4.00\tng/mL\nPSA Total\t0.00\t4.00\tng/mL\nTriglicerídeos\t0.00\t149.00\tmg/dL\nVelocidade A\t0.00\t0.00\tcm/s\nVolume A\t0.00\t0.00\tcm3\n",
+  "stderr": "",
+  "execution_time_ms": 48
+}

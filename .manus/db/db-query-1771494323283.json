@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE exams SET referenceMin = 200 WHERE name = 'VITAMINA B12';\nUPDATE exams SET referenceMin = 30 WHERE name = 'VITAMINA D' OR name = '25-HIDROXIVITAMINA D';\nUPDATE exams SET referenceMin = 30 WHERE name = 'FERRO SÉRICO';\nUPDATE exams SET referenceMin = 24 WHERE name = 'FERRITINA SÉRICA';\nUPDATE exams SET referenceMin = 0.4 WHERE name = 'TSH ULTRA SENSÍVEL';\nUPDATE exams SET referenceMin = 0.8 WHERE name = 'T4 LIVRE';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4CL96j1KJtBbj5n.cd364dcd713b --database T3bV8hp3wZ3iZJdo4VhuRX --execute UPDATE exams SET referenceMin = 200 WHERE name = 'VITAMINA B12';\nUPDATE exams SET referenceMin = 30 WHERE name = 'VITAMINA D' OR name = '25-HIDROXIVITAMINA D';\nUPDATE exams SET referenceMin = 30 WHERE name = 'FERRO SÉRICO';\nUPDATE exams SET referenceMin = 24 WHERE name = 'FERRITINA SÉRICA';\nUPDATE exams SET referenceMin = 0.4 WHERE name = 'TSH ULTRA SENSÍVEL';\nUPDATE exams SET referenceMin = 0.8 WHERE name = 'T4 LIVRE';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 194
+}

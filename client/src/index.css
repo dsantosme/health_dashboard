@@ -1,0 +1,203 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --primary: var(--color-blue-700);
+  --primary-foreground: var(--color-blue-50);
+  --sidebar-primary: var(--color-blue-600);
+  --sidebar-primary-foreground: var(--color-blue-50);
+  --chart-1: var(--color-blue-300);
+  --chart-2: var(--color-blue-500);
+  --chart-3: var(--color-blue-600);
+  --chart-4: var(--color-blue-700);
+  --chart-5: var(--color-blue-800);
+  --radius: 1.5rem; /* 24px - cards arredondados estilo Samsung Health */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.235 0.015 65);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.235 0.015 65);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.235 0.015 65);
+  --secondary: oklch(0.98 0.001 286.375);
+  --secondary-foreground: oklch(0.4 0.015 65);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375);
+  --accent-foreground: oklch(0.141 0.005 285.823);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.623 0.214 259.815);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.235 0.015 65);
+  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: oklch(0.623 0.214 259.815);
+}
+
+/* Samsung Health / Sleep Cycle inspired dark theme */
+.dark {
+  --primary: oklch(0.7 0.2 195); /* #00d4ff - ciano vibrante */
+  --primary-foreground: oklch(0.15 0.01 220);
+  --sidebar-primary: oklch(0.6 0.18 195);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  
+  /* Background azul-escuro sofisticado (#0f1419) */
+  --background: oklch(0.15 0.01 220);
+  --foreground: oklch(0.98 0 0); /* texto branco suave */
+  
+  /* Cards levemente mais claros (#1a2332) */
+  --card: oklch(0.2 0.015 220);
+  --card-foreground: oklch(0.98 0 0);
+  
+  --popover: oklch(0.2 0.015 220);
+  --popover-foreground: oklch(0.98 0 0);
+  
+  /* Azul-acinzentado para elementos secundários */
+  --secondary: oklch(0.3 0.02 220);
+  --secondary-foreground: oklch(0.98 0 0);
+  
+  --muted: oklch(0.3 0.02 220);
+  --muted-foreground: oklch(0.65 0.01 220); /* texto secundário */
+  
+  --accent: oklch(0.7 0.2 195); /* ciano */
+  --accent-foreground: oklch(0.15 0.01 220);
+  
+  --destructive: oklch(0.6 0.24 27);
+  --destructive-foreground: oklch(0.98 0 0);
+  
+  /* Bordas sutis */
+  --border: oklch(0.3 0.02 220);
+  --input: oklch(0.3 0.02 220);
+  --ring: oklch(0.7 0.2 195); /* foco ciano */
+  
+  /* Cores para gráficos */
+  --chart-1: oklch(0.7 0.2 195); /* ciano */
+  --chart-2: oklch(0.6 0.18 150); /* verde */
+  --chart-3: oklch(0.75 0.15 90); /* amarelo */
+  --chart-4: oklch(0.65 0.2 40); /* laranja */
+  --chart-5: oklch(0.65 0.25 340); /* rosa/magenta */
+  
+  --sidebar: oklch(0.18 0.012 220);
+  --sidebar-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.3 0.02 220);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.3 0.02 220);
+  --sidebar-ring: oklch(0.7 0.2 195);
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-background text-foreground;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Container customizado para centralização e padding responsivo */
+.container {
+  @apply mx-auto px-4 sm:px-6 lg:px-8;
+  max-width: 100%;
+}
+
+/* Flex com min-width/height 0 para evitar overflow */
+.flex {
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Customização de scrollbar para tema dark */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: oklch(0.2 0.015 220);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(0.4 0.02 220);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.5 0.02 220);
+}
+
+/* Animações suaves para transições */
+* {
+  @apply transition-colors duration-200;
+}
+
+/* Cards com sombras sutis estilo Samsung Health */
+.card {
+  @apply shadow-lg shadow-black/20;
+}
+
+/* Botões touch-friendly para mobile */
+button, a {
+  @apply min-h-[44px] min-w-[44px]; /* WCAG touch target size */
+}
+
+/* Tipografia otimizada para mobile */
+h1 {
+  @apply text-2xl sm:text-3xl font-bold;
+}
+
+h2 {
+  @apply text-xl sm:text-2xl font-semibold;
+}
+
+h3 {
+  @apply text-lg sm:text-xl font-semibold;
+}
+
+/* Espaçamento generoso entre seções */
+section {
+  @apply py-6 sm:py-8;
+}

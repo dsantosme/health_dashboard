@@ -1,0 +1,8 @@
+{
+  "query": "SELECT DISTINCT examName, referenceMin, referenceMax FROM exams WHERE referenceMin > referenceMax ORDER BY examName;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4CL96j1KJtBbj5n.cd364dcd713b --database T3bV8hp3wZ3iZJdo4VhuRX --execute SELECT DISTINCT examName, referenceMin, referenceMax FROM exams WHERE referenceMin > referenceMax ORDER BY examName;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'examname' in 'field list'"
+  ]
+}
