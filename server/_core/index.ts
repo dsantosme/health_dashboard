@@ -28,6 +28,10 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  // Inicializar dados do owner antes de iniciar o servidor
+  const { initOwnerData } = await import('../initOwnerData');
+  await initOwnerData();
+
   const app = express();
   const server = createServer(app);
   // Configure body parser with larger size limit for file uploads

@@ -292,4 +292,15 @@
 - [x] Verificar userId dos dados no banco (patients, examHistory, exam_correlations)
 - [x] Criar script de migração para vincular dados ao owner automaticamente
 - [x] Implementar lógica de migração automática no login (detecta denissys@gmail.com)
-- [ ] Testar login via Google SSO e validar que dados aparecem
+- [x] Criar script initOwnerData que roda no startup do servidor
+- [x] Owner criado automaticamente com userId=1 vinculado a denissys@gmail.com
+- [ ] Testar login via Google SSO no mobile e validar que dados aparecem
+
+
+## Correção de Tela de Login
+- [x] Adicionar tela de boas-vindas na Home quando usuário não está autenticado
+- [x] Mostrar botão de login em vez de erro "Paciente não encontrado"
+- [x] Adicionar loading state durante autenticação
+- [x] Separar estados: não autenticado vs autenticado sem paciente
+- [x] Botão "Fazer Login com Google" implementado
+- [ ] Testar fluxo completo no mobile: não autenticado → login → dados aparecem

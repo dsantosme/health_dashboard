@@ -1,0 +1,22 @@
+{
+  "query": "-- Verificar usuários cadastrados\nSELECT id, openId, name, email, role FROM users ORDER BY id;\n\n-- Verificar userId do paciente\nSELECT id, userId, name FROM patients WHERE id = 'denis-santos';\n\n-- Contar exames por userId\nSELECT userId, COUNT(*) as total FROM exam_history GROUP BY userId;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4CL96j1KJtBbj5n.cd364dcd713b --database T3bV8hp3wZ3iZJdo4VhuRX --execute -- Verificar usuários cadastrados\nSELECT id, openId, name, email, role FROM users ORDER BY id;\n\n-- Verificar userId do paciente\nSELECT id, userId, name FROM patients WHERE id = 'denis-santos';\n\n-- Contar exames por userId\nSELECT userId, COUNT(*) as total FROM exam_history GROUP BY userId;",
+  "rows": [
+    {
+      "id": "1",
+      "openId": "BaugBR6iVemtMfAFJZqKGJ",
+      "name": "Denis Santos",
+      "email": "denissys@gmail.com",
+      "role": "admin"
+    }
+  ],
+  "messages": [
+    "id\tuserId\tname",
+    "denis-santos\t1\tDenis Santos",
+    "userId\ttotal",
+    "1\t126"
+  ],
+  "stdout": "id\topenId\tname\temail\trole\n1\tBaugBR6iVemtMfAFJZqKGJ\tDenis Santos\tdenissys@gmail.com\tadmin\nid\tuserId\tname\ndenis-santos\t1\tDenis Santos\nuserId\ttotal\n1\t126\n",
+  "stderr": "",
+  "execution_time_ms": 234
+}

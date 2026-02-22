@@ -1,10 +1,11 @@
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight, Loader2, Weight, Ruler, Zap, Network } from 'lucide-react';
+import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight, Loader2, Weight, Ruler, Zap, Network, LogIn } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { useCurrentPatient } from '@/hooks/useCurrentPatient';
+import { getLoginUrl } from '@/const';
 
 export default function Home() {
   const { user, loading: authLoading, error, isAuthenticated, logout } = useAuth();
@@ -56,13 +57,53 @@ export default function Home() {
     );
   }
 
+  // Tela de login para usuários não autenticados
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center p-6">
+        <Card className="max-w-md w-full p-8 bg-white border-slate-200 text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Microscope className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">Health Monitor</h1>
+          <p className="text-slate-600 mb-6">Análise de Saúde Personalizada</p>
+          <p className="text-sm text-slate-500 mb-6">
+            Faça login para acessar seus exames médicos, histórico completo e insights personalizados.
+          </p>
+          <Button 
+            onClick={() => window.location.href = getLoginUrl()}
+            className="w-full gap-2"
+            size="lg"
+          >
+            <LogIn className="w-5 h-5" />
+            Fazer Login com Google
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
+  // Usuário autenticado mas sem paciente cadastrado
   if (!patient) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <p className="text-slate-900 font-semibold">Paciente não encontrado</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center p-6">
+        <Card className="max-w-md w-full p-8 bg-white border-slate-200 text-center">
+          <AlertCircle className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Nenhum Paciente Cadastrado</h2>
+          <p className="text-slate-600 mb-4">
+            Você está autenticado como <strong>{user?.email}</strong>, mas ainda não possui dados de paciente vinculados.
+          </p>
+          <p className="text-sm text-slate-500 mb-6">
+            Entre em contato com o administrador para vincular seus dados médicos.
+          </p>
+          <Button 
+            onClick={logout}
+            variant="outline"
+            className="w-full"
+          >
+            Sair
+          </Button>
+        </Card>
       </div>
     );
   }
