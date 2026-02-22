@@ -326,3 +326,16 @@
 - [x] Criar componente de silhueta que muda cor baseado no IMC
 - [x] Componente ExamStatsCard criado para agrupar estatísticas
 - [ ] Testar todas as páginas para garantir consistência do tema dark
+
+
+## Redesign Completo de Exames Detalhados
+- [x] Aplicar tema dark em toda a página ExamsDetail.tsx
+- [x] Criar biblioteca de ícones SVG personalizados (lipídios, hormônios, glicose, etc)
+- [x] Redesenhar lista de exames com cards compactos e status visual
+- [x] Implementar busca inteligente e filtros visuais (Todos, Normais, Anormais, Críticos)
+- [x] Reduzir tamanho dos números (valores de referência) para layout mais compacto
+- [x] Criar componente CorrelationMedicalAnalysis com interpretação médica
+- [x] Adicionar análise "ótica do médico" explicando se correlação está boa/preocupante
+- [x] Remover emojis e usar apenas ícones SVG customizados
+- [ ] Substituir gráficos de barras por visualizações mobile-friendly (spark lines, progress rings)
+- [ ] Testar experiência mobile em telas pequenas
