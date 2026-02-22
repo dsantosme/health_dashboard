@@ -83,6 +83,13 @@ export const appRouter = router({
         return await correlationEngine.getPatientCorrelations(input.patientId, input.limit);
       }),
     
+    // Buscar correlações com análise médica personalizada
+    getWithMedicalAnalysis: ownershipProcedure
+      .input(z.object({ patientId: z.string(), date: z.string() }))
+      .query(async ({ input, ctx }) => {
+        return await correlationEngine.getCorrelationsWithMedicalAnalysis(input.patientId, input.date, ctx.user.id);
+      }),
+    
     // Buscar correlação específica por ID
     getById: publicProcedure
       .input(z.object({ correlationId: z.number() }))

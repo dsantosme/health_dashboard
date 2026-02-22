@@ -341,3 +341,27 @@ export async function getCorrelationById(correlationId: number) {
   
   return result[0] || null;
 }
+
+
+/**
+ * Busca correlações com análise médica para um paciente e data
+ */
+export async function getCorrelationsWithMedicalAnalysis(patientId: string, date: string, userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+
+  // Buscar correlações processadas para essa data
+  const correlations = await db
+    .select()
+    .from(examCorrelations)
+    .where(
+      and(
+        eq(examCorrelations.patientId, patientId),
+        sql`${examCorrelations.correlationDate} = ${date}`,
+        eq(examCorrelations.userId, userId)
+      )
+    )
+    .orderBy(desc(examCorrelations.createdAt));
+
+  return correlations;
+}

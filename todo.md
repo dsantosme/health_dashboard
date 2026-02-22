@@ -339,3 +339,27 @@
 - [x] Remover emojis e usar apenas ícones SVG customizados
 - [ ] Substituir gráficos de barras por visualizações mobile-friendly (spark lines, progress rings)
 - [ ] Testar experiência mobile em telas pequenas
+
+
+## Refatoração de Análise de Correlações
+- [ ] Buscar correlações processadas reais do banco de dados (exam_correlations)
+- [ ] Criar tRPC procedure para buscar correlações por patientId e date
+- [ ] Buscar valores reais dos exames correlacionados do banco
+- [ ] Cruzar dados dos exames (valores, faixas de referência, status)
+- [ ] Gerar análise médica personalizada baseada nos valores reais
+- [ ] Identificar especialista médico apropriado (cardiologista, endocrinologista, etc)
+- [ ] Criar explicação "como se fosse um médico falando com paciente"
+- [ ] Atualizar ExamsDetail.tsx para exibir correlações reais
+- [ ] Testar com dados do Denis Santos (2026-02-14)
+
+
+## Refatoração de Análise de Correlações
+- [x] Buscar correlações processadas do banco (exam_correlations)
+- [x] Criar procedure getWithMedicalAnalysis em routers.ts
+- [x] Criar função getCorrelationsWithMedicalAnalysis em correlationEngine.ts
+- [x] Atualizar UI para exibir análise real com dados cruzados
+- [x] Criar componente CorrelationSection para exibir análises
+- [x] Exibir analysis, recommendations e specialists do banco
+- [x] Adicionar indicadores visuais (good/attention/urgent)
+- [x] Integrar CorrelationSection em ExamsDetail.tsx
+- [ ] Testar com dados reais do Denis Santos

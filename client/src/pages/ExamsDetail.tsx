@@ -9,6 +9,7 @@ import { DownloadExams } from '@/components/DownloadExams';
 import { trpc } from '@/lib/trpc';
 import { useCurrentPatient } from '@/hooks/useCurrentPatient';
 import { getExamIcon } from '@/components/ExamIcons';
+import { CorrelationSection } from '@/components/CorrelationSection';
 
 // Descrições dos exames
 const examDescriptions: Record<string, { description: string; importance: string; interpretation: string }> = {
@@ -329,6 +330,9 @@ export default function ExamsDetail() {
                 </div>
               </div>
             )}
+
+            {/* Análise de Correlações */}
+            <CorrelationSection patientId={patientId!} examName={selectedExamName} />
 
             {/* Gráfico */}
             {examHistory.length > 0 && (
