@@ -32,7 +32,6 @@ export function MedicalAnalysisSection({
     await mutation.mutateAsync({
       patientId,
       examNames,
-      correlationDate,
     });
   };
 

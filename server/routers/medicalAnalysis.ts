@@ -1,25 +1,28 @@
 import { z } from 'zod';
 import { router, ownershipProcedure } from '../_core/trpc';
-import { generateMedicalAnalysis } from '../services/medicalAnalysisService';
+import { MedicalAnalysisServiceFactory } from '../adapters/MedicalAnalysisServiceFactory';
 
 export const medicalAnalysisRouter = router({
   /**
    * Gera análise médica em linguagem natural para um conjunto de exames correlacionados
+   * 
+   * Usa Arquitetura Hexagonal: Factory Pattern decide se usa adapter interno ou MCP
    */
   generate: ownershipProcedure
     .input(
       z.object({
         patientId: z.string(),
         examNames: z.array(z.string()),
-        correlationDate: z.string().optional(),
       })
     )
-    .mutation(async ({ input, ctx }) => {
-      const analysis = await generateMedicalAnalysis({
+    .mutation(async ({ input }) => {
+      // Factory creates the appropriate service implementation (internal or MCP)
+      const deploymentMode = MedicalAnalysisServiceFactory.getDeploymentMode();
+      const service = MedicalAnalysisServiceFactory.create(deploymentMode);
+
+      const analysis = await service.generateAnalysis({
         patientId: input.patientId,
-        userId: ctx.user.id,
         examNames: input.examNames,
-        correlationDate: input.correlationDate,
       });
 
       return analysis;

@@ -421,3 +421,19 @@
 - [ ] Incluir cronograma de acompanhamento (quando repetir exames)
 - [ ] Atualizar MedicalAnalysisSection para exibir seção de recomendações
 - [ ] Testar recomendações com perfil lipídico completo
+
+
+## Refatoração para Arquitetura Hexagonal (Ports & Adapters)
+- [x] Criar estrutura de diretórios: `server/domain/` (core), `server/ports/` (interfaces), `server/adapters/` (implementações)
+- [x] Definir ports (interfaces) para serviços de domínio: `IMedicalAnalysisService`, `ILLMProvider`, `IDataRepository`
+- [x] Refatorar `medicalAnalysisService.ts` para domain core (lógica de negócio pura, sem dependências externas)
+- [x] Criar adapter interno: `InternalLLMAdapter` e `InternalDataAdapter` (usa invokeLLM e Drizzle ORM)
+- [ ] Criar adapter MCP: `MCPLLMAdapter` e `MCPDataAdapter` (clientes MCP)
+- [x] Implementar factory pattern: `MedicalAnalysisServiceFactory` (decide qual adapter usar baseado em config)
+- [x] Adicionar configuração de deployment: `MEDICAL_ANALYSIS_DEPLOYMENT_MODE=internal|mcp` em `.env`
+- [ ] Criar script de build para MCP: `pnpm build:mcp` (gera servidor MCP standalone)
+- [x] Atualizar tRPC routers para usar factory pattern
+- [x] Documentar arquitetura hexagonal e como adicionar novos adapters
+- [x] Testar modo interno (chamadas diretas via tRPC)
+- [ ] Testar modo MCP (servidor standalone, comunicação via stdio/HTTP)
+- [ ] Criar diagrama de arquitetura hexagonal
