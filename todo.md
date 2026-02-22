@@ -363,3 +363,12 @@
 - [x] Adicionar indicadores visuais (good/attention/urgent)
 - [x] Integrar CorrelationSection em ExamsDetail.tsx
 - [ ] Testar com dados reais do Denis Santos
+
+
+## Melhoria de UX da Lista de Exames
+- [x] Reduzir tamanho da fonte do nome do exame para permitir visualização completa (text-sm)
+- [x] Remover truncate e permitir wrap de texto em 2 linhas (line-clamp-2)
+- [x] Criar scroll interno fixo para lista de exames (max-height: 60vh)
+- [x] Adicionar âncora automática (scrollIntoView) ao selecionar exame
+- [x] Adicionar useRef e useEffect para scroll suave
+- [ ] Testar scroll suave e comportamento em mobile

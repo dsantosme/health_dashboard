@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -61,6 +61,14 @@ export default function ExamsDetail() {
   const [selectedExamName, setSelectedExamName] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'normal' | 'abnormal' | 'critical'>('all');
   const { patientId } = useCurrentPatient();
+  const detailsRef = useRef<HTMLDivElement>(null);
+
+  // Scroll automático para detalhes ao selecionar exame
+  useEffect(() => {
+    if (selectedExamName && detailsRef.current) {
+      detailsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [selectedExamName]);
 
   // Carregar APENAS exames de 2026 (ano vigente)
   const { data: exams = [], isLoading } = trpc.exams.listByPatientAndPeriod.useQuery(
@@ -230,7 +238,7 @@ export default function ExamsDetail() {
         </Card>
 
         {/* Lista de Exames */}
-        <div className="space-y-3">
+        <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
           {filteredExams.map((exam) => {
             const status = getExamStatus(exam);
             const Icon = getExamIcon(exam.examName);
@@ -258,8 +266,8 @@ export default function ExamsDetail() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-foreground truncate">{exam.examName}</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-tight">{exam.examName}</h3>
+                    <p className="text-xs text-muted-foreground">
                       {new Date(exam.date).toLocaleDateString('pt-BR')}
                     </p>
                   </div>
@@ -292,7 +300,7 @@ export default function ExamsDetail() {
 
         {/* Detalhes do Exame Selecionado */}
         {selectedExamName && (
-          <Card className="p-6 bg-card border-border space-y-6">
+          <Card ref={detailsRef} className="p-6 bg-card border-border space-y-6">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-foreground">{selectedExamName}</h2>
