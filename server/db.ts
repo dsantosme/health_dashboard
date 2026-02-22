@@ -242,3 +242,68 @@ export async function getExamHistoryByPatientId(patientId: string) {
 
   return await db.select().from(examHistory).where(eq(examHistory.patientId, patientId));
 }
+
+
+/**
+ * Insere um ou mais exames no histórico e dispara processamento de correlações
+ */
+export async function insertExamHistory(examsData: InsertExamHistory | InsertExamHistory[]): Promise<void> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot insert exam history: database not available");
+    return;
+  }
+
+  const examsArray = Array.isArray(examsData) ? examsData : [examsData];
+  
+  try {
+    // Inserir exames
+    await db.insert(examHistory).values(examsArray);
+    
+    // Disparar processamento de correlações para cada paciente/data única
+    const uniquePatientDates = new Set(
+      examsArray.map(e => `${e.patientId}|${e.date}`)
+    );
+    
+    // Importar dinamicamente para evitar dependência circular
+    const { processCorrelationsForDate } = await import('./correlationEngine');
+    
+    for (const patientDate of Array.from(uniquePatientDates)) {
+      const [patientId, date] = patientDate.split('|');
+      // Processar em background (não bloquear a inserção)
+      processCorrelationsForDate(patientId, date).catch(error => {
+        console.error(`[Correlations] Failed to process for ${patientId} on ${date}:`, error);
+      });
+    }
+    
+    console.log(`✅ ${examsArray.length} exame(s) inserido(s) com sucesso`);
+  } catch (error) {
+    console.error("[Database] Failed to insert exam history:", error);
+    throw error;
+  }
+}
+
+/**
+ * Insere um exame no catálogo
+ */
+export async function insertExam(examData: InsertExam): Promise<void> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot insert exam: database not available");
+    return;
+  }
+
+  try {
+    await db.insert(exams).values(examData).onDuplicateKeyUpdate({
+      set: {
+        category: examData.category,
+        unit: examData.unit,
+        referenceMin: examData.referenceMin,
+        referenceMax: examData.referenceMax,
+      }
+    });
+  } catch (error) {
+    console.error("[Database] Failed to insert exam:", error);
+    throw error;
+  }
+}

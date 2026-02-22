@@ -234,3 +234,17 @@
 - [x] Adicionar explicações sobre status (bom/ruim/precisa melhorar)
 - [x] Testar correlações com múltiplos exames
 - [x] Validar recomendações de especialistas
+
+
+## Motor Automático de Correlações
+- [x] Criar schema de banco para armazenar correlações geradas (tabela `exam_correlations`)
+- [x] Adicionar campos: id, patientId, correlationDate, examsInvolved, analysis, recommendations, specialists, createdAt
+- [x] Implementar motor de processamento que agrupa exames por data (mesma semana/mês)
+- [x] Criar algoritmo para detectar exames correlacionáveis (colesterol+glicose+peso, ferro+ferritina, etc)
+- [x] Gerar análise em linguagem natural usando LLM com contexto médico
+- [x] Implementar gatilho automático ao inserir novos exames (trigger ou procedure)
+- [x] Criar tRPC procedure para listar correlações históricas por paciente
+- [x] Construir interface com timeline de correlações (mais recente no topo)
+- [x] Adicionar seletor de data para visualizar correlações anteriores
+- [x] Testar motor com inserção de novos exames
+- [x] Validar que correlações são geradas automaticamente

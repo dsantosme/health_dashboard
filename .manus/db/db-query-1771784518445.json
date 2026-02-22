@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS exam_correlations (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  patientId VARCHAR(64) NOT NULL,\n  correlationDate DATE NOT NULL,\n  examsInvolved TEXT NOT NULL,\n  analysis TEXT NOT NULL,\n  recommendations TEXT NOT NULL,\n  specialists TEXT NOT NULL,\n  severity ENUM('good', 'attention', 'urgent') NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX idx_patient_date (patientId, correlationDate)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4CL96j1KJtBbj5n.cd364dcd713b --database T3bV8hp3wZ3iZJdo4VhuRX --execute CREATE TABLE IF NOT EXISTS exam_correlations (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  patientId VARCHAR(64) NOT NULL,\n  correlationDate DATE NOT NULL,\n  examsInvolved TEXT NOT NULL,\n  analysis TEXT NOT NULL,\n  recommendations TEXT NOT NULL,\n  specialists TEXT NOT NULL,\n  severity ENUM('good', 'attention', 'urgent') NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX idx_patient_date (patientId, correlationDate)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 231
+}

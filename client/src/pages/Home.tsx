@@ -1,7 +1,7 @@
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight, Loader2, Weight, Ruler, Zap } from 'lucide-react';
+import { Microscope, TrendingUp, Activity, AlertCircle, ChevronRight, Loader2, Weight, Ruler, Zap, Network } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/_core/hooks/useAuth';
 
@@ -260,6 +260,26 @@ export default function Home() {
             </p>
             <Button className="w-full" variant="outline">
               Ver Histórico
+            </Button>
+          </Card>
+
+          {/* Correlações de Exames */}
+          <Card 
+            className="p-8 bg-white border-slate-200 hover:shadow-lg transition cursor-pointer group"
+            onClick={() => navigate('/correlations')}
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition">
+                <Network className="w-6 h-6 text-indigo-600" />
+              </div>
+              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-indigo-600 transition" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Correlações de Exames</h3>
+            <p className="text-sm text-slate-600 mb-4">
+              Análises automáticas que identificam padrões entre exames realizados no mesmo período
+            </p>
+            <Button className="w-full" variant="outline">
+              Ver Correlações
             </Button>
           </Card>
 

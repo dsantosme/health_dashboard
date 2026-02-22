@@ -75,3 +75,21 @@ export const examHistory = mysqlTable("exam_history", {
 export type ExamHistory = typeof examHistory.$inferSelect;
 export type InsertExamHistory = typeof examHistory.$inferInsert;
 
+/**
+ * Correlações de Exames - Análises automáticas geradas quando novos exames são inseridos
+ */
+export const examCorrelations = mysqlTable("exam_correlations", {
+  id: int("id").autoincrement().primaryKey(),
+  patientId: varchar("patientId", { length: 64 }).notNull(),
+  correlationDate: date("correlationDate").notNull(),
+  examsInvolved: text("examsInvolved").notNull(), // JSON array de nomes de exames
+  analysis: text("analysis").notNull(), // Análise em linguagem natural
+  recommendations: text("recommendations").notNull(), // Recomendações em linguagem natural
+  specialists: text("specialists").notNull(), // JSON array de especialistas recomendados
+  severity: mysqlEnum("severity", ["good", "attention", "urgent"]).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ExamCorrelation = typeof examCorrelations.$inferSelect;
+export type InsertExamCorrelation = typeof examCorrelations.$inferInsert;
+

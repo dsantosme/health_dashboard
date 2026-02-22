@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import * as db from "./db";
+import * as correlationEngine from "./correlationEngine";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -70,6 +71,39 @@ export const appRouter = router({
       .input(z.object({ patientId: z.string() }))
       .query(async ({ input }) => {
         return await db.getExamHistoryByPatientId(input.patientId);
+      }),
+  }),
+
+  // Rotas de Correlações de Exames
+  correlations: router({
+    // Buscar correlações de um paciente (mais recente primeiro)
+    listByPatient: publicProcedure
+      .input(z.object({ patientId: z.string(), limit: z.number().optional() }))
+      .query(async ({ input }) => {
+        return await correlationEngine.getPatientCorrelations(input.patientId, input.limit);
+      }),
+    
+    // Buscar correlação específica por ID
+    getById: publicProcedure
+      .input(z.object({ correlationId: z.number() }))
+      .query(async ({ input }) => {
+        return await correlationEngine.getCorrelationById(input.correlationId);
+      }),
+    
+    // Processar correlações para uma data específica
+    processForDate: publicProcedure
+      .input(z.object({ patientId: z.string(), date: z.string() }))
+      .mutation(async ({ input }) => {
+        await correlationEngine.processCorrelationsForDate(input.patientId, input.date);
+        return { success: true };
+      }),
+    
+    // Processar todas as correlações de um paciente (histórico completo)
+    processAll: publicProcedure
+      .input(z.object({ patientId: z.string() }))
+      .mutation(async ({ input }) => {
+        await correlationEngine.processAllCorrelationsForPatient(input.patientId);
+        return { success: true };
       }),
   }),
 });

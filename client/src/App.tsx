@@ -13,6 +13,7 @@ import ExamsDetail from "./pages/ExamsDetail";
 import MedicalInsights from "./pages/MedicalInsights";
 import SportsInsights from "./pages/SportsInsights";
 import CompleteHistory from "./pages/CompleteHistory";
+import Correlations from "./pages/Correlations";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/laboratory" component={Laboratory} />
       <Route path="/trends" component={Trends} />
       <Route path="/history" component={CompleteHistory} />
+      <Route path="/correlations" component={Correlations} />
       <Route path="/404" component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
