@@ -285,3 +285,11 @@
 - [ ] Testar que usuário A não consegue acessar dados do usuário B
 - [ ] Adicionar logs de auditoria para acessos a dados sensíveis
 - [ ] Documentar política de privacidade e retenção de dados
+
+
+## Correção de Listagem de Pacientes
+- [x] Investigar userId do usuário autenticado atual
+- [x] Verificar userId dos dados no banco (patients, examHistory, exam_correlations)
+- [x] Criar script de migração para vincular dados ao owner automaticamente
+- [x] Implementar lógica de migração automática no login (detecta denissys@gmail.com)
+- [ ] Testar login via Google SSO e validar que dados aparecem
