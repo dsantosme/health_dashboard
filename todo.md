@@ -372,3 +372,33 @@
 - [x] Adicionar âncora automática (scrollIntoView) ao selecionar exame
 - [x] Adicionar useRef e useEffect para scroll suave
 - [ ] Testar scroll suave e comportamento em mobile
+
+
+## Análise Médica em Linguagem Natural
+- [ ] Criar serviço separado `medicalAnalysisService.ts` para análise com LLM
+- [ ] Buscar valores reais dos exames correlacionados do banco
+- [ ] Calcular índices clínicos (TG/HDL, CT/HDL, etc)
+- [ ] Gerar análise em linguagem natural como especialista falando com paciente
+- [ ] Incluir valores específicos, faixas de referência e interpretação contextualizada
+- [ ] Explicar padrões (ex: HDL baixo + TG alto = resistência à insulina)
+- [ ] Indicar nível de urgência (não urgente, atenção necessária, urgente)
+- [ ] Adicionar recomendações práticas (dieta, exercícios, acompanhamento)
+- [ ] Estruturar para futuro consumo via MCP
+- [ ] Atualizar CorrelationSection para exibir análise detalhada
+- [x] Testar com dados reais do Denis Santos (HDL 38, LDL 138, TG 198)
+
+
+## Análise Médica em Linguagem Natural
+- [x] Criar serviço separado `medicalAnalysisService.ts` para análise com LLM
+- [x] Buscar valores reais dos exames correlacionados do banco
+- [x] Calcular índices clínicos (TG/HDL, CT/HDL, etc)
+- [x] Gerar análise em linguagem natural como especialista falando com paciente
+- [x] Incluir valores específicos, faixas de referência e interpretação contextualizada
+- [x] Explicar padrões (ex: HDL baixo + TG alto = resistência à insulina)
+- [x] Indicar nível de urgência (não urgente, atenção necessária, urgente)
+- [x] Adicionar recomendações práticas (dieta, exercícios, acompanhamento)
+- [x] Estruturar para futuro consumo via MCP
+- [x] Criar componente MedicalAnalysisSection para exibir análise detalhada
+- [x] Integrar MedicalAnalysisSection em ExamsDetail.tsx
+- [x] Criar tRPC procedure medicalAnalysis.generate
+- [x] Testar com dados reais do Denis Santos (HDL 38, LDL 138, TG 198)

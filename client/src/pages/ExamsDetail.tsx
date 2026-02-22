@@ -10,6 +10,7 @@ import { trpc } from '@/lib/trpc';
 import { useCurrentPatient } from '@/hooks/useCurrentPatient';
 import { getExamIcon } from '@/components/ExamIcons';
 import { CorrelationSection } from '@/components/CorrelationSection';
+import { MedicalAnalysisSection } from '@/components/MedicalAnalysisSection';
 
 // Descrições dos exames
 const examDescriptions: Record<string, { description: string; importance: string; interpretation: string }> = {
@@ -341,6 +342,13 @@ export default function ExamsDetail() {
 
             {/* Análise de Correlações */}
             <CorrelationSection patientId={patientId!} examName={selectedExamName} />
+
+            {/* Análise Médica Detalhada */}
+            <MedicalAnalysisSection 
+              patientId={patientId!} 
+              examNames={[selectedExamName]}
+              correlationDate={exams.find(e => e.examName === selectedExamName)?.date?.toString()}
+            />
 
             {/* Gráfico */}
             {examHistory.length > 0 && (
