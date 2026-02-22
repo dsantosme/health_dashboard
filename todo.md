@@ -213,3 +213,13 @@
 - [x] Mostrar projeções com base em mudanças de peso esperadas
 - [x] Exemplo: "Se perder 5kg, glicose pode reduzir ~15 mg/dL"
 - [x] Adicionar insights sobre qual exame é mais sensível a mudanças de peso
+
+
+## Melhoria de Progressão de Peso em Projeções
+- [x] Implementar modelo realista de perda de peso (3-5kg a cada 3 meses inicialmente)
+- [x] Aplicar fator de redução gradual conforme se aproxima do IMC ideal
+- [x] Implementar modelo realista de ganho de peso com fatores médicos
+- [x] Basear progressões em estudos médicos conhecidos (ex: déficit calórico, metabolismo)
+- [x] Calcular IMC ideal baseado em altura e idade
+- [x] Ajustar velocidade de perda/ganho conforme proximidade do IMC ideal
+- [x] Testar progressões com múltiplos cenários de peso

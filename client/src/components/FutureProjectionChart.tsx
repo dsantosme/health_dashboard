@@ -3,6 +3,7 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, L
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { TrendingUp } from 'lucide-react';
+import { calculateWeightProjection, getWeightScenarioDescription } from '@/lib/weightProjection';
 
 interface FutureProjectionChartProps {
   examName: string;
@@ -124,14 +125,41 @@ export function FutureProjectionChart({
       let projectedWaist = null;
 
       if (anthropometricData) {
-        // Cenário otimista: reduz 0.5kg a cada 3 meses
-        // Cenário manutenção: sem mudança
-        // Cenário pessimista: aumenta 0.5kg a cada 3 meses
-        const weightChange = i * 0.5;
+        // Usar modelo realista de progressão de peso baseado em estudos médicos
+        const projectionOtimista = calculateWeightProjection({
+          currentWeight: anthropometricData.weight,
+          currentHeight: 182, // Altura do paciente (será dinâmica depois)
+          age: 42, // Idade do paciente (será dinâmica depois)
+          scenario: 'otimista',
+          monthsAhead: monthsAhead,
+        });
+
+        const projectionManutenção = calculateWeightProjection({
+          currentWeight: anthropometricData.weight,
+          currentHeight: 182,
+          age: 42,
+          scenario: 'manutenção',
+          monthsAhead: monthsAhead,
+        });
+
+        const projectionPessimista = calculateWeightProjection({
+          currentWeight: anthropometricData.weight,
+          currentHeight: 182,
+          age: 42,
+          scenario: 'pessimista',
+          monthsAhead: monthsAhead,
+        });
+
         projectedWeight = {
-          otimista: Math.max(40, anthropometricData.weight - weightChange),
-          manutenção: anthropometricData.weight,
-          pessimista: anthropometricData.weight + weightChange,
+          otimista: projectionOtimista.weight,
+          manutenção: projectionManutenção.weight,
+          pessimista: projectionPessimista.weight,
+        };
+
+        projectedBmi = {
+          otimista: projectionOtimista.bmi,
+          manutenção: projectionManutenção.bmi,
+          pessimista: projectionPessimista.bmi,
         };
       }
 
