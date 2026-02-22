@@ -49,6 +49,12 @@ export interface MedicalAnalysisOutput {
   clinicalIndices: ClinicalIndices;
   urgencyLevel: 'good' | 'attention' | 'urgent';
   recommendations: string[];
+  personalizedRecommendations?: {
+    actionPlan: string;
+    dietSuggestions: string;
+    exercisePlan: string;
+    followUpSchedule: string;
+  };
 }
 
 /**
@@ -309,6 +315,71 @@ Escreva uma análise em linguagem natural, como se estivesse conversando com o p
     recommendations.push('Acompanhamento médico regular');
   }
 
+  // 9. Gerar recomendações personalizadas com LLM
+  const recommendationsPrompt = `Baseado na análise médica do paciente ${patient.name}, gere recomendações personalizadas e práticas.
+
+**CONTEXTO:**
+${examContext}
+${anthropometricContext}
+Índices clínicos: ${indicesContext}
+Nível de urgência: ${urgencyLevel}
+
+**GERE 4 SEÇÕES DE RECOMENDAÇÕES:**
+
+1. **PLANO DE AÇÃO (3-6 meses):**
+   - Metas específicas e mensuráveis (ex: "Reduzir 5kg em 3 meses")
+   - Objetivos de exames (ex: "Elevar HDL para acima de 40 mg/dL")
+   - Marcos intermediários
+
+2. **SUGESTÕES DE DIETA:**
+   - Alimentos a priorizar (específicos, não genéricos)
+   - Alimentos a evitar ou reduzir
+   - Exemplo de cardápio diário
+   - Dicas práticas de preparo
+
+3. **PLANO DE EXERCÍCIOS:**
+   - Tipo de exercício recomendado (aeróbico, resistência, etc)
+   - Frequência semanal
+   - Duração e intensidade
+   - Progressão ao longo do tempo
+
+4. **CRONOGRAMA DE ACOMPANHAMENTO:**
+   - Quando repetir os exames
+   - Consultas de acompanhamento
+   - Sinais de alerta para buscar atendimento antes
+
+**FORMATO:** Retorne um JSON com as chaves: actionPlan, dietSuggestions, exercisePlan, followUpSchedule. Cada valor deve ser uma string em markdown com parágrafos bem formatados.`;
+
+  const recommendationsResponse = await invokeLLM({
+    messages: [
+      { role: 'system', content: 'Você é um médico especialista criando um plano de ação personalizado para o paciente.' },
+      { role: 'user', content: recommendationsPrompt }
+    ],
+    response_format: {
+      type: 'json_schema',
+      json_schema: {
+        name: 'personalized_recommendations',
+        strict: true,
+        schema: {
+          type: 'object',
+          properties: {
+            actionPlan: { type: 'string', description: 'Plano de ação com metas específicas' },
+            dietSuggestions: { type: 'string', description: 'Sugestões de dieta e alimentação' },
+            exercisePlan: { type: 'string', description: 'Plano de exercícios físicos' },
+            followUpSchedule: { type: 'string', description: 'Cronograma de acompanhamento' },
+          },
+          required: ['actionPlan', 'dietSuggestions', 'exercisePlan', 'followUpSchedule'],
+          additionalProperties: false,
+        },
+      },
+    },
+  });
+
+  const recommendationsContent = recommendationsResponse.choices[0].message.content;
+  const personalizedRecommendations = typeof recommendationsContent === 'string' 
+    ? JSON.parse(recommendationsContent) 
+    : undefined;
+
   return {
     specialist,
     specialtyEmoji: emoji,
@@ -318,5 +389,6 @@ Escreva uma análise em linguagem natural, como se estivesse conversando com o p
     clinicalIndices,
     urgencyLevel,
     recommendations,
+    personalizedRecommendations,
   };
 }

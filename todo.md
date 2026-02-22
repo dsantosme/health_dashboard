@@ -412,3 +412,12 @@
 - [x] Melhorar prompt do LLM para análise de perfil completo (ex: perfil lipídico)
 - [x] Testar com perfil lipídico completo (HDL + LDL + Triglicerídeos + Colesterol Total)
 - [x] Validar que análise integrada é mais rica que análise individual
+
+
+## Recomendações Personalizadas na Análise Médica
+- [ ] Atualizar medicalAnalysisService para gerar seção de recomendações personalizadas
+- [ ] Incluir plano de ação específico (metas de peso, dieta, exercícios)
+- [ ] Adicionar sugestões de receitas saudáveis baseadas nos resultados
+- [ ] Incluir cronograma de acompanhamento (quando repetir exames)
+- [ ] Atualizar MedicalAnalysisSection para exibir seção de recomendações
+- [ ] Testar recomendações com perfil lipídico completo

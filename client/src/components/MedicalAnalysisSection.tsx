@@ -250,6 +250,69 @@ export function MedicalAnalysisSection({
           </ul>
         </Card>
       )}
+
+      {/* Recomendações Personalizadas */}
+      {analysis.personalizedRecommendations && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 mt-6 mb-4">
+            <div className="h-px flex-1 bg-border"></div>
+            <h3 className="text-lg font-bold text-foreground">Plano de Ação Personalizado</h3>
+            <div className="h-px flex-1 bg-border"></div>
+          </div>
+
+          {/* Plano de Ação */}
+          <Card className="p-6 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20">
+            <h4 className="text-md font-semibold text-foreground mb-3 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-blue-400" />
+              Plano de Ação (3-6 meses)
+            </h4>
+            <div className="prose prose-sm prose-invert max-w-none">
+              <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+                {analysis.personalizedRecommendations.actionPlan}
+              </p>
+            </div>
+          </Card>
+
+          {/* Sugestões de Dieta */}
+          <Card className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20">
+            <h4 className="text-md font-semibold text-foreground mb-3 flex items-center gap-2">
+              <span className="text-xl">🥗</span>
+              Sugestões de Dieta
+            </h4>
+            <div className="prose prose-sm prose-invert max-w-none">
+              <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+                {analysis.personalizedRecommendations.dietSuggestions}
+              </p>
+            </div>
+          </Card>
+
+          {/* Plano de Exercícios */}
+          <Card className="p-6 bg-gradient-to-br from-orange-500/10 to-red-500/10 border-orange-500/20">
+            <h4 className="text-md font-semibold text-foreground mb-3 flex items-center gap-2">
+              <span className="text-xl">🏃</span>
+              Plano de Exercícios
+            </h4>
+            <div className="prose prose-sm prose-invert max-w-none">
+              <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+                {analysis.personalizedRecommendations.exercisePlan}
+              </p>
+            </div>
+          </Card>
+
+          {/* Cronograma de Acompanhamento */}
+          <Card className="p-6 bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20">
+            <h4 className="text-md font-semibold text-foreground mb-3 flex items-center gap-2">
+              <span className="text-xl">📅</span>
+              Cronograma de Acompanhamento
+            </h4>
+            <div className="prose prose-sm prose-invert max-w-none">
+              <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
+                {analysis.personalizedRecommendations.followUpSchedule}
+              </p>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
