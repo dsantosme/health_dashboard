@@ -155,6 +155,66 @@ The demo account includes:
 
 ---
 
+## 🏗️ Architecture Overview
+
+Health Dashboard is built using **Hexagonal Architecture** (Ports & Adapters pattern), ensuring clean separation of concerns and maximum extensibility. This architecture enables us to keep business logic independent from external frameworks and services.
+
+### System Architecture
+
+The platform consists of three main layers:
+
+![System Architecture Diagram](docs/architecture/system_architecture.png)
+
+**Key Components:**
+
+- **Frontend (React)**: User interface with real-time data visualization and interactive analysis tools
+- **API Layer (tRPC)**: Type-safe RPC framework ensuring end-to-end type safety between frontend and backend
+- **Backend (Express)**: Business logic implemented using hexagonal architecture with clear ports and adapters
+- **Data Layer (Drizzle + MySQL)**: Type-safe database access with migrations and seed data
+- **AI Services**: LLM integration for medical analysis generation
+
+### Hexagonal Architecture
+
+Our backend follows the hexagonal (ports & adapters) pattern:
+
+![Hexagonal Architecture Diagram](docs/architecture/hexagonal_architecture.png)
+
+**Core Components:**
+
+- **Domain Layer**: Pure business logic and domain models (independent of frameworks)
+- **Ports**: Interface definitions for external service interactions
+- **Adapters**: Concrete implementations of ports (database, LLM, storage, etc.)
+- **Services**: Use cases and orchestration of domain logic
+
+This design allows us to:
+
+- Test business logic without external dependencies
+- Swap implementations (e.g., different LLM providers) without changing domain code
+- Maintain clear boundaries between layers
+- Scale and extend features independently
+
+### Data Flow
+
+Understanding how data flows through the system:
+
+![Data Flow Diagram](docs/architecture/data_flow.png)
+
+1. User interacts with React frontend
+2. Frontend sends type-safe tRPC calls to backend
+3. Backend routes to appropriate service/use case
+4. Domain logic processes request and applies business rules
+5. Adapters fetch/persist data and call external services
+6. Results flow back through API layer to frontend
+7. Frontend updates UI with real-time data
+
+### Technology Stack Visualization
+
+![Technology Stack Diagram](docs/architecture/tech_stack.png)
+
+For detailed architecture documentation, see [Architecture Deep Dive](docs/HEXAGONAL_ARCHITECTURE.md).
+
+---
+
 ## 📖 Documentation
 
 - [Architecture Overview](docs/HEXAGONAL_ARCHITECTURE.md) - Hexagonal architecture explained

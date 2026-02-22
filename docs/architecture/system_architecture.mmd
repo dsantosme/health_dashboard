@@ -1,0 +1,60 @@
+graph TB
+    subgraph Client["🖥️ Frontend (React)"]
+        UI["UI Components<br/>React 19 + TypeScript"]
+        Router["Routing<br/>Wouter"]
+        Query["Data Fetching<br/>TanStack Query"]
+        Charts["Visualization<br/>Recharts"]
+    end
+
+    subgraph API["🔌 API Layer"]
+        tRPC["tRPC 11<br/>Type-Safe RPC"]
+    end
+
+    subgraph Server["⚙️ Backend (Express)"]
+        subgraph Hex["Hexagonal Architecture"]
+            Ports["Ports<br/>Interface Definitions"]
+            Domain["Domain<br/>Business Logic"]
+            Services["Services<br/>Use Cases"]
+            Adapters["Adapters<br/>External Integrations"]
+        end
+        Router_Server["Routers<br/>Endpoint Handlers"]
+    end
+
+    subgraph External["🤖 External Services"]
+        LLM["LLM Provider<br/>Medical Analysis"]
+    end
+
+    subgraph Data["💾 Data Layer"]
+        ORM["Drizzle ORM<br/>Type-Safe Queries"]
+        DB["MySQL/TiDB<br/>Relational Database"]
+    end
+
+    subgraph Shared["📦 Shared"]
+        Types["TypeScript Types<br/>Domain Models"]
+    end
+
+    UI -->|tRPC Calls| tRPC
+    Router -->|Navigation| UI
+    Query -->|Data Management| tRPC
+    Charts -->|Visualization| Query
+    
+    tRPC -->|Type-Safe API| Router_Server
+    Router_Server -->|Dependency Injection| Services
+    Services -->|Business Rules| Domain
+    Domain -->|Port Contracts| Ports
+    Ports -->|Implementation| Adapters
+    Adapters -->|External Calls| LLM
+    
+    Router_Server -->|Database Queries| ORM
+    ORM -->|SQL Execution| DB
+    
+    Client -.->|Shared Types| Types
+    Server -.->|Shared Types| Types
+    
+    style Client fill:#e1f5ff
+    style API fill:#fff3e0
+    style Server fill:#f3e5f5
+    style Hex fill:#f3e5f5
+    style External fill:#fce4ec
+    style Data fill:#e8f5e9
+    style Shared fill:#f1f8e9

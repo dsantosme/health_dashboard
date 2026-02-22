@@ -1,0 +1,43 @@
+sequenceDiagram
+    participant User as 👤 User
+    participant Browser as 🖥️ Browser
+    participant Frontend as React Frontend
+    participant tRPC as tRPC API
+    participant Backend as Express Backend
+    participant Domain as Domain Logic
+    participant LLM as 🤖 LLM Service
+    participant Database as 💾 Database
+
+    User->>Browser: Opens Health Dashboard
+    Browser->>Frontend: Loads React App
+    Frontend->>tRPC: Fetch User Exams
+    tRPC->>Backend: Route to Handler
+    Backend->>Database: Query Exams
+    Database-->>Backend: Return Exam Data
+    Backend-->>tRPC: Return Type-Safe Data
+    tRPC-->>Frontend: Hydrate State
+    Frontend->>Browser: Render Exam List
+
+    User->>Browser: Select 3 Exams for Analysis
+    Browser->>Frontend: Trigger Analysis
+    Frontend->>tRPC: Call analyzeExams(ids)
+    tRPC->>Backend: Route to Analysis Handler
+    Backend->>Domain: Process Correlations
+    Domain->>Database: Fetch Related Data
+    Database-->>Domain: Return Complete Data
+    Domain->>LLM: Generate Medical Report
+    LLM-->>Domain: Return AI Analysis
+    Domain-->>Backend: Formatted Report
+    Backend-->>tRPC: Type-Safe Response
+    tRPC-->>Frontend: Analysis Result
+    Frontend->>Browser: Display Report + Recommendations
+
+    User->>Browser: Save Report
+    Browser->>Frontend: Persist Action
+    Frontend->>tRPC: Save Report
+    tRPC->>Backend: Store in Database
+    Backend->>Database: Insert Report
+    Database-->>Backend: Confirmation
+    Backend-->>tRPC: Success Response
+    tRPC-->>Frontend: UI Update
+    Frontend->>Browser: Show Success Message
