@@ -316,3 +316,13 @@
 - [x] Atualizar cores dos cards de status para tema dark
 - [ ] Testar correlações processadas na interface
 - [ ] Validar tema dark em todas as páginas
+
+
+## Correções de UI - Tema Dark Completo
+- [x] Corrigir botões brancos para tema dark (variant outline transparente)
+- [x] Atualizar cards de navegação (Histórico Completo, Correlações) para bg-card
+- [x] Agrupar indicadores de exames (31, 28, 3, 0) em grid compacto 2x2
+- [x] Substituir emoji de avatar por silhueta SVG flat monocromática
+- [x] Criar componente de silhueta que muda cor baseado no IMC
+- [x] Componente ExamStatsCard criado para agrupar estatísticas
+- [ ] Testar todas as páginas para garantir consistência do tema dark

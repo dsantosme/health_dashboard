@@ -7,6 +7,7 @@ import { useAuth } from '@/_core/hooks/useAuth';
 import { useCurrentPatient } from '@/hooks/useCurrentPatient';
 import { getLoginUrl } from '@/const';
 import AnthropometricCard from '@/components/AnthropometricCard';
+import ExamStatsCard from '@/components/ExamStatsCard';
 
 export default function Home() {
   const { user, loading: authLoading, error, isAuthenticated, logout } = useAuth();
@@ -153,51 +154,17 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Status Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          {/* Total Exames de 2026 */}
-          <Card className="p-6 bg-card border-border hover:shadow-lg transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Exames em 2026</p>
-                <p className="text-3xl font-bold text-foreground">{totalExams2026}</p>
-              </div>
-              <Microscope className="w-10 h-10 text-primary opacity-20" />
-            </div>
-          </Card>
-
-          {/* Normais */}
-          <Card className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-green-400 mb-1">Normais</p>
-                <p className="text-3xl font-bold text-green-300">{normalExams}</p>
-              </div>
-              <div className="text-3xl">✅</div>
-            </div>
-          </Card>
-
-          {/* Anormais */}
-          <Card className="p-6 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-yellow-400 mb-1">Anormais</p>
-                <p className="text-3xl font-bold text-yellow-300">{abnormalExams}</p>
-              </div>
-              <div className="text-3xl">⚠️</div>
-            </div>
-          </Card>
-
-          {/* Críticos */}
-          <Card className="p-6 bg-gradient-to-br from-red-500/10 to-rose-500/10 border-red-500/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-red-400 mb-1">Críticos</p>
-                <p className="text-3xl font-bold text-red-300">{criticalExams.length}</p>
-              </div>
-              <div className="text-3xl">🔴</div>
-            </div>
-          </Card>
+        {/* Resumo de Exames - Compacto */}
+        <div className="mb-8">
+          <ExamStatsCard 
+            stats={{
+              total: totalExams2026,
+              normal: normalExams,
+              abnormal: abnormalExams,
+              critical: criticalExams.length
+            }}
+            year={2026}
+          />
         </div>
 
         {/* Critical Alerts */}
@@ -224,60 +191,60 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Exames Detalhados */}
           <Card 
-            className="p-8 bg-white border-slate-200 hover:shadow-lg transition cursor-pointer group"
+            className="p-8 bg-card border-border hover:shadow-lg transition cursor-pointer group"
             onClick={() => navigate('/exams')}
           >
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition">
-                <Microscope className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition">
+                <Microscope className="w-6 h-6 text-primary" />
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition" />
+              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2">Exames Detalhados</h3>
-            <p className="text-sm text-slate-600 mb-4">
+            <h3 className="text-lg font-bold text-foreground mb-2">Exames Detalhados</h3>
+            <p className="text-sm text-muted-foreground mb-4">
               Histórico completo com faixas de referência, gráficos temporais e análise de tendências
             </p>
-            <Button className="w-full" variant="outline">
+            <Button className="w-full bg-primary/10 text-primary border-primary/20 hover:bg-primary/20" variant="outline">
               Explorar Exames
             </Button>
           </Card>
 
           {/* Histórico Completo */}
           <Card 
-            className="p-8 bg-white border-slate-200 hover:shadow-lg transition cursor-pointer group"
+            className="p-8 bg-card border-border hover:shadow-lg transition cursor-pointer group"
             onClick={() => navigate('/history')}
           >
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition">
-                <TrendingUp className="w-6 h-6 text-indigo-600" />
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center group-hover:bg-accent/20 transition">
+                <TrendingUp className="w-6 h-6 text-accent" />
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-indigo-600 transition" />
+              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-accent transition" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2">Histórico Completo</h3>
-            <p className="text-sm text-slate-600 mb-4">
+            <h3 className="text-lg font-bold text-foreground mb-2">Histórico Completo</h3>
+            <p className="text-sm text-muted-foreground mb-4">
               Todos os períodos (2022-2026) com análise de tendências e evolução temporal
             </p>
-            <Button className="w-full" variant="outline">
+            <Button className="w-full bg-accent/10 text-accent border-accent/20 hover:bg-accent/20" variant="outline">
               Ver Histórico
             </Button>
           </Card>
 
           {/* Correlações de Exames */}
           <Card 
-            className="p-8 bg-white border-slate-200 hover:shadow-lg transition cursor-pointer group"
+            className="p-8 bg-card border-border hover:shadow-lg transition cursor-pointer group"
             onClick={() => navigate('/correlations')}
           >
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition">
-                <Network className="w-6 h-6 text-indigo-600" />
+              <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center group-hover:bg-purple-500/20 transition">
+                <Network className="w-6 h-6 text-purple-400" />
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-indigo-600 transition" />
+              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-purple-400 transition" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2">Correlações de Exames</h3>
-            <p className="text-sm text-slate-600 mb-4">
+            <h3 className="text-lg font-bold text-foreground mb-2">Correlações de Exames</h3>
+            <p className="text-sm text-muted-foreground mb-4">
               Análises automáticas que identificam padrões entre exames realizados no mesmo período
             </p>
-            <Button className="w-full" variant="outline">
+            <Button className="w-full bg-purple-500/10 text-purple-400 border-purple-500/20 hover:bg-purple-500/20" variant="outline">
               Ver Correlações
             </Button>
           </Card>

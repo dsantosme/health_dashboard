@@ -13,7 +13,7 @@ interface Props {
 }
 
 /**
- * Retorna emoji de avatar baseado no IMC
+ * Retorna cor e label baseado no IMC
  * < 18.5: Abaixo do peso
  * 18.5-24.9: Peso normal
  * 25-29.9: Sobrepeso
@@ -21,20 +21,55 @@ interface Props {
  * 35-39.9: Obesidade Grau II
  * >= 40: Obesidade Grau III
  */
-function getAvatarByBMI(bmi: number): { emoji: string; label: string; color: string } {
+function getAvatarByBMI(bmi: number): { label: string; color: string; fillColor: string } {
   if (bmi < 18.5) {
-    return { emoji: '🧍‍♂️', label: 'Abaixo do peso', color: 'text-blue-400' };
+    return { label: 'Abaixo do peso', color: 'text-blue-400', fillColor: '#60a5fa' };
   } else if (bmi < 25) {
-    return { emoji: '🏃‍♂️', label: 'Peso normal', color: 'text-green-400' };
+    return { label: 'Peso normal', color: 'text-green-400', fillColor: '#4ade80' };
   } else if (bmi < 30) {
-    return { emoji: '🚶‍♂️', label: 'Sobrepeso', color: 'text-yellow-400' };
+    return { label: 'Sobrepeso', color: 'text-yellow-400', fillColor: '#facc15' };
   } else if (bmi < 35) {
-    return { emoji: '🧍', label: 'Obesidade Grau I', color: 'text-orange-400' };
+    return { label: 'Obesidade Grau I', color: 'text-orange-400', fillColor: '#fb923c' };
   } else if (bmi < 40) {
-    return { emoji: '🧍', label: 'Obesidade Grau II', color: 'text-red-400' };
+    return { label: 'Obesidade Grau II', color: 'text-red-400', fillColor: '#f87171' };
   } else {
-    return { emoji: '🧍', label: 'Obesidade Grau III', color: 'text-red-600' };
+    return { label: 'Obesidade Grau III', color: 'text-red-600', fillColor: '#dc2626' };
   }
+}
+
+/**
+ * Silhueta humana flat monocromática (SVG)
+ */
+function HumanSilhouette({ fillColor }: { fillColor: string }) {
+  return (
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Cabeça */}
+      <circle cx="12" cy="5" r="3" fill={fillColor} />
+      {/* Corpo */}
+      <path
+        d="M12 9C9 9 7 11 7 13V18C7 18.5 7.5 19 8 19H16C16.5 19 17 18.5 17 18V13C17 11 15 9 12 9Z"
+        fill={fillColor}
+      />
+      {/* Braços */}
+      <path
+        d="M7 13L5 17C4.8 17.5 5 18 5.5 18.2C6 18.4 6.5 18.2 6.7 17.7L8.5 13.5"
+        fill={fillColor}
+      />
+      <path
+        d="M17 13L19 17C19.2 17.5 19 18 18.5 18.2C18 18.4 17.5 18.2 17.3 17.7L15.5 13.5"
+        fill={fillColor}
+      />
+      {/* Pernas */}
+      <path
+        d="M10 19V23C10 23.5 10.5 24 11 24C11.5 24 12 23.5 12 23V19"
+        fill={fillColor}
+      />
+      <path
+        d="M14 19V23C14 23.5 13.5 24 13 24C12.5 24 12 23.5 12 23V19"
+        fill={fillColor}
+      />
+    </svg>
+  );
 }
 
 export default function AnthropometricCard({ data }: Props) {
@@ -47,7 +82,7 @@ export default function AnthropometricCard({ data }: Props) {
           <h3 className="text-lg font-semibold text-foreground mb-1">Dados Antropométricos</h3>
           <p className="text-sm text-muted-foreground">Medidas atuais</p>
         </div>
-        <div className="text-5xl">{avatar.emoji}</div>
+        <HumanSilhouette fillColor={avatar.fillColor} />
       </div>
 
       {/* Grid de métricas */}
