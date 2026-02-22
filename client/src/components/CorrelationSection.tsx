@@ -2,13 +2,17 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, CheckCircle, Info, Network } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
+import { useState } from 'react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface CorrelationSectionProps {
   patientId: string;
   examName: string;
+  onExamsSelected?: (exams: string[]) => void;
 }
 
-export function CorrelationSection({ patientId, examName }: CorrelationSectionProps) {
+export function CorrelationSection({ patientId, examName, onExamsSelected }: CorrelationSectionProps) {
+  const [selectedExams, setSelectedExams] = useState<string[]>([examName]);
   // Buscar correlações para o exame selecionado (data mais recente)
   const { data: correlations = [], isLoading } = trpc.correlations.getWithMedicalAnalysis.useQuery(
     {
@@ -56,10 +60,35 @@ export function CorrelationSection({ patientId, examName }: CorrelationSectionPr
           </div>
 
           <div className="p-4 bg-background/50 rounded-xl">
-            <h4 className="text-sm font-semibold text-foreground mb-2">Exames relacionados:</h4>
-            <p className="text-sm text-muted-foreground">
-              {getRelatedExams(examName).join(', ')}
-            </p>
+            <h4 className="text-sm font-semibold text-foreground mb-2">Selecione exames para análise integrada:</h4>
+            <div className="space-y-2 mt-3">
+              {getRelatedExams(examName).map((relatedExam) => (
+                <div key={relatedExam} className="flex items-center gap-2">
+                  <Checkbox
+                    id={relatedExam}
+                    checked={selectedExams.includes(relatedExam)}
+                    onCheckedChange={(checked) => {
+                      const newSelection = checked
+                        ? [...selectedExams, relatedExam]
+                        : selectedExams.filter(e => e !== relatedExam);
+                      setSelectedExams(newSelection);
+                      onExamsSelected?.(newSelection);
+                    }}
+                  />
+                  <label
+                    htmlFor={relatedExam}
+                    className="text-sm text-muted-foreground cursor-pointer"
+                  >
+                    {relatedExam}
+                  </label>
+                </div>
+              ))}
+            </div>
+            {selectedExams.length > 1 && (
+              <p className="text-xs text-primary mt-3">
+                {selectedExams.length} exames selecionados para análise integrada
+              </p>
+            )}
           </div>
 
           <div className="p-4 bg-blue-500/10 rounded-xl border border-blue-500/20">

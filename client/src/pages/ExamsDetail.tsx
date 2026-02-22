@@ -60,6 +60,7 @@ export default function ExamsDetail() {
   const [, navigate] = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedExamName, setSelectedExamName] = useState<string | null>(null);
+  const [selectedExamsForAnalysis, setSelectedExamsForAnalysis] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<'all' | 'normal' | 'abnormal' | 'critical'>('all');
   const { patientId } = useCurrentPatient();
   const detailsRef = useRef<HTMLDivElement>(null);
@@ -341,12 +342,16 @@ export default function ExamsDetail() {
             )}
 
             {/* Análise de Correlações */}
-            <CorrelationSection patientId={patientId!} examName={selectedExamName} />
+            <CorrelationSection 
+              patientId={patientId!} 
+              examName={selectedExamName}
+              onExamsSelected={(exams) => setSelectedExamsForAnalysis(exams)}
+            />
 
             {/* Análise Médica Detalhada */}
             <MedicalAnalysisSection 
               patientId={patientId!} 
-              examNames={[selectedExamName]}
+              examNames={selectedExamsForAnalysis.length > 0 ? selectedExamsForAnalysis : [selectedExamName]}
               correlationDate={exams.find(e => e.examName === selectedExamName)?.date?.toString()}
             />
 

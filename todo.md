@@ -402,3 +402,13 @@
 - [x] Integrar MedicalAnalysisSection em ExamsDetail.tsx
 - [x] Criar tRPC procedure medicalAnalysis.generate
 - [x] Testar com dados reais do Denis Santos (HDL 38, LDL 138, TG 198)
+
+
+## Análise de Múltiplos Exames Correlacionados
+- [x] Adicionar seleção múltipla de exames no CorrelationSection (checkboxes)
+- [x] Permitir selecionar 2-3 exames relacionados para análise integrada
+- [x] Atualizar MedicalAnalysisSection para aceitar array de múltiplos exames
+- [x] Atualizar medicalAnalysisService para gerar análise integrada de múltiplos exames
+- [x] Melhorar prompt do LLM para análise de perfil completo (ex: perfil lipídico)
+- [x] Testar com perfil lipídico completo (HDL + LDL + Triglicerídeos + Colesterol Total)
+- [x] Validar que análise integrada é mais rica que análise individual

@@ -227,7 +227,10 @@ IMC: ${bmi?.toFixed(1)}
 Circunferência Abdominal: ${waist} cm
   `.trim();
 
-  const prompt = `Você é um ${specialist.split('–')[0].trim()} experiente analisando exames de um paciente.
+  const isMultipleExams = input.examNames.length > 1;
+  const examType = isMultipleExams ? 'perfil integrado' : 'exame';
+
+  const prompt = `Você é um ${specialist.split('–')[0].trim()} experiente analisando ${examType} de um paciente.
 
 **DADOS DO PACIENTE:**
 Nome: ${patient.name}
@@ -241,25 +244,30 @@ ${indicesContext}
 
 **INSTRUÇÕES:**
 1. Fale diretamente com o paciente usando "Sr./Sra. ${patient.name.split(' ')[0]}"
-2. Analise cada exame individualmente primeiro, explicando:
+2. ${isMultipleExams 
+  ? `Como está analisando MÚLTIPLOS EXAMES CORRELACIONADOS, foque na ANÁLISE INTEGRADA:
+   - Comece explicando brevemente cada exame (valor, referência, status)
+   - PRIORIZE a correlação entre os exames e o que esse CONJUNTO revela
+   - Explique padrões clínicos (ex: HDL baixo + TG alto + LDL elevado = perfil aterogênico)
+   - Use os índices calculados para reforçar a análise integrada
+   - Correlacione com dados antropométricos (peso, IMC, circunferência)
+   - Explique o que esse perfil COMPLETO significa para a saúde do paciente`
+  : `Analise o exame individualmente:
    - O valor atual
    - A faixa de referência ideal
    - Se está normal, baixo ou alto
-3. Depois, correlacione os exames entre si, explicando:
-   - Padrões identificados (ex: HDL baixo + TG alto = resistência à insulina)
-   - Índices calculados e seu significado clínico
-   - Relação com dados antropométricos (peso, IMC, circunferência)
-4. Explique o risco de forma clara e objetiva:
+   - Correlação com dados antropométricos (peso, IMC, circunferência)`}
+3. Explique o risco de forma clara e objetiva:
    - Não é urgência? Diga claramente
    - Requer atenção? Explique por quê
    - É urgente? Indique a gravidade
-5. Termine com orientações práticas e próximos passos
-6. Use linguagem acessível mas precisa
-7. Seja empático mas direto
-8. Não use markdown, apenas texto corrido com parágrafos
+4. Termine com orientações práticas e próximos passos
+5. Use linguagem acessível mas precisa
+6. Seja empático mas direto
+7. Não use markdown, apenas texto corrido com parágrafos
 
 **FORMATO DE RESPOSTA:**
-Escreva uma análise em linguagem natural, como se estivesse conversando com o paciente no consultório. Use parágrafos bem estruturados. Seja específico com os números e valores.`;
+Escreva uma análise em linguagem natural, como se estivesse conversando com o paciente no consultório. ${isMultipleExams ? 'Dê ênfase à visão INTEGRADA do perfil completo, não apenas exames isolados.' : 'Seja específico com os números e valores.'} Use parágrafos bem estruturados.`;
 
   // 6. Invocar LLM
   const response = await invokeLLM({
