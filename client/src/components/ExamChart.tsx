@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { trpc } from '@/lib/trpc';
 import { useMemo } from 'react';
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
 import { FutureProjectionChart } from './FutureProjectionChart';
@@ -19,6 +21,11 @@ interface ExamChartProps {
 }
 
 export function ExamChart({ data, examName, unit }: ExamChartProps) {
+  // Buscar dados antropométricos do banco
+  const { data: anthropometricData } = trpc.patients.getAnthropometricData.useQuery({
+    patientId: 'denis-santos'
+  });
+
   // Preparar dados para o gráfico
   const chartData = useMemo(() => {
     return data
@@ -242,6 +249,15 @@ export function ExamChart({ data, examName, unit }: ExamChartProps) {
             date: d.date,
             value: d.value
           }))}
+          anthropometricData={anthropometricData ? {
+            weight: anthropometricData.weight || 107,
+            bmi: anthropometricData.bmi || 32.3,
+            waist: anthropometricData.waist || 111
+          } : {
+            weight: 107,
+            bmi: 32.3,
+            waist: 111
+          }}
         />
       </div>
     </div>

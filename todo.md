@@ -172,3 +172,44 @@
 - [x] Adicionar interpretação dos cenários com cards descritivos
 - [ ] Pesquisar health prediction frameworks para melhorar CX
 - [ ] Implementar insights de health prediction na plataforma
+
+
+## Melhoria de Gr\u00e1ficos de Proje\u00e7\u00e3o com Interpola\u00e7\u00e3o
+- [ ] Implementar ComposedChart com barras + linhas interpoladas nos gr\u00e1ficos de proje\u00e7\u00e3o
+- [ ] Adicionar dados antropom\u00e9tricos (peso, IMC, circunfer\u00eancia) nas barras de proje\u00e7\u00e3o
+- [ ] Melhorar c\u00e1lculo de tend\u00eancia para detectar e tratar varia\u00e7\u00f5es pequenas (evitar linhas flat)
+- [ ] Correlacionar varia\u00e7\u00f5es de peso/circunfer\u00eancia com impacto em exames
+- [ ] Adicionar tooltips mostrando valores de peso/IMC/circunfer\u00eancia em cada per\u00edodo
+
+## Correção de Escala do Eixo Y em Gráficos de Projeção
+- [x] Corrigir cálculo da escala do eixo Y (filtrar valores inválidos: null, undefined, Infinity, NaN)
+- [x] Adicionar padding mínimo de 5 unidades para melhor visualização
+- [x] Testar com Creatinina (escala agora apropriada em vez de 999999)
+- [x] Testar com Glicose Jejum (escala 67.1-101.9 mg/dL)
+
+## Visualização de Dados Antropométricos em Gráficos
+- [x] Carregar dados antropométricos do banco em vez de hardcoded
+- [x] Adicionar eixo Y secundário para peso/IMC no gráfico de projeção
+- [x] Mostrar barras de peso projetado para cada cenário (Otimista, Manutenção, Pessimista)
+- [x] Correlacionar visualmente mudanças de peso com impacto em exames
+- [x] Adicionar legenda para dados antropométricos
+
+## Melhoria de Projeções com Tendência Estável
+- [ ] Detectar quando tendência é estável (< 0.001 unidades/mês)
+- [ ] Para tendências estáveis, considerar usar escala logarítmica
+- [ ] Ou adicionar anotações explicativas ("Tendência estável - sem mudanças esperadas")
+- [ ] Testar com múltiplos exames para validar visualização
+
+## Versioning de Dados Antropométricos
+- [ ] Criar tabela no banco para histórico de peso/IMC/circunferência
+- [ ] Implementar interface para usuário atualizar dados antropométricos
+- [ ] Rastrear datas de atualização
+- [ ] Usar histórico para calcular correlações mais precisas
+- [ ] Mostrar gráfico de evolução de peso/IMC ao longo do tempo
+
+## Correlação entre Mudanças Antropométricas e Exames
+- [x] Implementar algoritmo para calcular correlação entre peso e glicose
+- [x] Implementar algoritmo para calcular correlação entre peso e colesterol
+- [x] Mostrar projeções com base em mudanças de peso esperadas
+- [x] Exemplo: "Se perder 5kg, glicose pode reduzir ~15 mg/dL"
+- [x] Adicionar insights sobre qual exame é mais sensível a mudanças de peso

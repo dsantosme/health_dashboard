@@ -29,6 +29,20 @@ export const appRouter = router({
       .query(async ({ input }) => {
         return await db.getPatientById(input.patientId);
       }),
+    getAnthropometricData: publicProcedure
+      .input(z.object({ patientId: z.string() }))
+      .query(async ({ input }) => {
+        const patient = await db.getPatientById(input.patientId);
+        if (!patient) {
+          return null;
+        }
+        return {
+          weight: patient.weight ? parseFloat(String(patient.weight)) : null,
+          height: patient.height,
+          bmi: patient.bmi ? parseFloat(String(patient.bmi)) : null,
+          waist: patient.waist,
+        };
+      }),
   }),
 
   // Rotas de Exames
