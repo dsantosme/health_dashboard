@@ -1,0 +1,362 @@
+[
+ {
+  "id": "triceps_polia_alta",
+  "tipo": "execucao",
+  "idx": 16,
+  "caixa": [
+   0.1,
+   0.05,
+   0.99,
+   0.6
+  ],
+  "arquivo": "1000148572.jpg"
+ },
+ {
+  "id": "triceps_polia_alta",
+  "tipo": "enfoque",
+  "idx": 18,
+  "caixa": [
+   0.4,
+   0.03,
+   0.99,
+   0.55
+  ],
+  "arquivo": "1000148573.jpg"
+ },
+ {
+  "id": "triceps_coice_halter",
+  "tipo": "execucao",
+  "idx": 19,
+  "caixa": [
+   0.1,
+   0.05,
+   0.99,
+   0.58
+  ],
+  "arquivo": "1000148574.jpg"
+ },
+ {
+  "id": "triceps_coice_halter",
+  "tipo": "enfoque",
+  "idx": 23,
+  "caixa": [
+   0.4,
+   0.03,
+   0.99,
+   0.55
+  ],
+  "arquivo": "1000148575.jpg"
+ },
+ {
+  "id": "triceps_polia_costas",
+  "tipo": "execucao",
+  "idx": 20,
+  "caixa": [
+   0.08,
+   0.05,
+   0.99,
+   0.6
+  ],
+  "arquivo": "1000148576.jpg"
+ },
+ {
+  "id": "triceps_polia_costas",
+  "tipo": "enfoque",
+  "idx": 17,
+  "caixa": [
+   0.4,
+   0.03,
+   0.99,
+   0.55
+  ],
+  "arquivo": "1000148577.jpg"
+ },
+ {
+  "id": "rosca_inversa",
+  "tipo": "execucao",
+  "idx": 24,
+  "caixa": [
+   0.08,
+   0.05,
+   0.99,
+   0.58
+  ],
+  "arquivo": "1000148578.jpg"
+ },
+ {
+  "id": "rosca_inversa",
+  "tipo": "enfoque",
+  "idx": 22,
+  "caixa": [
+   0.4,
+   0.03,
+   0.99,
+   0.55
+  ],
+  "arquivo": "1000148579.jpg"
+ },
+ {
+  "id": "extensao_punho",
+  "tipo": "execucao",
+  "idx": 21,
+  "caixa": [
+   0.08,
+   0.05,
+   0.99,
+   0.6
+  ],
+  "arquivo": "1000148580.jpg"
+ },
+ {
+  "id": "extensao_punho",
+  "tipo": "enfoque",
+  "idx": 27,
+  "caixa": [
+   0.4,
+   0.03,
+   0.99,
+   0.55
+  ],
+  "arquivo": "1000148581.jpg"
+ },
+ {
+  "id": "flexao_punho",
+  "tipo": "execucao",
+  "idx": 26,
+  "caixa": [
+   0.08,
+   0.05,
+   0.99,
+   0.6
+  ],
+  "arquivo": "1000148582.jpg"
+ },
+ {
+  "id": "flexao_punho",
+  "tipo": "enfoque",
+  "idx": 25,
+  "caixa": [
+   0.4,
+   0.03,
+   0.99,
+   0.55
+  ],
+  "arquivo": "1000148583.jpg"
+ },
+ {
+  "id": "desenvolvimento_sentado",
+  "tipo": "execucao",
+  "idx": 32,
+  "caixa": [
+   0.08,
+   0.05,
+   0.99,
+   0.62
+  ],
+  "arquivo": "Scan_20260821_164913.jpg"
+ },
+ {
+  "id": "desenvolvimento_sentado",
+  "tipo": "enfoque",
+  "idx": 28,
+  "caixa": [
+   0.4,
+   0.03,
+   0.99,
+   0.55
+  ],
+  "arquivo": "Scan_20260821_164925.jpg"
+ },
+ {
+  "id": "remada_em_pe",
+  "tipo": "execucao",
+  "idx": 36,
+  "caixa": [
+   0.08,
+   0.05,
+   0.99,
+   0.62
+  ],
+  "arquivo": "Scan_20260821_164940.jpg"
+ },
+ {
+  "id": "remada_em_pe",
+  "tipo": "enfoque",
+  "idx": 35,
+  "caixa": [
+   0.4,
+   0.03,
+   0.99,
+   0.55
+  ],
+  "arquivo": "Scan_20260821_164951.jpg"
+ },
+ {
+  "id": "elevacao_giro_halteres",
+  "tipo": "execucao",
+  "idx": 34,
+  "caixa": [
+   0.08,
+   0.05,
+   0.99,
+   0.62
+  ],
+  "arquivo": "Scan_20260821_165006.jpg"
+ },
+ {
+  "id": "elevacao_giro_halteres",
+  "tipo": "enfoque",
+  "idx": 39,
+  "caixa": [
+   0.4,
+   0.04,
+   0.99,
+   0.5
+  ],
+  "arquivo": "Scan_20260821_165023.jpg"
+ },
+ {
+  "id": "a_frame",
+  "tipo": "execucao",
+  "idx": 38,
+  "caixa": [
+   0.08,
+   0.05,
+   0.99,
+   0.6
+  ],
+  "arquivo": "Scan_20260821_165038.jpg"
+ },
+ {
+  "id": "a_frame",
+  "tipo": "enfoque",
+  "idx": 37,
+  "caixa": [
+   0.4,
+   0.03,
+   0.99,
+   0.55
+  ],
+  "arquivo": "Scan_20260821_165048.jpg"
+ },
+ {
+  "id": "elevacao_lateral_bola",
+  "tipo": "execucao",
+  "idx": 42,
+  "caixa": [
+   0.06,
+   0.05,
+   0.99,
+   0.5
+  ],
+  "arquivo": "Scan_20260821_165102.jpg"
+ },
+ {
+  "id": "elevacao_lateral_bola",
+  "tipo": "enfoque",
+  "idx": 43,
+  "caixa": [
+   0.4,
+   0.04,
+   0.99,
+   0.5
+  ],
+  "arquivo": "Scan_20260821_165159.jpg"
+ },
+ {
+  "id": "remada_unilateral",
+  "tipo": "execucao",
+  "idx": 40,
+  "caixa": [
+   0.08,
+   0.05,
+   0.99,
+   0.62
+  ],
+  "arquivo": "Scan_20260821_165145.jpg"
+ },
+ {
+  "id": "remada_unilateral",
+  "tipo": "enfoque",
+  "idx": 41,
+  "caixa": [
+   0.4,
+   0.03,
+   0.99,
+   0.55
+  ],
+  "arquivo": "Scan_20260821_165111.jpg"
+ },
+ {
+  "id": "fig_1_3_posicao",
+  "tipo": "anatomia",
+  "idx": 4,
+  "caixa": [
+   0.1,
+   0.04,
+   0.99,
+   0.48
+  ],
+  "arquivo": "1000148556.jpg"
+ },
+ {
+  "id": "fig_1_1_fibra",
+  "tipo": "anatomia",
+  "idx": 8,
+  "caixa": [
+   0.1,
+   0.4,
+   0.99,
+   0.85
+  ],
+  "arquivo": "1000148554.jpg"
+ },
+ {
+  "id": "fig_2_1_biceps",
+  "tipo": "anatomia",
+  "idx": 13,
+  "caixa": [
+   0.08,
+   0.15,
+   0.99,
+   0.55
+  ],
+  "arquivo": "1000148564.jpg"
+ },
+ {
+  "id": "fig_2_3_antebraco",
+  "tipo": "anatomia",
+  "idx": 14,
+  "caixa": [
+   0.08,
+   0.55,
+   0.99,
+   0.95
+  ],
+  "arquivo": "1000148565.jpg"
+ },
+ {
+  "id": "fig_3_2_manguito",
+  "tipo": "anatomia",
+  "idx": 30,
+  "caixa": [
+   0.08,
+   0.3,
+   0.99,
+   0.75
+  ],
+  "arquivo": "Scan_20260821_164841.jpg"
+ },
+ {
+  "id": "fig_3_1_deltoide",
+  "tipo": "anatomia",
+  "idx": 29,
+  "caixa": [
+   0.42,
+   0.5,
+   0.99,
+   0.99
+  ],
+  "arquivo": "Scan_20260821_164826.jpg"
+ }
+]

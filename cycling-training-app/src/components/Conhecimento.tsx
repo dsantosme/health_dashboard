@@ -1,5 +1,8 @@
 import { AQUECIMENTOS, BIKE_FIT_CHECKLIST, CAPITULOS, PRINCIPIOS, REGIOES } from '../data/livro'
 import { BIKE_SETUP, EFICIENCIA_PEDALADA, POSTURA_ATAQUE, SINDROME_CRUZADA_SUPERIOR } from '../data/mtb'
+import { ANATOMIA, EXTRAS, SETUP } from '../data/figuras'
+import { quantidadeDeImagens } from '../lib/imagens'
+import { FiguraLivro } from './FiguraLivro'
 
 /**
  * A base teorica do app, aberta: de onde vem cada regra do plano e
@@ -7,6 +10,8 @@ import { BIKE_SETUP, EFICIENCIA_PEDALADA, POSTURA_ATAQUE, SINDROME_CRUZADA_SUPER
  */
 export function Conhecimento() {
   const lidos = CAPITULOS.filter((c) => c.status === 'lido').length
+  const comImagens = quantidadeDeImagens()
+  const anatomiaDisponivel = ANATOMIA.filter((f) => f.arquivo)
 
   return (
     <div className="conhecimento">
@@ -16,6 +21,11 @@ export function Conhecimento() {
           Duas fontes alimentam o motor deste app: <strong>Anatomia do Ciclismo</strong>, de Shannon Sovndal (Manole), e o
           e-book <strong>Primeiros passos para dominar a sua bike</strong>, da Ludolf Bike School. O que esta aqui sao
           anotacoes e principios resumidos com nossas palavras, nao o texto das obras.
+        </p>
+        <p className="sutil">
+          {comImagens > 0
+            ? `${comImagens} ilustracoes dos materiais originais estao carregadas nesta copia do app. Elas ficam so no seu aparelho: nao vao para o repositorio, porque sao obra protegida.`
+            : 'As ilustracoes dos materiais originais nao estao nesta copia — o app usa as figuras SVG geradas por codigo. Para incluir as suas, veja src/assets/livro/README.md.'}
         </p>
         <div className="progresso">
           <div className="barra-progresso">
@@ -63,6 +73,11 @@ export function Conhecimento() {
             </summary>
             <p className="sutil">{r.musculos.join(' · ')}</p>
             <p>{r.papelNoCiclismo}</p>
+            {anatomiaDisponivel
+              .filter((f) => f.regiao === r.id)
+              .map((f) => (
+                <FiguraLivro key={f.arquivo} figura={f} />
+              ))}
           </details>
         ))}
       </section>
@@ -88,11 +103,14 @@ export function Conhecimento() {
         {BIKE_SETUP.map((b) => (
           <details key={b.id}>
             <summary>{b.titulo}</summary>
+            <FiguraLivro figura={SETUP[b.id]} />
             <ol>
               {b.passos.map((p) => (
                 <li key={p}>{p}</li>
               ))}
             </ol>
+            {b.id === 'guidom_giro' && <FiguraLivro figura={EXTRAS.nervos_mao} />}
+            {b.id === 'selim_altura' && <FiguraLivro figura={EXTRAS.joelho_selim} />}
             <p className="sutil">Resolve: {b.resolve.join(', ')}</p>
           </details>
         ))}

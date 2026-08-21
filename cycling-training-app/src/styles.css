@@ -275,6 +275,30 @@ textarea { resize: vertical; }
 .fig-seta { stroke: var(--destaque); stroke-width: 2; color: var(--destaque); }
 .fig-legenda { fill: var(--texto-sutil); font-size: 4.4px; }
 
+/* ---------- ilustracoes dos materiais-fonte ---------- */
+.figura-livro { margin: 0 0 12px; }
+.figura-livro img {
+  display: block;
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  border-radius: var(--raio);
+  background: #fff;
+  border: 1px solid var(--borda);
+}
+.figura-livro figcaption {
+  color: var(--texto-sutil);
+  font-size: 0.72rem;
+  margin-top: 5px;
+  max-width: 340px;
+}
+.figura-livro.enfoque img { max-width: 300px; }
+.alternador { display: flex; gap: 6px; margin-bottom: 8px; }
+
+.lista-passos { padding-left: 20px; margin-bottom: 14px; }
+.lista-passos li { cursor: pointer; color: var(--texto-sutil); }
+.lista-passos li.atual { color: var(--texto); font-weight: 500; }
+
 /* ---------- conhecimento ---------- */
 details { border-top: 1px solid var(--borda); padding: 10px 0; }
 details summary { cursor: pointer; font-weight: 600; }

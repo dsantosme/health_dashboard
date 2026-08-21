@@ -47,8 +47,25 @@ regulagem da bike e gesto técnico.
 Cada item de bike setup carrega os sintomas que resolve, e a anamnese usa isso: quem marca dor no
 joelho recebe o checklist de altura de selim; dormência na mão recebe o de giro do guidom.
 
+## Ilustrações extraídas
+
+`scripts/extrair-figuras.py` recorta as figuras dos materiais originais para `src/assets/livro/`:
+
+| Origem | O que sai |
+|---|---|
+| Fotos das páginas do livro | 12 ilustrações de execução, 12 desenhos de "Enfoque no ciclismo", 6 figuras de anatomia (fig. 1.1, 1.3, 2.1/2.2, 2.3, 3.1, 3.2) |
+| PDF do e-book (JPEGs embutidos) | 5 fotos da rotina de mobilidade, 2 de técnica, 7 de bike setup, 8 diagramas de anatomia |
+
+O recorte é automático: caixa aproximada por página → correção do amarelado → remoção da aba
+escura do capítulo → separação do desenho e do texto (pela moldura retangular, com tolerância a
+foto torta, ou pela calha de papel em branco) → aparo até o conteúdo → WebP. O mapa de páginas
+está em `scripts/mapa-paginas.json`.
+
 ## Direitos autorais
 
-Nenhum texto das obras é reproduzido no app ou no repositório. O que existe são anotações,
-resumos e regras derivadas, escritas com nossas palavras e sempre com a fonte citada
-(obra, capítulo e página). As ilustrações são desenhos próprios gerados por código.
+Nenhum texto das obras é reproduzido no app ou no repositório, e **nenhuma imagem extraída é
+versionada** — `src/assets/livro/` está no `.gitignore`, porque este repositório é público e as
+figuras são obra protegida. O que vai para o git são anotações, resumos e regras derivadas,
+escritas com nossas palavras e sempre com a fonte citada (obra, capítulo e página), mais as
+figuras SVG desenhadas por código e o script que reproduz a extração na máquina de quem tem
+os originais.

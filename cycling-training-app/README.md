@@ -28,11 +28,23 @@ Tudo fica no `localStorage` do aparelho.
 
 ## As ilustrações
 
-Não são imagens escaneadas de livro. Cada passo de exercício declara **ângulos articulares**
-(`src/illustrations/pose.ts`) e um renderizador de cinemática direta (`Figure.tsx`) desenha a figura
-em SVG, destacando em laranja o grupo muscular trabalhado e desenhando o aparelho (barra, halter,
-polia, banco, degrau, faixa, bike). Vantagem: são leves, funcionam offline, escalam em qualquer tela
-e podem ser corrigidas mudando um número.
+O app tem **duas camadas de imagem** e usa a melhor disponível:
+
+1. **Ilustrações dos materiais-fonte.** Um script (`scripts/extrair-figuras.py`) recorta as figuras
+   das fotos das páginas do livro e das imagens do e-book: remove a aba escura do capítulo, separa o
+   desenho do texto ao lado, corrige o amarelado da foto e exporta em WebP. São 54 imagens — as 12
+   ilustrações de execução, os 12 desenhos de "Enfoque no ciclismo" (o músculo em ação sobre a
+   bike), figuras de anatomia e as fotos de bike setup e mobilidade.
+   **Elas não são versionadas** (obra protegida, repositório público): ficam em `src/assets/livro/`,
+   que está no `.gitignore`. Quem tem os originais gera a própria cópia. Veja
+   `src/assets/livro/README.md`.
+2. **Figuras SVG geradas por código.** Cada passo de exercício declara **ângulos articulares**
+   (`src/illustrations/pose.ts`) e um renderizador de cinemática direta (`Figure.tsx`) desenha a
+   figura, destacando em laranja o grupo muscular e desenhando o aparelho (barra, halter, polia,
+   banco, degrau, faixa, bike).
+
+Quando a imagem do material existe, o card abre nela e o passo a passo em SVG fica a um toque.
+Quando não existe, o SVG assume sozinho — nada quebra, e o app continua funcionando offline.
 
 ## Fontes
 
@@ -74,6 +86,9 @@ src/
     assessment.ts       junta tudo em uma avaliação
     plan.ts             periodização e montagem das sessões
   illustrations/        cinemática direta + renderizador SVG
+  data/figuras.ts       registro das ilustrações dos materiais (só nomes de arquivo)
+  assets/livro/         imagens extraídas — fora do git
+  lib/imagens.ts        carrega as imagens presentes, se houver
   components/           telas
   lib/store.tsx         estado + persistência local
 ```

@@ -1,0 +1,10 @@
+node_modules
+dist
+*.tsbuildinfo
+
+# Imagens extraidas dos materiais-fonte (livro e e-book).
+# Ficam so na maquina de quem tem os originais: sao obra protegida e este
+# repositorio e publico. O app funciona sem elas (cai nas figuras SVG).
+src/assets/livro/*
+!src/assets/livro/.gitkeep
+!src/assets/livro/README.md
