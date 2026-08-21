@@ -65,8 +65,27 @@ npm test         # testes do motor de planejamento
 npm run build    # build de produção em dist/
 ```
 
-O `build` gera um site estático que pode ser publicado em qualquer lugar (GitHub Pages, Netlify,
-Vercel). O `base` do Vite é relativo, então funciona em subpasta.
+## Rodando no celular (academia)
+
+**Na mesma rede Wi-Fi**, sem publicar nada:
+
+```bash
+npm run dev:lan        # ou: npm run build && npm run preview:lan
+```
+
+O Vite imprime um endereço `http://192.168.x.x:5173` — é esse que você abre no celular.
+Nesse modo o service worker não é registrado (ele só entra no build de produção), então o
+offline completo só vale na versão publicada.
+
+**Publicado**, para instalar como app e funcionar offline: `npm run build` gera um site estático
+(~3,4 MB com as imagens) que roda em qualquer host — GitHub Pages, Netlify, Vercel, Cloudflare
+Pages. O `base` do Vite é relativo, então funciona também em subpasta. Precisa de **HTTPS** para
+o service worker e o "adicionar à tela de início" funcionarem.
+
+Atenção ao publicar: `src/assets/livro/` está no `.gitignore`, então um deploy feito **a partir do
+repositório** sai sem as ilustrações dos materiais (o app cai nas figuras SVG). Para ter as imagens
+na versão publicada, faça o build local e suba a pasta `dist/` — e mantenha esse endereço privado,
+já que as figuras são obra protegida.
 
 ## Estrutura
 

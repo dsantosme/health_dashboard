@@ -6,8 +6,10 @@
   "description": "MVP de app para ciclistas: anamnese, avaliacao de nivel e geracao de planos de treino de curto, medio e longo prazo com sessoes ilustradas passo a passo.",
   "scripts": {
     "dev": "vite",
+    "dev:lan": "vite --host",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
+    "preview:lan": "vite preview --host",
     "check": "tsc --noEmit",
     "test": "vitest run"
   },
