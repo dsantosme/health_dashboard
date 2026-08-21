@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')!).render(
 )
 
 // O service worker so entra no build de producao, para nao atrapalhar o dev.
-if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+if (import.meta.env.PROD && !import.meta.env.VITE_SINGLE && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').catch(() => undefined)
   })

@@ -82,6 +82,17 @@ offline completo só vale na versão publicada.
 Pages. O `base` do Vite é relativo, então funciona também em subpasta. Precisa de **HTTPS** para
 o service worker e o "adicionar à tela de início" funcionarem.
 
+### Arquivo único, sem servidor
+
+```bash
+npm run build:unico   # dist-single/ciclo-coach.html
+```
+
+Gera **um HTML só** (~4,3 MB) com CSS, JS e todas as imagens embutidas em data URI. Abre com
+duplo clique, funciona sem rede e sem servidor, e dá para mandar por e-mail ou copiar para o
+celular. É a forma mais rápida de testar. O que não funciona nesse modo: instalar como PWA e o
+service worker (que precisam de um endereço HTTPS).
+
 Atenção ao publicar: `src/assets/livro/` está no `.gitignore`, então um deploy feito **a partir do
 repositório** sai sem as ilustrações dos materiais (o app cai nas figuras SVG). Para ter as imagens
 na versão publicada, faça o build local e suba a pasta `dist/` — e mantenha esse endereço privado,
