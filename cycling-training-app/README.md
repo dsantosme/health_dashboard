@@ -77,6 +77,28 @@ O Vite imprime um endereço `http://192.168.x.x:5173` — é esse que você abre
 Nesse modo o service worker não é registrado (ele só entra no build de produção), então o
 offline completo só vale na versão publicada.
 
+### Netlify
+
+O projeto **`ciclo-coach`** já existe na conta (`app.netlify.com/projects/ciclo-coach`,
+site id `9a956ae6-1b11-4509-93f1-89bc5ca0dcac`). Duas formas de publicar nele:
+
+**1. Ligado ao GitHub (recomendado).** No Netlify: *Project configuration → Build & deploy →
+Link repository* → `dsantosme/health_dashboard`, branch `claude/cycling-training-app-mvp-397hzq`,
+e **diretório base `cycling-training-app`**. A partir daí cada push publica sozinho — o
+`netlify.toml` desta pasta já traz comando, pasta de publicação, Node 22 e cabeçalhos de cache.
+
+**2. Manual, a partir da sua máquina.**
+
+```bash
+npm run build
+npx netlify-cli deploy --prod --dir dist --site ciclo-coach
+```
+
+Ou arraste a pasta `dist/` na área de deploys do projeto no Netlify.
+
+Só o caminho manual publica **com** as ilustrações dos materiais-fonte, porque elas não estão no
+repositório. Se for fazer isso, deixe o site protegido — as figuras são obra protegida.
+
 **Publicado**, para instalar como app e funcionar offline: `npm run build` gera um site estático
 (~3,4 MB com as imagens) que roda em qualquer host — GitHub Pages, Netlify, Vercel, Cloudflare
 Pages. O `base` do Vite é relativo, então funciona também em subpasta. Precisa de **HTTPS** para
