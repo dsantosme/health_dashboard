@@ -8,8 +8,10 @@
 # app usa as figuras SVG. Para publicar com elas, rode o build na sua maquina e
 # suba a pasta dist/.
 
+# Sem 'base': o deploy sobe esta pasta como raiz do projeto. Se um dia voce
+# ligar o repositorio inteiro no Netlify pela interface, defina o diretorio
+# base como "cycling-training-app" la.
 [build]
-  base = "cycling-training-app"
   command = "npm run build"
   publish = "dist"
 
