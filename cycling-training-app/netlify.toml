@@ -1,0 +1,35 @@
+# Publicacao do Ciclo Coach no Netlify.
+#
+# O app e estatico e nao tem rotas de servidor: o roteamento e por estado em
+# memoria, entao nao ha necessidade de redirect de SPA.
+#
+# Atencao: src/assets/livro/ nao esta no repositorio (ver o README de la), entao
+# um build feito a partir do git sai sem as ilustracoes dos materiais-fonte e o
+# app usa as figuras SVG. Para publicar com elas, rode o build na sua maquina e
+# suba a pasta dist/.
+
+[build]
+  base = "cycling-training-app"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# O service worker nunca pode ser servido de cache: e ele que controla a
+# atualizacao de todo o resto.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
