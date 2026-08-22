@@ -24,12 +24,12 @@ export default function App() {
   const [sessaoAberta, setSessaoAberta] = useState<string | null>(null)
 
   const semana = useMemo(
-    () => estado.plan?.semanas.find((s) => s.numero === semanaAtiva) ?? estado.plan?.semanas[0],
+    () => estado.plan?.semanas?.find((s) => s.numero === semanaAtiva) ?? estado.plan?.semanas?.[0],
     [estado.plan, semanaAtiva],
   )
 
   const sessao = useMemo(
-    () => semana?.sessoes.find((s) => s.id === sessaoAberta) ?? null,
+    () => semana?.sessoes?.find((s) => s.id === sessaoAberta) ?? null,
     [semana, sessaoAberta],
   )
 

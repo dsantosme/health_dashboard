@@ -8,12 +8,32 @@ const VERSAO = 1
 
 const VAZIO: AppState = { versao: VERSAO, profile: null, assessment: null, plan: null, logs: [] }
 
+/**
+ * Confere a forma do backup antes de aceitar.
+ *
+ * Um arquivo truncado que passasse daqui viraria tela branca: o app leria
+ * plan.semanas de um objeto sem semanas. Melhor recusar a importacao.
+ */
+function ehEstadoValido(dados: unknown): dados is Partial<AppState> {
+  if (typeof dados !== 'object' || dados === null) return false
+  const e = dados as Partial<AppState>
+  if (!('versao' in e)) return false
+  if (e.plan !== null && e.plan !== undefined) {
+    if (typeof e.plan !== 'object' || !Array.isArray(e.plan.semanas)) return false
+    const semanaQuebrada = e.plan.semanas.some((s) => !s || !Array.isArray(s.sessoes))
+    if (semanaQuebrada) return false
+  }
+  if (e.logs !== undefined && !Array.isArray(e.logs)) return false
+  if (e.profile !== null && e.profile !== undefined && typeof e.profile !== 'object') return false
+  return true
+}
+
 function carregar(): AppState {
   try {
     const bruto = localStorage.getItem(CHAVE)
     if (!bruto) return VAZIO
     const dados = JSON.parse(bruto) as AppState
-    if (dados.versao !== VERSAO) return VAZIO
+    if (dados?.versao !== VERSAO || !ehEstadoValido(dados)) return VAZIO
     return dados
   } catch {
     // Aba anonima, storage bloqueado, JSON corrompido: comeca limpo.
@@ -73,8 +93,8 @@ export function Provedor({ children }: { children: ReactNode }) {
 
   const importar = useCallback((json: string) => {
     try {
-      const dados = JSON.parse(json) as AppState
-      if (typeof dados !== 'object' || dados === null || !('versao' in dados)) return false
+      const dados = JSON.parse(json) as unknown
+      if (!ehEstadoValido(dados)) return false
       setEstado({ ...VAZIO, ...dados, versao: VERSAO })
       return true
     } catch {

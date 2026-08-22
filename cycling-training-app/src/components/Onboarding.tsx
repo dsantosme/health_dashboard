@@ -6,12 +6,36 @@ import type { Profile } from '../types'
  * Questionario em etapas. Renderiza o que estiver declarado em data/questions.ts,
  * entao adicionar pergunta nova nao exige mexer aqui.
  */
+/**
+ * Um campo obrigatorio vazio ou fora da faixa nao pode passar: e daqui que
+ * saem peso, altura e idade, e um deles em branco contamina IMC, W/kg e todas
+ * as zonas de treino silenciosamente.
+ */
+function problemaNoCampo(campo: Campo, valor: unknown): string | null {
+  if (campo.opcional) return null
+  if (campo.tipo === 'texto') return String(valor ?? '').trim() === '' ? 'Preencha este campo.' : null
+  if (campo.tipo === 'numero') {
+    if (valor === null || valor === undefined || valor === '' || Number.isNaN(Number(valor))) {
+      return 'Informe um numero.'
+    }
+    const n = Number(valor)
+    if (campo.min !== undefined && n < campo.min) return `Minimo ${campo.min}${campo.sufixo ? ' ' + campo.sufixo : ''}.`
+    if (campo.max !== undefined && n > campo.max) return `Maximo ${campo.max}${campo.sufixo ? ' ' + campo.sufixo : ''}.`
+    return null
+  }
+  if (campo.tipo === 'multipla') return ((valor as string[]) ?? []).length === 0 ? 'Escolha ao menos uma opcao.' : null
+  return valor === null || valor === undefined ? 'Escolha uma opcao.' : null
+}
+
 export function Onboarding({ aoConcluir }: { aoConcluir: (p: Profile) => void }) {
   const [etapa, setEtapa] = useState(0)
   const [perfil, setPerfil] = useState<Profile>(PERFIL_VAZIO)
+  const [mostrarErros, setMostrarErros] = useState(false)
 
   const atual = ETAPAS[etapa]
   const ultima = etapa === ETAPAS.length - 1
+  const problemas = atual.campos.map((c) => problemaNoCampo(c, perfil[c.campo]))
+  const etapaValida = problemas.every((p) => p === null)
 
   const definir = (campo: keyof Profile, valor: unknown) =>
     setPerfil((p) => ({ ...p, [campo]: valor }) as Profile)
@@ -28,8 +52,14 @@ export function Onboarding({ aoConcluir }: { aoConcluir: (p: Profile) => void })
       <p className="sutil">{atual.descricao}</p>
 
       <div className="campos">
-        {atual.campos.map((c) => (
-          <CampoForm key={String(c.campo)} campo={c} perfil={perfil} definir={definir} />
+        {atual.campos.map((c, i) => (
+          <CampoForm
+            key={String(c.campo)}
+            campo={c}
+            perfil={perfil}
+            definir={definir}
+            erro={mostrarErros ? problemas[i] : null}
+          />
         ))}
       </div>
 
@@ -41,8 +71,15 @@ export function Onboarding({ aoConcluir }: { aoConcluir: (p: Profile) => void })
         )}
         <button
           className="btn"
-          onClick={() => (ultima ? aoConcluir(perfil) : setEtapa((e) => e + 1))}
-          disabled={etapa === 0 && perfil.nome.trim() === ''}
+          onClick={() => {
+            if (!etapaValida) {
+              setMostrarErros(true)
+              return
+            }
+            setMostrarErros(false)
+            if (ultima) aoConcluir(perfil)
+            else setEtapa((e) => e + 1)
+          }}
         >
           {ultima ? 'Gerar meu plano' : 'Continuar'}
         </button>
@@ -55,15 +92,17 @@ function CampoForm({
   campo,
   perfil,
   definir,
+  erro,
 }: {
   campo: Campo
   perfil: Profile
   definir: (c: keyof Profile, v: unknown) => void
+  erro?: string | null
 }) {
   const valor = perfil[campo.campo]
 
   return (
-    <label className="campo">
+    <label className={`campo ${erro ? 'com-erro' : ''}`}>
       <span className="rotulo">
         {campo.rotulo}
         {campo.opcional && <em> (opcional)</em>}
@@ -160,6 +199,7 @@ function CampoForm({
         </span>
       )}
 
+      {erro && <span className="erro">{erro}</span>}
       {campo.ajuda && <span className="ajuda">{campo.ajuda}</span>}
     </label>
   )

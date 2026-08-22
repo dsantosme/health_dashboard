@@ -186,7 +186,7 @@ function sessaoForca(
     blocos: [
       { rotulo: 'Aquecimento cardio', minutos: 8, zonaId: 'Z2', observacao: 'Remo, eliptico ou bike ergometrica. O autor prefere o remo, que pega o corpo todo.' },
       { rotulo: 'Alongamento', minutos: 5, zonaId: 'Z1', observacao: 'Cada posicao por pelo menos 30 segundos, sem balancar.' },
-      { rotulo: 'Bloco de forca', minutos: minutos - 18, zonaId: 'Z3', observacao: metodo.descricao },
+      { rotulo: 'Bloco de forca', minutos: Math.max(10, minutos - 18), zonaId: 'Z3', observacao: metodo.descricao },
       { rotulo: 'Alongamento final', minutos: 5, zonaId: 'Z1', observacao: 'Alongue de novo ao terminar: musculo bem alongado entrega mais potencia.' },
     ],
     forca,
@@ -273,10 +273,173 @@ function sessaoBike(
   }
 }
 
-/** Espalha as sessoes na semana sem colocar dois dias duros seguidos. */
-function distribuirDias(quantidade: number): number[] {
-  const preferencia = [2, 4, 6, 7, 3, 5, 1]
-  return preferencia.slice(0, quantidade).sort((x, y) => x - y)
+/**
+ * Escolhe os dias da semana, espalhados o mais uniformemente possivel.
+ * Uma sessao por dia: o numero de dias e sempre igual ao de sessoes.
+ */
+export function espalharDias(quantidade: number): number[] {
+  const n = Math.max(1, Math.min(7, quantidade))
+  if (n === 1) return [7] // sessao unica cai no fim de semana
+  if (n === 7) return [1, 2, 3, 4, 5, 6, 7]
+  const dias: number[] = []
+  for (let i = 0; i < n; i++) dias.push(Math.round(1 + (i * 6) / (n - 1)))
+  for (let i = 1; i < dias.length; i++) {
+    if (dias[i] <= dias[i - 1]) dias[i] = dias[i - 1] + 1
+  }
+  return dias.map((d) => Math.min(7, d))
+}
+
+/** Alterna sessao dura e sessao leve, para nao empilhar dois dias pesados. */
+function intercalar<T>(duras: T[], leves: T[]): T[] {
+  const saida: T[] = []
+  while (duras.length || leves.length) {
+    if (duras.length) saida.push(duras.shift()!)
+    if (leves.length) saida.push(leves.shift()!)
+  }
+  return saida
+}
+
+/** Minutos que cabem no dia: fim de semana costuma ter mais folga. */
+function tetoDoDia(p: Profile, dia: number): number {
+  return dia >= 6 ? p.minutosFimDeSemana : p.minutosDiaUtil
+}
+
+type Vaga =
+  | { tipo: 'bike'; modelo: string; peso: number }
+  | { tipo: 'forca' }
+  | { tipo: 'mobilidade' }
+
+/**
+ * Monta a composicao da semana respeitando o numero de dias disponiveis.
+ *
+ * A ordem de prioridade vem do livro: o pedal longo e inegociavel, depois a
+ * intensidade da fase, e so entao a forca — musculacao nunca pode empurrar o
+ * cardio para fora da semana.
+ */
+function comporSemana(p: Profile, a: Assessment, r: Restricoes, fase: WeekPhase): Vaga[] {
+  const vagas = Math.max(1, Math.min(p.diasDisponiveis, 7))
+  const composicao: Vaga[] = []
+
+  const duras: Vaga[] = []
+  const leves: Vaga[] = []
+
+  const nIntensas = sessoesIntensas(fase, a.level)
+  for (let k = 0; k < nIntensas; k++) {
+    let modelo = 'bike_limiar'
+    if (fase === 'pico' && k === 1) modelo = 'bike_sprint'
+    else if (fase === 'especifico' && k === 1) modelo = 'bike_vo2'
+    else if (fase === 'base') modelo = 'bike_tempo'
+    duras.push({ tipo: 'bike', modelo, peso: 1 })
+  }
+  for (let k = 0; k < sessoesDeForca(p, fase); k++) duras.push({ tipo: 'forca' })
+
+  if (MODALIDADES_TECNICAS.includes(p.modalidade) && fase !== 'recuperacao') {
+    leves.push({ tipo: 'bike', modelo: 'bike_tecnica', peso: 0.8 })
+  }
+  const querMobilidade =
+    r.enfaseExtra.includes('mobilidade') || fase === 'recuperacao' || p.diasDisponiveis >= 5
+  if (querMobilidade) leves.push({ tipo: 'mobilidade' })
+
+  // o longo abre a fila para nunca ser cortado, mas e alocado no ultimo dia
+  const longo: Vaga = {
+    tipo: 'bike',
+    modelo: fase === 'recuperacao' ? 'bike_base' : 'bike_longo',
+    peso: 2.2,
+  }
+
+  for (const vaga of intercalar(duras, leves)) {
+    if (composicao.length >= vagas - 1) break
+    composicao.push(vaga)
+  }
+  while (composicao.length < vagas - 1) {
+    composicao.push({ tipo: 'bike', modelo: fase === 'recuperacao' ? 'bike_recuperacao' : 'bike_base', peso: 1 })
+  }
+  composicao.push(longo)
+  return composicao
+}
+
+/** Duracao minima que uma vaga aceita. */
+function minimoDaVaga(vaga: Vaga, minutosForca: number): number {
+  if (vaga.tipo === 'forca') return minutosForca
+  if (vaga.tipo === 'mobilidade') return 20
+  return MODELOS[vaga.modelo].minimoMinutos
+}
+
+/**
+ * Corta sessoes ate a semana caber no volume alvo.
+ *
+ * Sem isso, uma semana de recuperacao com muitos dias disponiveis somaria os
+ * minimos de todas as sessoes e passaria longe do alvo — que e exatamente a
+ * reducao de carga que a fase (ou a anamnese) pediu. Corta pelo fim, que e
+ * onde estao as sessoes de preenchimento; o pedal longo e o ultimo a sair.
+ */
+function encolherAteCaber(vagas: Vaga[], minutosAlvo: number, minutosForca: number): Vaga[] {
+  const soma = (lista: Vaga[]) => lista.reduce((t, v) => t + minimoDaVaga(v, minutosForca), 0)
+  const saida = [...vagas]
+  while (saida.length > 1 && soma(saida) > minutosAlvo) saida.splice(saida.length - 2, 1)
+
+  // sobrou so o pedal longo e ainda nao cabe: troca por uma sessao mais curta
+  if (saida.length === 1 && soma(saida) > minutosAlvo) {
+    const unica = saida[0]
+    if (unica.tipo === 'bike') {
+      const alternativa = minutosAlvo >= MODELOS.bike_base.minimoMinutos ? 'bike_base' : 'bike_recuperacao'
+      saida[0] = { tipo: 'bike', modelo: alternativa, peso: unica.peso }
+    }
+  }
+  return saida
+}
+
+/**
+ * Reparte os minutos da semana entre as sessoes.
+ *
+ * O alvo e fechar em horasAlvo: forca e mobilidade tem duracao fixa, e o que
+ * sobra vai para a bike proporcionalmente ao peso de cada sessao, sempre
+ * respeitando o minimo do modelo e o tempo que cabe naquele dia.
+ */
+function repartirMinutos(
+  p: Profile,
+  vagas: Vaga[],
+  dias: number[],
+  minutosAlvo: number,
+  minutosForca: number,
+): number[] {
+  const minutos = vagas.map((v) => (v.tipo === 'forca' ? minutosForca : v.tipo === 'mobilidade' ? 20 : 0))
+  const fixos = minutos.reduce((s, m) => s + m, 0)
+
+  const indicesBike = vagas.map((v, i) => (v.tipo === 'bike' ? i : -1)).filter((i) => i >= 0)
+  if (!indicesBike.length) return minutos
+
+  const pesoTotal = indicesBike.reduce((s, i) => s + (vagas[i] as { peso: number }).peso, 0)
+  let restante = Math.max(0, minutosAlvo - fixos)
+
+  // primeira passada: proporcional ao peso, dentro dos limites de cada sessao
+  const limites = indicesBike.map((i) => ({
+    i,
+    minimo: MODELOS[(vagas[i] as { modelo: string }).modelo].minimoMinutos,
+    maximo: tetoDoDia(p, dias[i]),
+  }))
+  for (const { i, minimo, maximo } of limites) {
+    const peso = (vagas[i] as { peso: number }).peso
+    const bruto = Math.round((restante * peso) / pesoTotal)
+    minutos[i] = Math.min(Math.max(bruto, minimo), Math.max(minimo, maximo))
+  }
+
+  // segunda passada: devolve a sobra (ou desconta o excesso) nas sessoes que
+  // ainda tem folga, para o total nao passar longe do alvo
+  const total = () => minutos.reduce((s, m) => s + m, 0)
+  for (let volta = 0; volta < 3 && Math.abs(total() - minutosAlvo) > 2; volta++) {
+    const diferenca = minutosAlvo - total()
+    const ajustaveis = limites.filter(({ i, minimo, maximo }) =>
+      diferenca > 0 ? minutos[i] < maximo : minutos[i] > minimo,
+    )
+    if (!ajustaveis.length) break
+    const porSessao = Math.round(diferenca / ajustaveis.length)
+    if (porSessao === 0) break
+    for (const { i, minimo, maximo } of ajustaveis) {
+      minutos[i] = Math.min(Math.max(minutos[i] + porSessao, minimo), Math.max(minimo, maximo))
+    }
+  }
+  return minutos
 }
 
 export function gerarPlano(p: Profile, a: Assessment, r: Restricoes): TrainingPlan {
@@ -290,62 +453,23 @@ export function gerarPlano(p: Profile, a: Assessment, r: Restricoes): TrainingPl
     const horas = horasDaSemana(a, fase, i, semanas)
     const minutosTotais = Math.round(horas * 60)
 
-    const nForca = sessoesDeForca(p, fase)
-    const nIntensas = sessoesIntensas(fase, a.level)
-    const nSessoes = Math.min(p.diasDisponiveis, 7)
-    const nBike = Math.max(1, nSessoes - nForca)
+    const minutosForca = Math.min(Math.max(p.minutosDiaUtil || 45, 30), 75)
+    const vagas = encolherAteCaber(comporSemana(p, a, r, fase), minutosTotais, minutosForca)
+    const dias = espalharDias(vagas.length)
+    const minutos = repartirMinutos(p, vagas, dias, minutosTotais, minutosForca)
 
-    const dias = distribuirDias(nSessoes)
     const sessoes: Session[] = []
-
-    // Orcamento: forca leva a duracao de um dia util; o resto vai para a bike.
-    const minutosForca = Math.min(p.minutosDiaUtil, 75)
-    const minutosBikeTotal = Math.max(60, minutosTotais - nForca * minutosForca)
-
-    // O pedal longo fica no fim de semana e leva a maior fatia.
-    const minutosLongo = Math.min(p.minutosFimDeSemana, Math.round(minutosBikeTotal * (nBike > 1 ? 0.45 : 1)))
-    const minutosRestantes = Math.max(0, minutosBikeTotal - minutosLongo)
-    const minutosPorSessao = nBike > 1 ? Math.round(minutosRestantes / (nBike - 1)) : 0
-
-    const modelosBike: string[] = []
-    for (let k = 0; k < nIntensas && modelosBike.length < nBike - 1; k++) {
-      if (fase === 'pico' && k === 1) modelosBike.push('bike_sprint')
-      else if (fase === 'especifico' && k === 1) modelosBike.push('bike_vo2')
-      else if (fase === 'base') modelosBike.push('bike_tempo')
-      else modelosBike.push('bike_limiar')
-    }
-    if (MODALIDADES_TECNICAS.includes(p.modalidade) && modelosBike.length < nBike - 1) {
-      modelosBike.push('bike_tecnica')
-    }
-    while (modelosBike.length < nBike - 1) {
-      modelosBike.push(fase === 'recuperacao' ? 'bike_recuperacao' : 'bike_base')
-    }
-
-    let d = 0
     let indiceForca = 0
-    for (const modeloId of modelosBike) {
-      const min = Math.max(MODELOS[modeloId].minimoMinutos, Math.min(minutosPorSessao, p.minutosDiaUtil))
-      sessoes.push(sessaoBike(modeloId, p, a, r, min, dias[d++] ?? 3, i + 1, d))
-    }
-    for (let k = 0; k < nForca; k++) {
-      sessoes.push(sessaoForca(p, a, r, fase, bloco, indiceForca++, minutosForca, dias[d++] ?? 5, i + 1))
-    }
-    // O longo sempre fecha a semana, no dia mais livre.
-    sessoes.push(
-      sessaoBike(
-        fase === 'recuperacao' ? 'bike_base' : 'bike_longo',
-        p,
-        a,
-        r,
-        Math.max(MODELOS[fase === 'recuperacao' ? 'bike_base' : 'bike_longo'].minimoMinutos, minutosLongo),
-        dias[dias.length - 1] ?? 7,
-        i + 1,
-        99,
-      ),
-    )
-    if (r.enfaseExtra.includes('mobilidade') || fase === 'recuperacao' || p.diasDisponiveis >= 5) {
-      sessoes.push(sessaoMobilidade(dias[d] ?? 1, i + 1, 20))
-    }
+    vagas.forEach((vaga, k) => {
+      const dia = dias[k]
+      if (vaga.tipo === 'forca') {
+        sessoes.push(sessaoForca(p, a, r, fase, bloco, indiceForca++, minutos[k], dia, i + 1))
+      } else if (vaga.tipo === 'mobilidade') {
+        sessoes.push(sessaoMobilidade(dia, i + 1, minutos[k]))
+      } else {
+        sessoes.push(sessaoBike(vaga.modelo, p, a, r, minutos[k], dia, i + 1, k))
+      }
+    })
 
     sessoes.sort((x, y) => x.dia - y.dia)
 

@@ -74,12 +74,16 @@ export const MODELOS: Record<string, ModeloSessao> = {
     objetivo: 'Resistencia e economia de energia em duracao.',
     zonaPrincipal: 'Z2',
     minimoMinutos: 75,
-    blocos: (min) => [
-      aquecimento(12),
-      { rotulo: 'Bloco longo em Z2', minutos: Math.round((min - 22) * 0.75), zonaId: 'Z2', cadencia: '85-95 rpm', observacao: 'Coma a cada 45 minutos, mesmo sem fome.' },
-      { rotulo: 'Trechos em Z3', minutos: Math.round((min - 22) * 0.25), zonaId: 'Z3', repeticoes: 3, cadencia: '80-90 rpm', observacao: 'Tres trechos firmes, distribuidos na segunda metade do pedal.' },
-      voltaCalma(10),
-    ],
+    blocos: (min) => {
+      const corpo = min - 22
+      const firme = Math.round(corpo * 0.25)
+      return [
+        aquecimento(12),
+        { rotulo: 'Bloco longo em Z2', minutos: corpo - firme, zonaId: 'Z2', cadencia: '85-95 rpm', observacao: 'Coma a cada 45 minutos, mesmo sem fome.' },
+        { rotulo: 'Trechos em Z3', minutos: firme, zonaId: 'Z3', repeticoes: 3, cadencia: '80-90 rpm', observacao: 'Tres trechos firmes, distribuidos na segunda metade do pedal.' },
+        voltaCalma(10),
+      ]
+    },
     dicas: (m) => ['Teste no treino longo a comida e a bebida que voce pretende usar na prova.', ...DICAS_MODALIDADE[m]],
   },
   bike_tempo: {
@@ -88,12 +92,15 @@ export const MODELOS: Record<string, ModeloSessao> = {
     objetivo: 'Sustentar ritmo forte sem estourar — o esforco de subida longa.',
     zonaPrincipal: 'Z3',
     minimoMinutos: 45,
-    blocos: (min) => [
-      aquecimento(12),
-      { rotulo: '2 x blocos de tempo', minutos: Math.round((min - 22) * 0.8), zonaId: 'Z3', repeticoes: 2, cadencia: '80-90 rpm', observacao: 'Divida em dois blocos iguais com 5 minutos de Z1 entre eles.' },
-      { rotulo: 'Intervalo entre blocos', minutos: 5, zonaId: 'Z1' },
-      voltaCalma(8),
-    ],
+    blocos: (min) => {
+      const trabalho = min - 12 - 5 - 8
+      return [
+        aquecimento(12),
+        { rotulo: `2 x ${Math.round(trabalho / 2)} min de tempo`, minutos: trabalho, zonaId: 'Z3', repeticoes: 2, cadencia: '80-90 rpm', observacao: 'Divida em dois blocos iguais com 5 minutos de Z1 entre eles.' },
+        { rotulo: 'Intervalo entre blocos', minutos: 5, zonaId: 'Z1' },
+        voltaCalma(8),
+      ]
+    },
     dicas: (m) => DICAS_MODALIDADE[m],
   },
   bike_limiar: {
@@ -103,12 +110,16 @@ export const MODELOS: Record<string, ModeloSessao> = {
     zonaPrincipal: 'Z4',
     minimoMinutos: 50,
     blocos: (min) => {
-      const trabalho = Math.max(12, Math.round((min - 25) * 0.6))
-      const series = trabalho >= 24 ? 3 : 2
+      // 15 de aquecimento + 10 de volta a calma sao fixos; o resto e trabalho
+      // mais as recuperacoes entre series, e a conta tem que fechar em `min`.
+      const disponivel = min - 25
+      const series = disponivel >= 34 ? 3 : 2
+      const recuperacao = (series - 1) * 5
+      const trabalho = disponivel - recuperacao
       return [
         aquecimento(15),
         { rotulo: `${series} x ${Math.round(trabalho / series)} min em Z4`, minutos: trabalho, zonaId: 'Z4', repeticoes: series, cadencia: '85-95 rpm', observacao: 'Esforco constante: nada de comecar rapido e morrer no fim da serie.' },
-        { rotulo: 'Recuperacao entre series', minutos: (series - 1) * 5, zonaId: 'Z1', observacao: '5 minutos de giro leve entre as series.' },
+        { rotulo: 'Recuperacao entre series', minutos: recuperacao, zonaId: 'Z1', observacao: '5 minutos de giro leve entre as series.' },
         voltaCalma(10),
       ]
     },
@@ -119,12 +130,12 @@ export const MODELOS: Record<string, ModeloSessao> = {
     titulo: 'VO2 maximo',
     objetivo: 'Aumentar o teto aerobico com intervalos curtos e duros.',
     zonaPrincipal: 'Z5',
-    minimoMinutos: 45,
+    minimoMinutos: 47,
     blocos: (min) => [
       aquecimento(15),
       { rotulo: '5 x 3 min em Z5', minutos: 15, zonaId: 'Z5', repeticoes: 5, cadencia: '95-105 rpm', observacao: 'Cada tiro comeca ja no esforco alvo, sem construir devagar.' },
       { rotulo: 'Recuperacao 3 min entre tiros', minutos: 12, zonaId: 'Z1' },
-      voltaCalma(Math.max(5, min - 42)),
+      voltaCalma(min - 42),
     ],
     dicas: (m) => ['Nao faca esta sessao com sono ruim ou perna pesada: o ganho depende da qualidade dos tiros.', ...DICAS_MODALIDADE[m]],
   },
@@ -133,12 +144,12 @@ export const MODELOS: Record<string, ModeloSessao> = {
     titulo: 'Sprint e potencia',
     objetivo: 'Potencia neuromuscular — o arranque e o ataque.',
     zonaPrincipal: 'Z6',
-    minimoMinutos: 40,
+    minimoMinutos: 43,
     blocos: (min) => [
       aquecimento(15),
       { rotulo: '8 x 15 segundos maximo', minutos: 2, zonaId: 'Z6', repeticoes: 8, cadencia: 'maxima', observacao: 'Levante do selim, segure firme na empunhadura e contenha o balanco lateral da bike com os bracos.' },
       { rotulo: 'Recuperacao 3 min entre sprints', minutos: 21, zonaId: 'Z1', observacao: 'Recuperacao completa mesmo — aqui o descanso e parte do estimulo.' },
-      voltaCalma(Math.max(5, min - 38)),
+      voltaCalma(min - 38),
     ],
     dicas: (m) => ['Imagine a linha de chegada: sprint e tanto cabeca quanto perna.', ...DICAS_MODALIDADE[m]],
   },
@@ -152,7 +163,7 @@ export const MODELOS: Record<string, ModeloSessao> = {
       aquecimento(10),
       { rotulo: 'Educativo de pedalada unilateral', minutos: 10, zonaId: 'Z2', repeticoes: 4, cadencia: '70-80 rpm', observacao: 'Marcha leve. Alterne as pernas a cada 1 minuto.' },
       { rotulo: 'Postura de ataque em velocidade baixa', minutos: 10, zonaId: 'Z2', observacao: 'Procure o ponto neutro: ao soltar as maos, o tronco nao cai para a frente nem para tras.' },
-      { rotulo: 'Giro solto', minutos: Math.max(5, min - 35), zonaId: 'Z2', cadencia: '95-105 rpm' },
+      { rotulo: 'Giro solto', minutos: min - 35, zonaId: 'Z2', cadencia: '95-105 rpm' },
       voltaCalma(5),
     ],
     dicas: (m) => ['Reduza a velocidade para assimilar a postura antes de acelerar.', ...DICAS_MODALIDADE[m]],

@@ -17,19 +17,21 @@ export function Timer({ segundos, rotulo }: { segundos: number; rotulo: string }
   useEffect(() => {
     if (!rodando) return
     intervalo.current = window.setInterval(() => {
-      setRestante((r) => {
-        if (r <= 1) {
-          apitar()
-          setRodando(false)
-          return 0
-        }
-        return r - 1
-      })
+      setRestante((r) => Math.max(0, r - 1))
     }, 1000)
     return () => {
       if (intervalo.current) window.clearInterval(intervalo.current)
     }
   }, [rodando])
+
+  // O apito fica fora do updater de estado: dentro dele o StrictMode chamaria
+  // duas vezes e o cronometro apitaria dobrado.
+  useEffect(() => {
+    if (restante === 0 && rodando) {
+      setRodando(false)
+      apitar()
+    }
+  }, [restante, rodando])
 
   const mm = String(Math.floor(restante / 60)).padStart(2, '0')
   const ss = String(restante % 60).padStart(2, '0')

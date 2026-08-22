@@ -107,6 +107,8 @@ li { margin-bottom: 4px; }
 .rotulo { font-weight: 600; font-size: 0.95rem; }
 .rotulo em { color: var(--texto-sutil); font-weight: 400; font-style: normal; }
 .ajuda { color: var(--texto-sutil); font-size: 0.82rem; }
+.erro { color: var(--alerta); font-size: 0.82rem; }
+.campo.com-erro input { border-color: var(--alerta); }
 
 input[type='text'], input[type='number'], input[type='search'], textarea {
   background: var(--superficie-2);
