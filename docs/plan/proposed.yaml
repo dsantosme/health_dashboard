@@ -1,0 +1,4 @@
+# IDs propostos, aguardando aprovação humana (P-02, regra "nunca invente IDs").
+# Formato: mesma estrutura de plan.yaml, com campos extras `proposed_by` e `rationale`.
+# Após aprovação, mova a entrada para docs/plan/plan.yaml e remova daqui.
+proposed: []

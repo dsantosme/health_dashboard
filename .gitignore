@@ -108,3 +108,6 @@ temp/
 
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/
+
+# ORBE — livro-razão de custo local (MOD-06); a persistência real é T12 de EP-04
+.orbe/cost-ledger.jsonl

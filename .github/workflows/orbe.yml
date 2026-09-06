@@ -1,0 +1,40 @@
+name: ORBE — gates
+
+# Os gates que o plano exige em cada PR (P-03, PR-05, HK-04):
+#   - IDs do plano coerentes e CLAUDE.md dentro do limite (US-01)
+#   - tipos e testes verdes
+#   - suíte EV-01 acima do limiar — abaixo dele, bloqueia
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # O validador não tem dependências: roda antes de qualquer install e
+      # falha rápido quando alguém inventou um ID.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Plano e IDs (P-02)
+        run: node scripts/orbe/validate-plan.mjs
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Tipos
+        run: pnpm check
+
+      - name: Testes
+        run: pnpm test
+
+      # Gate de deploy: pass rate abaixo do limiar do plano falha o job.
+      - name: Evals (EV-01)
+        run: pnpm evals
