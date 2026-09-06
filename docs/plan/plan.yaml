@@ -1,0 +1,975 @@
+# ORBE — plano operacional (fonte de verdade para agentes).
+# Gerado em 2026-09-05 a partir de "Plano Operacional 30/60/90/180/365 — ORBE".
+# NUNCA invente IDs. Proponha novos em docs/plan/proposed.yaml para aprovação humana.
+# Validação: pnpm orbe:validate
+meta:
+  plan: Plano Operacional 30/60/90/180/365
+  codename: ORBE
+  version: "1.0"
+  date: "2026-09-05"
+  language: pt-BR
+  owner: Denis Santos (fundador técnico)
+  company: "[EMPRESA — a definir]"
+  id_conventions:
+    H: horizonte
+    P: princípio
+    PR: prática
+    MOD: módulo da plataforma
+    F: funcionalidade
+    AG: agente interno
+    AT: template de agente para cliente
+    SK: skill (SKILL.md)
+    ST: steering
+    HK: hook
+    HR: componente do harness
+    EV: suíte de evals
+    EP: épico
+    FT: feature
+    US: user story
+    KPI: indicador
+
+horizons:
+  - id: H30
+    name: 30 dias
+    window: dias 1–30
+    theme: Fundar, instrumentar e vender o primeiro pod
+    exit:
+      - Empresa aberta e programas de créditos/parcerias inscritos
+      - CLAUDE.md, steering base e 4 skills operando
+      - Gateway + guardrails v0.1 em uma conta de laboratório
+      - 2 propostas enviadas; 1 pod assinado
+  - id: H60
+    name: 60 dias
+    window: dias 31–60
+    theme: Primeiro pod em produção com evals e custo medidos
+    exit:
+      - Pod 1 em produção com baseline e painel de custo
+      - RAG v0.1 com ACL e citações
+      - Suíte de evals EV-01/EV-02 rodando em CI
+      - Agente de prospecção e de proposta em uso semanal
+  - id: H90
+    name: 90 dias
+    window: dias 61–90
+    theme: "Repetir: segundo pod, template AT-01 e KPI publicado"
+    exit:
+      - Relatório KPI antes/depois do pod 1 entregue ao cliente
+      - Pod 2 assinado (segundo setor)
+      - AT-01 Atendimento N1 como template reutilizável
+      - CCA-F obtida; registro APN e Claude Partner Network ativos
+  - id: H180
+    name: 180 dias
+    window: dias 91–180
+    theme: Plataforma v1, sócio comercial testado, produto FinOps em beta
+    exit:
+      - MRR ≥ R$ 20 mil; 3 pods entregues; 1 retainer
+      - MOD-05/06 v1 (evals contínuos + custo por resultado)
+      - Sócio comercial validado em comissão
+      - AIP-C01 e FinOps Practitioner; CAISP iniciada
+  - id: H365
+    name: 365 dias
+    window: dias 181–365
+    theme: "Escala: APN/CPN Select, produto em assinatura, gatilho de saída"
+    exit:
+      - MRR ≥ R$ 40 mil por 3 meses; reserva ≥ 6 meses (gatilho de saída)
+      - APN Select e CPN Select
+      - Painel FinOps de IA em assinatura com ≥ 5 clientes
+      - AI Security Assessment lançado; 2 cases públicos
+
+principles:
+  - id: P-01
+    name: Agentes são usuários
+    description: >-
+      Toda API, documento e ferramenta é desenhada para ser consumida por
+      agentes (MCP, descrições ricas, erros acionáveis).
+  - id: P-02
+    name: Spec é a fonte da verdade
+    description: >-
+      Requisitos (EARS), design e tarefas em arquivos versionados; código deriva
+      da spec, não o contrário.
+  - id: P-03
+    name: Evals são os testes
+    description: >-
+      Nenhum agente vai a produção sem suíte de evals com gate; falhas de
+      produção viram novos casos.
+  - id: P-04
+    name: Contexto é o produto
+    description: >-
+      Divulgação progressiva: só o necessário entra no contexto; skills,
+      steering e RAG cuidam do resto.
+  - id: P-05
+    name: Hooks garantem, prompts pedem
+    description: >-
+      O que precisa acontecer sempre vai em hook/política, não em instrução.
+  - id: P-06
+    name: Custo é uma feature
+    description: >-
+      Cada agente tem orçamento de tokens e custo por resultado visível desde o
+      primeiro dia.
+  - id: P-07
+    name: Humano no loop por risco
+    description: >-
+      Ações irreversíveis ou de alto impacto exigem aprovação; o resto é
+      auditado.
+  - id: P-08
+    name: Modular e substituível
+    description: >-
+      Cada módulo tem interface (MCP/contrato) e pode ser trocado por serviço
+      nativo da nuvem.
+  - id: P-09
+    name: Observável por padrão
+    description: >-
+      Traços OpenTelemetry, custo e qualidade emitidos por todo agente e
+      ferramenta.
+  - id: P-10
+    name: Transferência, não dependência
+    description: >-
+      Runbooks, knowledge graph e time treinado são entregáveis de todo pod.
+  - id: P-11
+    name: Comprar antes de construir
+    description: >-
+      Plataformas de nuvem como base; IP próprio só em evals, custo e integração
+      vertical.
+  - id: P-12
+    name: Dogfooding
+    description: >-
+      A empresa opera com os mesmos módulos que vende; cada agente interno é um
+      protótipo vendável.
+
+practices:
+  - id: PR-01
+    name: Spec-driven development
+    how: >-
+      requirements.md (EARS) → design.md → tasks.md por feature; agente
+      implementa tarefa a tarefa com verificação.
+    since: H30
+  - id: PR-02
+    name: Evals-first
+    how: >-
+      Definir 20–50 tarefas de eval por agente antes de construir; grader por
+      estado/resultado; suíte em CI.
+    since: H60
+  - id: PR-03
+    name: Harness engineering
+    how: >-
+      Humanos desenham ambiente, intenção e feedback; agentes implementam via
+      PR + CI; hooks como gates.
+    since: H30
+  - id: PR-04
+    name: Context engineering
+    how: >-
+      Steering por inclusão (always/fileMatch/manual), skills com divulgação
+      progressiva, memória em arquivos.
+    since: H30
+  - id: PR-05
+    name: Revisão de PR por agente + humano
+    how: >-
+      Subagente revisor (segurança, custo, testes) antes do humano; evidência
+      obrigatória (logs, testes).
+    since: H60
+  - id: PR-06
+    name: Medição DORA/SPACE + evals + custo
+    how: >-
+      Painel único: lead time, deploy frequency, change failure, pass rate de
+      evals, custo por resultado.
+    since: H90
+  - id: PR-07
+    name: Reuniões operadas por agente
+    how: >-
+      Notas, decisões e ações extraídas automaticamente para o backlog e para a
+      base de conhecimento.
+    since: H60
+  - id: PR-08
+    name: ADRs gerados e revisados
+    how: >-
+      Toda decisão de arquitetura vira ADR curto, proposto pelo agente e
+      aprovado pelo humano.
+    since: H30
+  - id: PR-09
+    name: Segurança contínua de agentes
+    how: >-
+      Testes de prompt injection e exfiltração em cada deploy (OWASP LLM Top 10,
+      MITRE ATLAS).
+    since: H180
+  - id: PR-10
+    name: Orçamento por feature
+    how: >-
+      Cada épico/feature declara teto de tokens/custo; estouro bloqueia merge
+      até revisão.
+    since: H90
+  - id: PR-11
+    name: Long-running agents com progresso em arquivo
+    how: >-
+      Agente inicializador cria script, lista de features e arquivo de
+      progresso; sessões retomam pelo git log.
+    since: H90
+  - id: PR-12
+    name: Case como artefato
+    how: >-
+      Todo pod termina com KPI antes/depois e case anônimo — insumo para vendas,
+      parceiros e certificações.
+    since: H90
+
+modules:
+  - id: MOD-00
+    name: Fundação e integração
+    purpose: >-
+      Conectar sistemas do cliente e dados prontos para IA via MCP servers, APIs
+      e eventos.
+    buy_build: Construir (IP setorial)
+    base_tech: [MCP servers (Python/TypeScript), API Gateway, EventBridge/SQS, Postgres]
+    features:
+      - { id: F-00.1, name: MCP server genérico para REST/SQL com autenticação, horizon: H30 }
+      - { id: F-00.2, name: Catálogo de conectores por setor (ERP, WMS/TMS, CRM), horizon: H180 }
+      - { id: F-00.3, name: Identidade e escopos (OAuth/Entra) por ferramenta, horizon: H90 }
+  - id: MOD-01
+    name: AI Gateway
+    purpose: Roteamento multi-modelo, cache, chaves, cotas e fallback.
+    buy_build: Comprar; configurar
+    base_tech: [Bedrock (Claude, Nova), Azure AI Foundry, roteador por custo/qualidade, cache de prompt]
+    features:
+      - { id: F-01.1, name: Roteamento por política (custo, latência, dados regulados), horizon: H30 }
+      - { id: F-01.2, name: Cache e batch para cargas repetitivas, horizon: H60 }
+      - { id: F-01.3, name: Multi-nuvem e open-weight sob política de dados, horizon: H180 }
+  - id: MOD-02
+    name: Guardrails e segurança
+    purpose: Proteção de entrada/saída, políticas e auditoria.
+    buy_build: Comprar + módulo próprio de testes
+    base_tech: [Bedrock Guardrails, políticas CEDAR/OPA, detecção de PII, log de auditoria]
+    features:
+      - { id: F-02.1, name: PII/LGPD em entrada e saída, horizon: H30 }
+      - { id: F-02.2, name: Políticas por risco (leitura/escrita/irreversível), horizon: H60 }
+      - { id: F-02.3, name: Testes contínuos de prompt injection e exfiltração, horizon: H180 }
+  - id: MOD-03
+    name: Conhecimento (RAG)
+    purpose: Recuperação com permissões, citações e qualidade medida.
+    buy_build: Comprar base; construir modelagem
+    base_tech: [S3 + OpenSearch/pgvector, busca híbrida (BM25+vetor), reranker, Bedrock Knowledge Bases]
+    features:
+      - { id: F-03.1, name: Ingestão e chunking por tipo de documento, horizon: H30 }
+      - { id: F-03.2, name: Recuperação com ACL e citações, horizon: H60 }
+      - { id: F-03.3, name: Evals de recuperação (recall@k, fidelidade), horizon: H90 }
+      - { id: F-03.4, name: Grafo de contexto e memória por agente, horizon: H180 }
+  - id: MOD-04
+    name: Orquestração de agentes
+    purpose: Workflows, ferramentas via MCP, memória e humano-no-loop.
+    buy_build: Comprar (AgentCore/Agent SDK) + padrões próprios
+    base_tech: [Claude Agent SDK, Bedrock AgentCore, Step Functions, MCP]
+    features:
+      - { id: F-04.1, name: Padrão de agente único com HITL por risco, horizon: H30 }
+      - { id: F-04.2, name: Multiagente por etapa com aprovação, horizon: H90 }
+      - { id: F-04.3, name: Agentes de longa duração com progresso em arquivo, horizon: H180 }
+  - id: MOD-05
+    name: Evals e observabilidade
+    purpose: Qualidade, traços e SLOs de agentes; gate de deploy.
+    buy_build: Construir (IP central)
+    base_tech: [OpenTelemetry, Bedrock Evaluations, LangSmith/Braintrust, Grafana]
+    features:
+      - { id: F-05.1, name: Suíte de evals com graders determinísticos e LLM-judge, horizon: H60 }
+      - { id: F-05.2, name: Traços por chamada de ferramenta e custo, horizon: H60 }
+      - { id: F-05.3, name: Evals contínuos em produção e alertas, horizon: H180 }
+      - { id: F-05.4, name: Benchmark setorial (mobilidade/logística/varejo), horizon: H365 }
+  - id: MOD-06
+    name: FinOps de IA
+    purpose: Custo por resultado, showback, alertas e otimização por agente.
+    buy_build: Construir (IP central)
+    base_tech: [FOCUS, Cost Explorer/Azure Cost, painel próprio, roteador de custo]
+    features:
+      - { id: F-06.1, name: Custo por caso de uso e por resultado, horizon: H60 }
+      - { id: F-06.2, name: Showback/chargeback e alertas de estouro, horizon: H90 }
+      - { id: F-06.3, name: Produto de assinatura multi-cliente, horizon: H180 }
+      - { id: F-06.4, name: Otimização automática (roteamento, cache, batch), horizon: H365 }
+  - id: MOD-07
+    name: Casos de uso verticais
+    purpose: Templates de agentes prontos para setores-alvo.
+    buy_build: Construir sobre as camadas
+    base_tech: [AT-01..AT-05, conectores MOD-00]
+    features:
+      - { id: F-07.1, name: AT-01 Atendimento nível 1, horizon: H90 }
+      - { id: F-07.2, name: AT-02 Back-office financeiro, horizon: H180 }
+      - { id: F-07.3, name: AT-03 Operações/logística, horizon: H180 }
+      - { id: F-07.4, name: AT-04 Engenharia e AT-05 Dados, horizon: H365 }
+  - id: MOD-08
+    name: Harness e steering (runtime de desenvolvimento)
+    purpose: >-
+      Ambiente onde os agentes constroem e operam a plataforma: CLAUDE.md,
+      steering, skills, hooks, subagentes.
+    buy_build: Construir (arquivos) sobre Claude Code/Kiro
+    base_tech: [Claude Code, Kiro (specs/steering), Agent Skills (agentskills.io), hooks]
+    features:
+      - { id: F-08.1, name: CLAUDE.md e .kiro/steering base, horizon: H30 }
+      - { id: F-08.2, name: Skills SK-01..SK-06, horizon: H30 }
+      - { id: F-08.3, name: Hooks de gate (testes, evals, custo), horizon: H60 }
+      - { id: F-08.4, name: Subagentes revisores (segurança, custo), horizon: H60 }
+  - id: MOD-09
+    name: Portal e entregáveis
+    purpose: Painéis, runbooks, knowledge graph exportável e relatório KPI.
+    buy_build: Construir (leve)
+    base_tech: [Next.js/React, Grafana, geração de PDF, export JSON/Markdown]
+    features:
+      - { id: F-09.1, name: Relatório KPI antes/depois automatizado, horizon: H60 }
+      - { id: F-09.2, name: Runbook e knowledge graph exportáveis, horizon: H90 }
+      - { id: F-09.3, name: Portal do cliente (custos, qualidade, agentes), horizon: H180 }
+
+agents:
+  - id: AG-00
+    name: Orquestrador (chefe de gabinete)
+    purpose: >-
+      Recebe demandas, roteia para agentes, produz o briefing diário e mantém o
+      backlog sincronizado.
+    triggers: [cron diário 7h, mensagem do fundador, evento de agente]
+    inputs: [backlog, agenda, métricas]
+    outputs: [briefing, tarefas roteadas, alertas]
+    tools: ["MCP: backlog (GitHub/Linear)", "MCP: agenda", "MCP: métricas"]
+    skills: [SK-11]
+    steering: [ST-01, ST-02]
+    guardrails: [sem escrita externa]
+    hitl: Aprovação para criar compromissos
+    evals: [EV-07]
+    kpis: [tarefas roteadas/dia, tempo até ação]
+    horizon: H60
+    kind: internal
+  - id: AG-01
+    name: Prospecção e inteligência de mercado
+    purpose: >-
+      Mapeia ICP, vagas, cases e expositores; entrega lista semanal com contexto
+      por conta.
+    triggers: [cron semanal, evento de novo lead]
+    inputs: [ICP (ST-06), CRM, web]
+    outputs: [lista priorizada, notas de conta, gatilhos de compra]
+    tools: ["MCP: CRM", web_search, "MCP: LinkedIn export"]
+    skills: [SK-11, SK-10]
+    steering: [ST-01, ST-06]
+    guardrails: [não contata ninguém, "LGPD: só dados públicos"]
+    hitl: Aprovação antes de qualquer contato
+    evals: [EV-06]
+    kpis: [contas qualificadas/semana, taxa de conversão em conversa]
+    horizon: H30
+    kind: internal
+  - id: AG-02
+    name: Proposta, precificação e contratos
+    purpose: >-
+      Gera proposta a partir de template e notas; precifica com a calculadora;
+      redige contrato com cláusulas LGPD/IA.
+    triggers: [notas de reunião, pedido do fundador]
+    inputs: [template, calculadora (Parte VIII do dossiê), notas]
+    outputs: [proposta PDF, planilha de preço, minuta de contrato]
+    tools: ["MCP: documentos", calculadora (script), assinatura eletrônica]
+    skills: [SK-05, SK-06]
+    steering: [ST-01, ST-07]
+    guardrails: [nunca envia sem aprovação, faixa de preço mínima]
+    hitl: Aprovação obrigatória (sempre)
+    evals: [EV-06]
+    kpis: [tempo de proposta, taxa de aceite]
+    horizon: H30
+    kind: internal
+  - id: AG-03
+    name: Entrega (builder de pods)
+    purpose: >-
+      Faz scaffolding do pod, MCP servers, testes, documentação e runbook;
+      propõe melhorias.
+    triggers: [tarefa do backlog, spec aprovada]
+    inputs: [requirements.md, design.md, tasks.md]
+    outputs: [PRs, runbook, knowledge graph]
+    tools: [Claude Code, Kiro, Agent SDK, "MCP: repositório"]
+    skills: [SK-01, SK-02, SK-07, SK-12]
+    steering: [ST-01, ST-02, ST-03, ST-04, ST-05]
+    guardrails: [hooks HK-01..HK-04, sem deploy direto]
+    hitl: Revisão de PR por humano
+    evals: [EV-01, EV-03]
+    kpis: [lead time por tarefa, PRs aprovados sem retrabalho]
+    horizon: H30
+    kind: internal
+  - id: AG-04
+    name: Evals e QA
+    purpose: >-
+      Roda suítes de eval, testes de segurança e regressões; bloqueia deploy se
+      falhar; abre issues.
+    triggers: [PR aberto, deploy, cron noturno]
+    inputs: [suítes EV, traços]
+    outputs: [relatório de eval, issues, gate pass/fail]
+    tools: [Bedrock Evaluations, LangSmith/Braintrust, OTel, "MCP: CI"]
+    skills: [SK-03, SK-08]
+    steering: [ST-01, ST-04]
+    guardrails: [somente leitura em produção]
+    hitl: Não (bloqueia automaticamente)
+    evals: [EV-01, EV-02, EV-05]
+    kpis: [pass rate, regressões detectadas antes de produção]
+    horizon: H60
+    kind: internal
+  - id: AG-05
+    name: FinOps (cliente e próprio)
+    purpose: >-
+      Coleta custo de tokens/cloud; calcula custo por resultado; alerta e sugere
+      roteamento/cache.
+    triggers: [cron diário, estouro de orçamento]
+    inputs: [FOCUS, Cost Explorer, traços]
+    outputs: [painel, alertas, recomendações]
+    tools: ["MCP: billing", "MCP: OTel", painel]
+    skills: [SK-04, SK-12]
+    steering: [ST-01, ST-08]
+    guardrails: [não altera configuração sem aprovação]
+    hitl: Aprovação para mudanças de roteamento
+    evals: [EV-07]
+    kpis: [custo por resultado, economia realizada]
+    horizon: H60
+    kind: internal
+  - id: AG-06
+    name: Curador de conhecimento
+    purpose: >-
+      Indexa playbooks, cases, decisões e fontes; responde ao time; alimenta
+      propostas e RAG dos pods.
+    triggers: [novo documento, pergunta do time]
+    inputs: [repositório de conhecimento, dossiê]
+    outputs: [índice, respostas com citação, lacunas]
+    tools: [MOD-03, "MCP: documentos"]
+    skills: [SK-10]
+    steering: [ST-01]
+    guardrails: [ACL por cliente, sem mistura de dados entre clientes]
+    hitl: Não
+    evals: [EV-02]
+    kpis: [recall@k, fidelidade das respostas]
+    horizon: H60
+    kind: internal
+  - id: AG-07
+    name: Back-office (financeiro e administrativo)
+    purpose: Emissão de NF, conciliação, cobrança, contratos PJ, agenda e obrigações.
+    triggers: [marco de contrato, cron mensal]
+    inputs: [contratos, extrato, calendário fiscal]
+    outputs: [NF emitida, lembretes, conciliação]
+    tools: ["MCP: contador/ERP leve", "MCP: banco (leitura)", Google Workspace]
+    skills: [SK-06]
+    steering: [ST-01, ST-07]
+    guardrails: [nenhum pagamento sem aprovação]
+    hitl: Aprovação para pagamentos e NF
+    evals: [EV-07]
+    kpis: [atrasos evitados, horas poupadas/mês]
+    horizon: H90
+    kind: internal
+  - id: AG-08
+    name: Marketing e conteúdo
+    purpose: >-
+      Rascunha newsletter quinzenal, posts e cases a partir de KPIs e fontes;
+      mantém calendário editorial.
+    triggers: [cron quinzenal, novo case]
+    inputs: [cases, dossiê, calendário]
+    outputs: [rascunhos, imagens simples, métricas]
+    tools: ["MCP: documentos", "MCP: LinkedIn (rascunho)"]
+    skills: [SK-10]
+    steering: [ST-01, ST-09]
+    guardrails: [nunca publica sozinho]
+    hitl: Aprovação de tom e publicação
+    evals: [EV-06]
+    kpis: [publicações/mês, leads originados]
+    horizon: H60
+    kind: internal
+  - id: AG-09
+    name: Sucesso do cliente e suporte
+    purpose: >-
+      Monitora agentes entregues, resume incidentes, propõe melhorias e prepara
+      a revisão mensal.
+    triggers: [alerta de eval/custo, ticket do cliente, cron semanal]
+    inputs: [traços, tickets, SLOs]
+    outputs: [resumo de incidentes, plano de melhoria, relatório mensal]
+    tools: [MOD-05, MOD-06, "MCP: tickets"]
+    skills: [SK-07, SK-04]
+    steering: [ST-01, ST-08]
+    guardrails: [somente leitura em ambiente do cliente]
+    hitl: Aprovação para mudanças em produção
+    evals: [EV-07]
+    kpis: [MTTR, NPS]
+    horizon: H180
+    kind: internal
+  - id: AG-10
+    name: Red team de IA
+    purpose: >-
+      Executa testes ofensivos contínuos (prompt injection, exfiltração via RAG,
+      abuso de ferramentas/MCP) e reporta.
+    triggers: [deploy, cron semanal]
+    inputs: [OWASP LLM Top 10, MITRE ATLAS, ambiente de teste]
+    outputs: [relatório, casos novos para EV-05]
+    tools: [ambiente isolado, SK-08]
+    skills: [SK-08]
+    steering: [ST-04]
+    guardrails: [só em ambiente de teste, nunca em produção sem janela]
+    hitl: Aprovação para testes em cliente
+    evals: [EV-05]
+    kpis: [vulnerabilidades encontradas/corrigidas]
+    horizon: H180
+    kind: internal
+  - id: AT-01
+    name: Atendimento nível 1
+    purpose: >-
+      Resolve dúvidas de nível 1 com base na base de conhecimento e sistemas do
+      cliente; escala com contexto.
+    triggers: [mensagem do cliente final]
+    inputs: [RAG do cliente, sistemas (MCP)]
+    outputs: [resposta com citação, escalonamento, métricas]
+    tools: [MOD-03, "MCP: CRM/ERP", MOD-02]
+    skills: [SK-07]
+    steering: [ST-10]
+    guardrails: [PII, sem promessas comerciais, handoff por confiança]
+    hitl: Escalonamento para humano abaixo do limiar
+    evals: [EV-02, EV-04]
+    kpis: [taxa de resolução, tempo de resposta, CSAT]
+    horizon: H90
+    kind: client
+  - id: AT-02
+    name: Back-office financeiro
+    purpose: >-
+      Concilia, classifica e prepara lançamentos; responde a fornecedores;
+      sinaliza exceções.
+    triggers: [arquivo/e-mail recebido, cron]
+    inputs: [ERP, extratos, políticas]
+    outputs: [lançamentos propostos, exceções, relatório]
+    tools: ["MCP: ERP", "MCP: e-mail"]
+    skills: [SK-07]
+    steering: [ST-10]
+    guardrails: [nenhum lançamento sem aprovação]
+    hitl: Aprovação por lote
+    evals: [EV-04]
+    kpis: [horas poupadas, erros evitados]
+    horizon: H180
+    kind: client
+  - id: AT-03
+    name: Operações e logística (exceções)
+    purpose: >-
+      Detecta exceções (atrasos, divergências), aciona fornecedores e atualiza
+      status.
+    triggers: [evento de rastreamento, SLA]
+    inputs: [TMS/WMS, telemetria]
+    outputs: [ações propostas, comunicações, painel de exceções]
+    tools: ["MCP: TMS/WMS", "MCP: mensageria"]
+    skills: [SK-07]
+    steering: [ST-10]
+    guardrails: [ações externas com aprovação]
+    hitl: Aprovação para acionar terceiros
+    evals: [EV-04]
+    kpis: [exceções resolvidas/dia, tempo de ciclo]
+    horizon: H180
+    kind: client
+  - id: AT-04
+    name: Engenharia (review e documentação)
+    purpose: Revisa PRs, gera documentação e testes; mede DORA.
+    triggers: [PR aberto]
+    inputs: [repositório, padrões do cliente]
+    outputs: [revisão, docs, testes]
+    tools: [Claude Code, "MCP: repositório"]
+    skills: [SK-09]
+    steering: [ST-10, ST-03]
+    guardrails: [sem merge automático]
+    hitl: Merge por humano
+    evals: [EV-01, EV-03]
+    kpis: [lead time, change failure rate]
+    horizon: H365
+    kind: client
+  - id: AT-05
+    name: Dados (consultas governadas)
+    purpose: >-
+      Traduz perguntas em consultas seguras sobre o catálogo aprovado; explica
+      resultados.
+    triggers: [pergunta do usuário]
+    inputs: [catálogo de dados, políticas]
+    outputs: [consulta, resultado, explicação]
+    tools: ["MCP: warehouse (leitura)", catálogo]
+    skills: [SK-07]
+    steering: [ST-10]
+    guardrails: [somente leitura, linhas mascaradas por ACL]
+    hitl: Não (leitura)
+    evals: [EV-04]
+    kpis: [precisão, tempo até resposta]
+    horizon: H365
+    kind: client
+
+skills:
+  - { id: SK-01, name: pod-scaffold, purpose: "Cria a estrutura padrão de um pod (repositório, steering, specs, CI, evals, painel).", used_by: [AG-03], since: H30 }
+  - { id: SK-02, name: mcp-server-builder, purpose: "Gera MCP server para REST/SQL com auth, testes e descrição de ferramentas otimizada para agentes.", used_by: [AG-03], since: H30 }
+  - { id: SK-03, name: eval-suite, purpose: "Cria suíte de evals (tarefas, ambiente, graders) a partir de falhas reais; integra ao CI.", used_by: [AG-04], since: H60 }
+  - { id: SK-04, name: finops-report, purpose: "Coleta custos (FOCUS/billing/traços) e produz custo por resultado, alertas e recomendações.", used_by: [AG-05, AG-09], since: H60 }
+  - { id: SK-05, name: proposal-writer, purpose: "Monta proposta a partir de notas e template; aplica calculadora de preço; gera PDF.", used_by: [AG-02], since: H30 }
+  - { id: SK-06, name: lgpd-contract-review, purpose: "Revisa contratos e fluxos de dados (papéis LGPD, uso para treino, retenção) e gera checklist.", used_by: [AG-02, AG-07], since: H60 }
+  - { id: SK-07, name: runbook-writer, purpose: "Gera runbook operacional e knowledge graph exportável a partir do código, traços e decisões.", used_by: [AG-03, AG-09], since: H60 }
+  - { id: SK-08, name: prompt-injection-test, purpose: "Executa bateria de ataques (OWASP LLM Top 10, ATLAS) contra agente/RAG em ambiente isolado.", used_by: [AG-04, AG-10], since: H90 }
+  - { id: SK-09, name: dora-baseline, purpose: "Mede DORA/SPACE antes e depois da adoção de agentes de código; gera relatório.", used_by: [AT-04], since: H90 }
+  - { id: SK-10, name: case-study-writer, purpose: "Transforma KPIs e traços em case anônimo no formato baseline → 45 dias → KPI.", used_by: [AG-06, AG-08], since: H90 }
+  - { id: SK-11, name: client-discovery, purpose: "Roteiro de descoberta: dados disponíveis, dor medida, comprador, restrições; produz AI Readiness Score.", used_by: [AG-00, AG-01], since: H30 }
+  - { id: SK-12, name: cost-router-config, purpose: "Configura políticas de roteamento (custo, latência, dados regulados) e cache no gateway.", used_by: [AG-03, AG-05], since: H60 }
+  - { id: SK-13, name: adr-writer, purpose: "Propõe ADR curto para decisões de arquitetura com alternativas e consequências.", used_by: [AG-03], since: H30 }
+  - { id: SK-14, name: kpi-report, purpose: "Gera relatório KPI antes/depois do pod (métricas, custo, qualidade) em PDF.", used_by: [AG-09, AG-05], since: H60 }
+
+steering:
+  - id: ST-01
+    file: product.md
+    inclusion: always
+    content: "Missão, ICP, ofertas, princípios P-01..P-12, glossário; o 'porquê' de toda decisão."
+    since: H30
+  - id: ST-02
+    file: tech.md
+    inclusion: always
+    content: >-
+      Stack aprovada (Claude Agent SDK, Bedrock AgentCore, MCP, OTel,
+      Postgres/pgvector, Python 3.12, TypeScript), versões e proibições.
+    since: H30
+  - id: ST-03
+    file: structure.md
+    inclusion: always
+    content: >-
+      Organização de pastas, nomenclatura de IDs, convenções de commit/PR, onde
+      ficam specs, skills e evals.
+    since: H30
+  - id: ST-04
+    file: security.md
+    inclusion: always
+    content: >-
+      Política de risco (leitura/escrita/irreversível), PII/LGPD, segredos,
+      testes obrigatórios, hooks de bloqueio.
+    since: H30
+  - id: ST-05
+    file: finops.md
+    inclusion: "fileMatch: src/agents/**"
+    content: >-
+      Orçamento de tokens por agente, roteamento padrão, cache, métricas de
+      custo obrigatórias.
+    since: H60
+  - id: ST-06
+    file: icp-e-vendas.md
+    inclusion: manual
+    content: ICP, sinais de compra, tom de comunicação comercial, faixas de preço, objeções.
+    since: H30
+  - id: ST-07
+    file: contratos.md
+    inclusion: manual
+    content: >-
+      Cláusulas-padrão (LGPD, IA, PI, limitação de responsabilidade), termos de
+      pagamento.
+    since: H30
+  - id: ST-08
+    file: operacao-cliente.md
+    inclusion: "fileMatch: clients/**"
+    content: >-
+      Regras de operação em ambiente de cliente: somente leitura por padrão,
+      janelas de mudança, comunicação.
+    since: H90
+  - id: ST-09
+    file: estilo-pt-br.md
+    inclusion: "fileMatch: content/**"
+    content: >-
+      Tom, vocabulário e formatação de conteúdo em português do Brasil; o que
+      nunca prometer.
+    since: H60
+  - id: ST-10
+    file: "client-<slug>.md (por cliente)"
+    inclusion: "fileMatch: clients/<slug>/**"
+    content: "Contexto do cliente: sistemas, glossário, políticas, contatos, restrições, KPIs do pod."
+    since: H60
+
+hooks:
+  - { id: HK-01, event: PreToolUse (Bash), action: "Bloqueia comandos destrutivos e escrita fora do diretório do pod.", since: H30 }
+  - { id: HK-02, event: PostToolUse (Edit), action: "Roda lint/format e testes unitários do arquivo alterado.", since: H30 }
+  - { id: HK-03, event: Stop, action: "Impede encerrar a tarefa sem testes verdes, evals mínimos e ADR quando houver decisão.", since: H60 }
+  - { id: HK-04, event: PreToolUse (deploy), action: "Exige pass rate de EV-01/EV-02 ≥ limiar e orçamento de custo aprovado.", since: H60 }
+  - { id: HK-05, event: PostToolUse (MCP escrita), action: "Registra auditoria (quem, o quê, quando, custo) em log imutável.", since: H60 }
+  - { id: HK-06, event: SessionStart, action: "Carrega progresso (progress.md), git log recente e steering do cliente ativo.", since: H90 }
+  - { id: HK-07, event: PreToolUse (dados de cliente), action: "Verifica ACL e mascaramento de PII antes de consultar RAG/warehouse.", since: H90 }
+  - { id: HK-08, event: Notification/Alert, action: "Envia alerta ao fundador quando custo diário > orçamento ou eval cai abaixo do limiar.", since: H60 }
+
+harness:
+  - { id: HR-01, component: Intenção e contexto, implementation: "CLAUDE.md enxuto + steering por inclusão + skills com divulgação progressiva.", related: [ST-01, SK-01] }
+  - { id: HR-02, component: Ferramentas, implementation: "MCP servers com descrições ricas, erros acionáveis e escopos mínimos; code execution para dados grandes.", related: [MOD-00, MOD-04] }
+  - { id: HR-03, component: Permissões e sandbox, implementation: "Modo de permissão por risco; sandbox de rede/arquivo; segredos fora do contexto.", related: [ST-04, HK-01] }
+  - { id: HR-04, component: Memória e progresso, implementation: "progress.md, feature list e notas estruturadas em arquivo; retomada por git log.", related: [PR-11, HK-06] }
+  - { id: HR-05, component: Gates determinísticos, implementation: "Hooks de Stop/PreToolUse com testes, evals e orçamento como condição de término.", related: [HK-03, HK-04] }
+  - { id: HR-06, component: Segunda opinião, implementation: "Subagentes revisores (segurança, custo, testes) que tentam refutar o resultado.", related: [AG-04, PR-05] }
+  - { id: HR-07, component: Observabilidade e custo, implementation: "Traços OTel por ferramenta, custo por resultado, alertas.", related: [MOD-05, MOD-06] }
+  - { id: HR-08, component: Humano no loop, implementation: "Pontos de aprovação por risco; evidência obrigatória (logs, testes, capturas).", related: [P-07] }
+  - { id: HR-09, component: Versionamento, implementation: "Prompts, steering, skills e suítes de eval versionados junto com o código; changelog por agente.", related: [ST-03] }
+
+evals:
+  - { id: EV-01, target: Engenharia (pods), measures: "Tarefas de código do pod: testes passam, arquivos corretos, sem dano colateral.", grader: determinístico (estado), threshold: "≥ 95%", cadence: cada PR, since: H60 }
+  - { id: EV-02, target: RAG e conhecimento, measures: "recall@k, fidelidade e citação correta em 50 perguntas reais do cliente.", grader: determinístico + LLM-judge calibrado, threshold: "recall@5 ≥ 0,85; fidelidade ≥ 0,9", cadence: diário, since: H60 }
+  - { id: EV-03, target: Qualidade de código gerado, measures: "Revisão automática: segurança, complexidade, cobertura.", grader: LLM-judge + linters, threshold: sem achados críticos, cadence: cada PR, since: H60 }
+  - { id: EV-04, target: Agentes de cliente (AT-*), measures: "Tarefas ponta a ponta com verificação de estado (registro criado, status correto, handoff).", grader: determinístico (estado) + humano amostral, threshold: "≥ 90% e 0 ações proibidas", cadence: cada deploy + semanal, since: H90 }
+  - { id: EV-05, target: Segurança de IA, measures: "Bateria OWASP LLM Top 10 / ATLAS: injeção, exfiltração, abuso de ferramenta.", grader: determinístico, threshold: 0 críticos, cadence: cada deploy, since: H180 }
+  - { id: EV-06, target: "Agentes comerciais (AG-01, AG-02, AG-08)", measures: "Qualidade de propostas/listas contra rubrica; nada enviado sem aprovação.", grader: LLM-judge + humano, threshold: "≥ 4/5 na rubrica", cadence: semanal, since: H60 }
+  - { id: EV-07, target: "Agentes operacionais (AG-00, AG-05, AG-07, AG-09)", measures: "Precisão de custo, alertas corretos, zero pagamentos sem aprovação.", grader: determinístico, threshold: 100% em ações críticas, cadence: diário, since: H90 }
+  - { id: EV-08, target: Custo e latência, measures: "Custo por resultado e p95 por agente dentro do orçamento.", grader: determinístico, threshold: dentro do teto por agente, cadence: contínuo, since: H90 }
+
+epics:
+  - id: EP-01
+    name: Fundação da empresa e canais
+    horizon: H30
+    outcome: Empresa operável e inscrita em todos os programas relevantes.
+    kpi: 8 inscrições concluídas; conta bancária e contabilidade ativas
+    modules: []
+    agents: [AG-07]
+    features:
+      - { id: FT-01.1, name: "Abrir Ltda/SLU no Simples (Anexo III via Fator R)", priority: Must, size: M, horizon: H30 }
+      - { id: FT-01.2, name: "Inscrições: Activate, Founders Hub, Inception, Claude for Startups, CPN, APN", priority: Must, size: S, horizon: H30 }
+      - { id: FT-01.3, name: "Contabilidade, banco, assinatura eletrônica, domínio e Workspace", priority: Must, size: S, horizon: H30 }
+      - { id: FT-01.4, name: "Contratos-modelo (cliente, PJ) revisados com SK-06", priority: Should, size: M, horizon: H60 }
+  - id: EP-02
+    name: Harness e steering base (MOD-08)
+    horizon: H30
+    outcome: Ambiente onde agentes constroem com segurança e contexto certo.
+    kpi: AG-03 entrega tarefa com hooks e ADR em < 1 dia
+    modules: [MOD-08]
+    agents: [AG-03]
+    features:
+      - { id: FT-02.1, name: "CLAUDE.md enxuto + ST-01..ST-04", priority: Must, size: S, horizon: H30 }
+      - { id: FT-02.2, name: "Skills SK-01, SK-02, SK-05, SK-11, SK-13", priority: Must, size: M, horizon: H30 }
+      - { id: FT-02.3, name: "Hooks HK-01, HK-02", priority: Must, size: S, horizon: H30 }
+      - { id: FT-02.4, name: "Templates de spec (requirements/design/tasks) em EARS", priority: Must, size: S, horizon: H30 }
+      - { id: FT-02.5, name: "Subagente revisor de segurança e custo", priority: Should, size: M, horizon: H60 }
+  - id: EP-03
+    name: Oferta, funil e proposta
+    horizon: H30
+    outcome: Pod de 45 dias vendável com proposta gerada por agente.
+    kpi: 2 propostas enviadas; 1 pod assinado
+    modules: []
+    agents: [AG-01, AG-02]
+    features:
+      - { id: FT-03.1, name: "Oferta 'Pod de IA de 45 dias' e 'Baseline de Engenharia' escritas", priority: Must, size: S, horizon: H30 }
+      - { id: FT-03.2, name: "AG-01 v0: lista semanal de 10 contas com contexto", priority: Must, size: M, horizon: H30 }
+      - { id: FT-03.3, name: "AG-02 v0: proposta + calculadora + minuta", priority: Must, size: M, horizon: H30 }
+      - { id: FT-03.4, name: "Roteiro SK-11 de descoberta e AI Readiness Score", priority: Must, size: S, horizon: H30 }
+  - id: EP-04
+    name: Gateway e guardrails v0.1 (MOD-01, MOD-02)
+    horizon: H30
+    outcome: Chamadas de modelo governadas, com custo e PII protegidos.
+    kpi: 100% das chamadas via gateway com custo atribuído
+    modules: [MOD-01, MOD-02]
+    agents: [AG-03, AG-05]
+    features:
+      - { id: FT-04.1, name: "Gateway com roteamento por política e chaves por agente", priority: Must, size: M, horizon: H30 }
+      - { id: FT-04.2, name: "Guardrails de PII/LGPD entrada e saída", priority: Must, size: S, horizon: H30 }
+      - { id: FT-04.3, name: "Atribuição de custo por chamada (tags por agente/caso de uso)", priority: Must, size: S, horizon: H30 }
+      - { id: FT-04.4, name: "Cache de prompt e batch", priority: Should, size: S, horizon: H60 }
+  - id: EP-05
+    name: Conhecimento e RAG v0.1 (MOD-03)
+    horizon: H60
+    outcome: Recuperação com permissões e citações para o pod 1.
+    kpi: "recall@5 ≥ 0,85 em 50 perguntas do cliente"
+    modules: [MOD-03]
+    agents: [AG-06, AT-01]
+    features:
+      - { id: FT-05.1, name: "Ingestão e chunking por tipo (PDF, planilha, tickets)", priority: Must, size: M, horizon: H60 }
+      - { id: FT-05.2, name: "Busca híbrida + reranker + citações", priority: Must, size: M, horizon: H60 }
+      - { id: FT-05.3, name: "ACL por usuário/cliente e mascaramento", priority: Must, size: M, horizon: H60 }
+      - { id: FT-05.4, name: "EV-02 em CI", priority: Must, size: S, horizon: H60 }
+  - id: EP-06
+    name: Pod 1 em produção (MOD-04 + AT-01)
+    horizon: H60
+    outcome: Primeiro processo do cliente operado por agentes com HITL.
+    kpi: KPI antes/depois medido; 0 ações proibidas
+    modules: [MOD-04, MOD-07]
+    agents: [AG-03, AG-04, AT-01]
+    features:
+      - { id: FT-06.1, name: "Padrão de agente único com HITL por risco (F-04.1)", priority: Must, size: M, horizon: H60 }
+      - { id: FT-06.2, name: "AT-01 v0 para o cliente 1 (conectores MOD-00)", priority: Must, size: L, horizon: H60 }
+      - { id: FT-06.3, name: "Baseline no dia 1 e painel de KPI", priority: Must, size: S, horizon: H60 }
+      - { id: FT-06.4, name: "Runbook + knowledge graph (SK-07) e treinamento", priority: Must, size: M, horizon: H90 }
+  - id: EP-07
+    name: Evals e observabilidade v1 (MOD-05)
+    horizon: H90
+    outcome: Qualidade e traços como gate de deploy.
+    kpi: "EV-01/02/04 rodando; pass rate visível"
+    modules: [MOD-05]
+    agents: [AG-04]
+    features:
+      - { id: FT-07.1, name: "Suíte EV-01 e EV-02 com graders de estado", priority: Must, size: M, horizon: H60 }
+      - { id: FT-07.2, name: "Traços OTel por ferramenta e custo", priority: Must, size: M, horizon: H60 }
+      - { id: FT-07.3, name: "HK-03/HK-04 como gates", priority: Must, size: S, horizon: H60 }
+      - { id: FT-07.4, name: "EV-04 e revisão humana amostral", priority: Must, size: M, horizon: H90 }
+      - { id: FT-07.5, name: "Evals contínuos em produção e alertas (F-05.3)", priority: Should, size: M, horizon: H180 }
+  - id: EP-08
+    name: FinOps de IA v1 → produto (MOD-06)
+    horizon: H180
+    outcome: Custo por resultado por agente; oferta FinOps e produto beta.
+    kpi: Painel usado por 3 clientes; 1 contrato FinOps
+    modules: [MOD-06]
+    agents: [AG-05]
+    features:
+      - { id: FT-08.1, name: "Custo por caso de uso e por resultado (F-06.1)", priority: Must, size: M, horizon: H60 }
+      - { id: FT-08.2, name: "Showback e alertas (F-06.2)", priority: Must, size: M, horizon: H90 }
+      - { id: FT-08.3, name: "Oferta FinOps com success fee (calculadora 8.3)", priority: Should, size: S, horizon: H90 }
+      - { id: FT-08.4, name: "Produto multi-cliente em beta (F-06.3)", priority: Should, size: L, horizon: H180 }
+      - { id: FT-08.5, name: "Assinatura, billing e onboarding self-service", priority: Could, size: L, horizon: H365 }
+  - id: EP-09
+    name: Agentes internos (empresa AI-native)
+    horizon: H180
+    outcome: Operação diária feita por agentes com humano aprovando.
+    kpi: "≥ 60% das tarefas repetitivas automatizadas"
+    modules: [MOD-04, MOD-08]
+    agents: [AG-00, AG-05, AG-06, AG-07, AG-08, AG-09]
+    features:
+      - { id: FT-09.1, name: "AG-06 curador + base de conhecimento interna", priority: Must, size: M, horizon: H60 }
+      - { id: FT-09.2, name: "AG-05 FinOps interno (custo próprio por agente)", priority: Must, size: S, horizon: H60 }
+      - { id: FT-09.3, name: "AG-00 orquestrador e briefing diário", priority: Should, size: M, horizon: H60 }
+      - { id: FT-09.4, name: "AG-08 conteúdo (newsletter e cases)", priority: Should, size: S, horizon: H60 }
+      - { id: FT-09.5, name: "AG-07 back-office (NF, conciliação, cobrança)", priority: Should, size: M, horizon: H90 }
+      - { id: FT-09.6, name: "AG-09 sucesso do cliente (monitoramento pós-pod)", priority: Should, size: M, horizon: H180 }
+  - id: EP-10
+    name: Pod 2 e templates verticais (MOD-07)
+    horizon: H90
+    outcome: "Repetição em segundo setor com reuso ≥ 50%."
+    kpi: "Pod 2 entregue em ≤ 45 dias com 50% de reuso"
+    modules: [MOD-07, MOD-00]
+    agents: [AG-03, AT-02, AT-03]
+    features:
+      - { id: FT-10.1, name: "Catálogo de conectores por setor (F-00.2) — 3 conectores", priority: Must, size: M, horizon: H90 }
+      - { id: FT-10.2, name: "AT-02 ou AT-03 como template", priority: Must, size: L, horizon: H180 }
+      - { id: FT-10.3, name: "Multiagente por etapa com aprovação (F-04.2)", priority: Should, size: M, horizon: H90 }
+  - id: EP-11
+    name: Portal e entregáveis (MOD-09)
+    horizon: H180
+    outcome: Cliente vê custo, qualidade e agentes; entregáveis automáticos.
+    kpi: "Relatório KPI gerado em < 1 h; portal usado semanalmente"
+    modules: [MOD-09]
+    agents: [AG-09, AG-05]
+    features:
+      - { id: FT-11.1, name: "Relatório KPI antes/depois (SK-14)", priority: Must, size: S, horizon: H60 }
+      - { id: FT-11.2, name: "Exportação de runbook e knowledge graph", priority: Must, size: S, horizon: H90 }
+      - { id: FT-11.3, name: "Portal do cliente v1", priority: Should, size: L, horizon: H180 }
+  - id: EP-12
+    name: Segurança de IA (MOD-02 v2 + AG-10)
+    horizon: H180
+    outcome: Testes ofensivos contínuos e oferta de AI Security Assessment.
+    kpi: "0 críticos em EV-05; 1 assessment vendido"
+    modules: [MOD-02]
+    agents: [AG-10, AG-04]
+    features:
+      - { id: FT-12.1, name: "SK-08 bateria OWASP LLM Top 10 / ATLAS", priority: Must, size: M, horizon: H90 }
+      - { id: FT-12.2, name: "EV-05 como gate de deploy", priority: Must, size: S, horizon: H180 }
+      - { id: FT-12.3, name: "Oferta AI Security Assessment (após CAISP)", priority: Should, size: M, horizon: H365 }
+  - id: EP-13
+    name: Parcerias, certificações e marketplace
+    horizon: H365
+    outcome: Canais de escala ativos.
+    kpi: "APN Select; CPN Select; listagem no Marketplace"
+    modules: []
+    agents: [AG-08]
+    features:
+      - { id: FT-13.1, name: "CCA-F (H90), AIP-C01 e FinOps (H180), CAISP (H180–365)", priority: Must, size: M, horizon: H180 }
+      - { id: FT-13.2, name: "Foundational Technical Review AWS e registro de oportunidades no ACE", priority: Must, size: M, horizon: H180 }
+      - { id: FT-13.3, name: "Listagem de serviços profissionais no AWS Marketplace", priority: Should, size: M, horizon: H365 }
+      - { id: FT-13.4, name: "2 deployments conjuntos e cases para CPN Select (janela 1/jan e 1/jul)", priority: Must, size: M, horizon: H365 }
+  - id: EP-14
+    name: Sócio comercial e organização
+    horizon: H180
+    outcome: Pipeline sustentado além do fundador.
+    kpi: "Sócio validado; ≥ 6 propostas/trimestre"
+    modules: []
+    agents: [AG-01, AG-02]
+    features:
+      - { id: FT-14.1, name: "Teste do sócio em comissão (3–6 meses)", priority: Must, size: M, horizon: H180 }
+      - { id: FT-14.2, name: "Acordo de sócios (vesting 4 anos, cliff 1 ano)", priority: Must, size: M, horizon: H365 }
+      - { id: FT-14.3, name: "2 sêniores PJ recorrentes para pods simultâneos", priority: Should, size: M, horizon: H180 }
+
+stories:
+  - id: US-01
+    feature: FT-02.1
+    story: >-
+      Como fundador, quero um CLAUDE.md enxuto e steering base para que qualquer
+      agente entenda o produto, a stack e as regras de segurança.
+    acceptance_ears:
+      - WHEN um agente inicia sessão no repositório THE SYSTEM SHALL carregar ST-01..ST-04 automaticamente
+      - WHEN CLAUDE.md exceder 150 linhas THE SYSTEM SHALL falhar o lint de repositório
+  - id: US-02
+    feature: FT-02.3
+    story: >-
+      Como fundador, quero hooks que bloqueiem comandos destrutivos para que
+      agentes não danifiquem ambientes.
+    acceptance_ears:
+      - WHEN um agente executar rm -rf, git push --force ou escrita fora de src/ THE SYSTEM SHALL bloquear e registrar
+      - WHEN um arquivo for editado THE SYSTEM SHALL executar lint e testes do módulo
+  - id: US-03
+    feature: FT-03.2
+    story: >-
+      Como fundador, quero uma lista semanal de 10 contas do ICP com contexto
+      para que eu escolha quem contatar.
+    acceptance_ears:
+      - WHEN for segunda-feira 7h THE SYSTEM SHALL gerar lista com setor, porte, sinal de compra e fonte pública
+      - WHEN a conta estiver fora do ICP (ST-06) THE SYSTEM SHALL excluí-la com justificativa
+  - id: US-04
+    feature: FT-03.3
+    story: >-
+      Como fundador, quero gerar proposta e minuta a partir das notas da reunião
+      para reduzir o tempo de proposta a 1 hora.
+    acceptance_ears:
+      - WHEN eu enviar notas com escopo e volume THE SYSTEM SHALL produzir proposta PDF, planilha de preço e minuta com cláusulas ST-07
+      - WHEN o preço calculado for menor que o piso THE SYSTEM SHALL sinalizar e exigir aprovação
+  - id: US-05
+    feature: FT-04.1
+    story: >-
+      Como arquiteto, quero que toda chamada de modelo passe pelo gateway com
+      chave por agente para atribuir custo.
+    acceptance_ears:
+      - WHEN um agente chamar um modelo THE SYSTEM SHALL rotear conforme política (custo, latência, dados regulados) e registrar custo com tag do agente
+      - WHEN o modelo primário falhar THE SYSTEM SHALL usar fallback e registrar
+  - id: US-06
+    feature: FT-04.2
+    story: >-
+      Como responsável por LGPD, quero PII mascarada em entrada e saída para
+      reduzir risco.
+    acceptance_ears:
+      - WHEN texto contiver CPF, e-mail ou telefone THE SYSTEM SHALL mascarar antes de enviar ao modelo e registrar o evento
+      - WHEN a saída contiver PII não presente na entrada THE SYSTEM SHALL bloquear
+  - id: US-07
+    feature: FT-05.2
+    story: >-
+      Como usuário do cliente, quero respostas com citação da fonte para confiar
+      na informação.
+    acceptance_ears:
+      - WHEN uma pergunta for respondida via RAG THE SYSTEM SHALL incluir citações com documento e trecho
+      - WHEN a confiança for baixa THE SYSTEM SHALL responder que não sabe e sugerir escalonamento
+  - id: US-08
+    feature: FT-05.3
+    story: Como cliente, quero que cada usuário só recupere documentos que pode ver.
+    acceptance_ears:
+      - WHEN o usuário não tiver permissão no documento THE SYSTEM SHALL excluí-lo da recuperação
+      - WHEN houver dados de outro cliente no índice THE SYSTEM SHALL impedir a consulta cruzada
+  - id: US-09
+    feature: FT-06.1
+    story: >-
+      Como operador, quero que ações de alto risco exijam aprovação para manter
+      controle.
+    acceptance_ears:
+      - WHEN a ação for classificada como escrita ou irreversível THE SYSTEM SHALL pausar e solicitar aprovação com evidência
+      - WHEN não houver resposta em 4 h THE SYSTEM SHALL cancelar e registrar
+  - id: US-10
+    feature: FT-06.3
+    story: >-
+      Como CFO do cliente, quero baseline no dia 1 e KPI no dia 45 para ver o
+      retorno.
+    acceptance_ears:
+      - WHEN o pod iniciar THE SYSTEM SHALL registrar baseline (volume, tempo, custo, qualidade)
+      - WHEN o pod encerrar THE SYSTEM SHALL gerar relatório antes/depois com custo por resultado
+  - id: US-11
+    feature: FT-07.1
+    story: >-
+      Como engenheiro, quero uma suíte de evals com graders de estado para saber
+      se o agente fez o trabalho.
+    acceptance_ears:
+      - WHEN uma tarefa de eval executar THE SYSTEM SHALL verificar o estado final (registro, arquivo, status) e não apenas a resposta
+      - WHEN o pass rate cair abaixo do limiar THE SYSTEM SHALL bloquear deploy (HK-04)
+  - id: US-12
+    feature: FT-08.1
+    story: >-
+      Como fundador, quero ver custo por resultado por agente para decidir
+      roteamento.
+    acceptance_ears:
+      - WHEN o dia encerrar THE SYSTEM SHALL calcular custo por resultado por agente e caso de uso
+      - WHEN o custo diário exceder o orçamento THE SYSTEM SHALL alertar (HK-08)
+
+kpis:
+  - { id: KPI-01, area: Negócio, indicator: MRR contratado, target: "R$ 12–20 mil (H180); ≥ R$ 40 mil × 3 meses (H365)" }
+  - { id: KPI-02, area: Negócio, indicator: Pods vendidos / entregues, target: "1 / 0 (H30); 2 / 1 (H90); 4 / 3 (H180); 8 / 6 (H365)" }
+  - { id: KPI-03, area: Negócio, indicator: Propostas por trimestre, target: "≥ 6" }
+  - { id: KPI-04, area: Negócio, indicator: NPS do pod, target: "≥ 8" }
+  - { id: KPI-05, area: Plataforma, indicator: "Pass rate de evals (EV-01/02/04)", target: "≥ 95% / 0,85 / 90%" }
+  - { id: KPI-06, area: Plataforma, indicator: "Custo por resultado (por caso de uso)", target: "dentro do teto; −30% após otimização" }
+  - { id: KPI-07, area: Plataforma, indicator: Reuso entre pods, target: "≥ 50% no pod 2; ≥ 70% no pod 4" }
+  - { id: KPI-08, area: Engenharia, indicator: "Lead time por tarefa (AG-03)", target: "< 1 dia para tarefas M" }
+  - { id: KPI-09, area: Operação, indicator: Tarefas repetitivas automatizadas, target: "≥ 60% (H180)" }
+  - { id: KPI-10, area: Segurança, indicator: "Achados críticos em EV-05", target: "0 em produção" }
+  - { id: KPI-11, area: Canais, indicator: Certificações e tiers, target: "CCA-F (H90); AIP-C01 + FinOps (H180); APN/CPN Select (H365)" }
+  - { id: KPI-12, area: Pessoal, indicator: Reserva e gatilho de saída, target: "6 meses de reserva + R$ 40 mil/mês × 3" }
